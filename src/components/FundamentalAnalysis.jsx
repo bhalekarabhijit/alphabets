@@ -102,7 +102,7 @@ function formatValue(val, format) {
     case 'percent':
       return (val * 100).toFixed(1) + '%';
     case 'dollar':
-      return '$' + Number(val).toFixed(2);
+      return '₹' + Number(val).toFixed(2);
     case 'number':
       return Number(val).toFixed(2);
     case 'large':
@@ -116,10 +116,10 @@ function formatValue(val, format) {
 
 function formatLargeNumber(num) {
   if (!num) return '—';
-  if (num >= 1e12) return '$' + (num / 1e12).toFixed(2) + 'T';
-  if (num >= 1e9) return '$' + (num / 1e9).toFixed(2) + 'B';
-  if (num >= 1e6) return '$' + (num / 1e6).toFixed(0) + 'M';
-  return '$' + num.toLocaleString();
+  if (num >= 1e12) return '₹' + (num / 1e12).toFixed(2) + 'T';
+  if (num >= 1e9) return '₹' + (num / 1e9).toFixed(2) + 'B';
+  if (num >= 1e6) return '₹' + (num / 1e6).toFixed(0) + 'M';
+  return '₹' + num.toLocaleString();
 }
 
 function getValueColorClass(val, goodFn) {

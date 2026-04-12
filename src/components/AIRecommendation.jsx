@@ -49,19 +49,19 @@ export default function AIRecommendation({ analysis, quote, className = '' }) {
         <div className="target-item">
           <div className="target-label">Entry Price</div>
           <div className="target-value entry">
-            ${analysis.entry_price?.toFixed(2) || quote?.price?.toFixed(2) || '—'}
+            ₹{analysis.entry_price?.toFixed(2) || quote?.price?.toFixed(2) || '—'}
           </div>
         </div>
         <div className="target-item">
           <div className="target-label">Target Price</div>
           <div className="target-value target">
-            ${analysis.target_price?.toFixed(2) || '—'}
+            ₹{analysis.target_price?.toFixed(2) || '—'}
           </div>
         </div>
         <div className="target-item">
           <div className="target-label">Stop Loss</div>
           <div className="target-value stoploss">
-            ${analysis.stop_loss?.toFixed(2) || '—'}
+            ₹{analysis.stop_loss?.toFixed(2) || '—'}
           </div>
         </div>
       </div>

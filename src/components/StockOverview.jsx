@@ -24,7 +24,7 @@ export default function StockOverview({ quote, className = '' }) {
 
       <div className="stock-price-row">
         <span className={`stock-price ${changeClass}`}>
-          ${quote.price?.toFixed(2)}
+          ₹{quote.price?.toFixed(2)}
         </span>
         <span className={`stock-change ${changeClass}`}>
           {changeIcon} {Math.abs(quote.change)?.toFixed(2)} ({Math.abs(quote.changePercent)?.toFixed(2)}%)
@@ -39,7 +39,7 @@ export default function StockOverview({ quote, className = '' }) {
         <div className="meta-item">
           <div className="meta-label">Day Range</div>
           <div className="meta-value">
-            ${quote.low?.toFixed(2)} - ${quote.high?.toFixed(2)}
+            ₹{quote.low?.toFixed(2)} - ₹{quote.high?.toFixed(2)}
           </div>
         </div>
         <div className="meta-item">
@@ -48,11 +48,11 @@ export default function StockOverview({ quote, className = '' }) {
         </div>
         <div className="meta-item">
           <div className="meta-label">Open</div>
-          <div className="meta-value">${quote.open?.toFixed(2)}</div>
+          <div className="meta-value">₹{quote.open?.toFixed(2)}</div>
         </div>
         <div className="meta-item">
           <div className="meta-label">Prev Close</div>
-          <div className="meta-value">${quote.prevClose?.toFixed(2)}</div>
+          <div className="meta-value">₹{quote.prevClose?.toFixed(2)}</div>
         </div>
         <div className="meta-item">
           <div className="meta-label">Avg Volume</div>
@@ -68,8 +68,8 @@ export default function StockOverview({ quote, className = '' }) {
           <div className="gauge-marker" style={{ left: `${weekPosition}%` }}></div>
         </div>
         <div className="gauge-labels">
-          <span className="gauge-low">${quote.fiftyTwoWeekLow?.toFixed(2)}</span>
-          <span className="gauge-high">${quote.fiftyTwoWeekHigh?.toFixed(2)}</span>
+          <span className="gauge-low">₹{quote.fiftyTwoWeekLow?.toFixed(2)}</span>
+          <span className="gauge-high">₹{quote.fiftyTwoWeekHigh?.toFixed(2)}</span>
         </div>
       </div>
 
@@ -92,8 +92,8 @@ export default function StockOverview({ quote, className = '' }) {
 
 function formatLargeNumber(num) {
   if (!num) return 'N/A';
-  if (num >= 1e12) return '$' + (num / 1e12).toFixed(2) + 'T';
-  if (num >= 1e9) return '$' + (num / 1e9).toFixed(2) + 'B';
+  if (num >= 1e12) return '₹' + (num / 1e12).toFixed(2) + 'T';
+  if (num >= 1e9) return '₹' + (num / 1e9).toFixed(2) + 'B';
   if (num >= 1e6) return (num / 1e6).toFixed(2) + 'M';
   if (num >= 1e3) return (num / 1e3).toFixed(1) + 'K';
   return num.toLocaleString();

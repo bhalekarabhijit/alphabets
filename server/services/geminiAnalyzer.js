@@ -105,3 +105,37 @@ Respond with ONLY this exact JSON structure:
   }
 }`;
 }
+
+export async function researchBestPick(candidates) {
+  if (!model) throw new Error('Gemini API not initialized');
+
+  const candidatesText = candidates.map(c => 
+    `TICKER: ${c.ticker}
+    - Buy Signals: ${c.buySignals}
+    - RSI: ${c.rsi}
+    - Recent News: ${c.news.slice(0,2).map(n => n.headline).join(' | ')}`
+  ).join('\n\n');
+
+  const prompt = `You are a highly analytical Indian Stock Market Quant.
+Your task is to review the following candidates and strictly select the SINGLE BEST stock to intraday Day-Trade today based on mathematical momentum and recent news catalysts.
+
+CANDIDATES:
+${candidatesText}
+
+Respond with ONLY this exact JSON format:
+{
+  "best_ticker": "<Winning Ticker exactly as provided (e.g. RELIANCE.NS)>",
+  "reasoning_summary": "<One sentence explaining why news & math align perfectly>"
+}`;
+
+  try {
+    const result = await model.generateContent(prompt);
+    const text = result.response.text();
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (jsonMatch) return JSON.parse(jsonMatch[0]);
+    return JSON.parse(text);
+  } catch (error) {
+    console.error('Gemini research error:', error.message);
+    throw error;
+  }
+}

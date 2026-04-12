@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { getQuote, getFundamentals, getHistoricalData, searchTickers, getYahooNews } from './services/yahooFinance.js';
 import { computeIndicators } from './services/technicalAnalysis.js';
-import { initGemini, analyzeStock } from './services/geminiAnalyzer.js';
+import { initGemini, analyzeStock, researchBestPick } from './services/geminiAnalyzer.js';
 
 dotenv.config();
 
@@ -188,25 +188,27 @@ app.get('/api/daily-pick', async (req, res) => {
       try {
         const intradayChart = await getHistoricalData(ticker, 'intraday');
         const technicals = computeIndicators(intradayChart);
+        const news = await getYahooNews(ticker);
+        
         results.push({
           ticker: ticker.toUpperCase(),
           buySignals: technicals.signals.summary.buy || 0,
-          rsi: technicals.current.rsi || 50
+          rsi: technicals.current.rsi || 50,
+          news: news || []
         });
       } catch (e) {
-        // Skip on error
+        console.error("Error fetching candidate data", e);
       }
     }
     
-    // Logic: find stock with highest buy signals, break tie with lowest RSI (oversold)
-    results.sort((a, b) => {
-      if (b.buySignals !== a.buySignals) return b.buySignals - a.buySignals;
-      return a.rsi - b.rsi;
-    });
-
-    const bestPick = results.length > 0 ? results[0].ticker : 'RELIANCE.NS';
-    res.json({ success: true, data: { ticker: bestPick } });
+    // Research with AI
+    console.log(`\n🧠 Researching BEST Daily Pick among ${results.length} stocks...`);
+    const aiDecision = await researchBestPick(results);
+    const bestPick = aiDecision?.best_ticker || 'RELIANCE.NS';
+    
+    res.json({ success: true, data: { ticker: bestPick, reasoning: aiDecision?.reasoning_summary } });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ success: false, error: error.message });
   }
 });

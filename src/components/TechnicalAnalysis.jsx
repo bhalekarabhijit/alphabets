@@ -164,7 +164,7 @@ export default function TechnicalAnalysis({
           label: function(context) {
             const val = context.parsed.y;
             if (val !== null) {
-              return `${context.dataset.label}: $${val.toFixed(2)}`;
+              return `${context.dataset.label}: ₹${val.toFixed(2)}`;
             }
             return null;
           },
@@ -190,7 +190,7 @@ export default function TechnicalAnalysis({
         ticks: {
           color: '#475569',
           font: { size: 10, family: 'JetBrains Mono' },
-          callback: val => '$' + val.toFixed(0),
+          callback: val => '₹' + val.toFixed(0),
         },
         grid: {
           color: 'rgba(148, 163, 184, 0.05)',
@@ -290,7 +290,7 @@ export default function TechnicalAnalysis({
           <div className="meta-item">
             <div className="meta-label">ATR (14)</div>
             <div className="meta-value">
-              ${technicals.current?.atr?.toFixed(2) || '—'}
+              ₹{technicals.current?.atr?.toFixed(2) || '—'}
             </div>
           </div>
           <div className="meta-item">

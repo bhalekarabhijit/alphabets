@@ -113,7 +113,7 @@ export default function WatchlistScanner({ onSelectTicker, apiBase }) {
                   </span>
                 </td>
                 <td style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '13px' }}>
-                  {result?.price ? `$${result.price.toFixed(2)}` : '—'}
+                  {result?.price ? `₹${result.price.toFixed(2)}` : '—'}
                 </td>
                 <td>
                   {result?.change != null ? (
