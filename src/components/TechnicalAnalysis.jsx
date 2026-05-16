@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -36,9 +36,12 @@ export default function TechnicalAnalysis({
   const [showSMA, setShowSMA] = useState(true);
   const [showBollinger, setShowBollinger] = useState(false);
 
-  if (!technicals || !chartData) return null;
+  if (!technicals || !chartData || chartData.length === 0) return null;
 
-  const labels = chartData.map(d => {
+  const validChartData = chartData.filter(d => d.close != null);
+  if (validChartData.length === 0) return null;
+
+  const labels = validChartData.map(d => {
     const date = new Date(d.date);
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   });
@@ -47,7 +50,7 @@ export default function TechnicalAnalysis({
   const datasets = [
     {
       label: ticker,
-      data: chartData.map(d => d.close),
+      data: validChartData.map(d => d.close),
       borderColor: '#6366f1',
       backgroundColor: 'rgba(99, 102, 241, 0.05)',
       borderWidth: 2,

@@ -421,6 +421,20 @@ body::before {
   overflow: hidden;
 }
 
+.synthetic-warning {
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: var(--yellow);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .stock-name {
   font-size: 14px;
   color: var(--text-muted);
@@ -1496,4 +1510,205 @@ body::before {
   font-family: 'JetBrains Mono', monospace;
   min-width: 40px;
   text-align: right;
+}
+
+/* ============================================ */
+/*  Daily Pick                                   */
+/* ============================================ */
+
+.daily-pick-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.daily-pick-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.daily-pick-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 8px;
+}
+
+.badge-icon {
+  font-size: 18px;
+}
+
+.daily-pick-meta {
+  font-size: 12px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.meta-dot {
+  color: var(--text-dim);
+}
+
+.daily-pick-card {
+  padding: 28px;
+}
+
+.pick-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.pick-ticker {
+  font-size: 28px;
+  font-weight: 800;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--accent-primary);
+}
+
+.pick-name {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.pick-badges {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.action-badge {
+  padding: 6px 16px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.action-badge.swing {
+  background: var(--blue-bg);
+  color: var(--blue);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.action-badge.position {
+  background: var(--green-bg);
+  color: var(--green-bright);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.action-badge.long_term {
+  background: var(--purple-bg, rgba(168, 85, 247, 0.1));
+  color: var(--purple);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+.pick-confidence {
+  margin: 16px 0;
+}
+
+.pick-targets {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.target-value.rr {
+  color: var(--cyan);
+}
+
+.pick-horizon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-muted);
+  padding: 12px 16px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-sm);
+  margin-bottom: 20px;
+}
+
+.pick-horizon strong {
+  color: var(--text-primary);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.pick-section {
+  margin: 20px 0;
+}
+
+.pick-thesis {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  padding: 12px 16px;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--accent-primary);
+}
+
+.pick-scores {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.pick-actions {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.pick-analyze-btn {
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  font-family: 'Inter', sans-serif;
+}
+
+.pick-analyze-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow-accent);
+}
+
+@media (max-width: 768px) {
+  .pick-targets {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .pick-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .pick-badges {
+    flex-wrap: wrap;
+  }
+
+  .pick-horizon {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .pick-scores {
+    grid-template-columns: 1fr;
+  }
 }

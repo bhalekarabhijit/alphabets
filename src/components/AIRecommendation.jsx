@@ -11,12 +11,20 @@ export default function AIRecommendation({ analysis, quote, className = '' }) {
 
   const scores = analysis.scores || {};
 
+  const entryPrice = analysis.entry_price || quote?.price || 0;
+  const targetPrice = (analysis.target_price && analysis.target_price > 0 && analysis.target_price !== entryPrice)
+    ? analysis.target_price
+    : null;
+  const stopLoss = (analysis.stop_loss && analysis.stop_loss > 0 && analysis.stop_loss !== entryPrice)
+    ? analysis.stop_loss
+    : null;
+
   return (
     <div className={`glass-card ai-recommendation ${actionClass} fade-in ${className}`}>
       <div className="card-header">
         <div className="card-title">
           <span className="card-title-icon">🤖</span>
-          AI Recommendation
+          AI Investment Recommendation
         </div>
         <span className={`risk-badge ${riskClass}`}>
           {riskLevel === 'LOW' ? '🟢' : riskLevel === 'HIGH' ? '🔴' : '🟡'} {riskLevel}
@@ -49,19 +57,19 @@ export default function AIRecommendation({ analysis, quote, className = '' }) {
         <div className="target-item">
           <div className="target-label">Entry Price</div>
           <div className="target-value entry">
-            ₹{analysis.entry_price?.toFixed(2) || quote?.price?.toFixed(2) || '—'}
+            ₹{entryPrice?.toFixed(2) || '—'}
           </div>
         </div>
         <div className="target-item">
           <div className="target-label">Target Price</div>
           <div className="target-value target">
-            ₹{analysis.target_price?.toFixed(2) || '—'}
+            {targetPrice ? `₹${targetPrice.toFixed(2)}` : '—'}
           </div>
         </div>
         <div className="target-item">
           <div className="target-label">Stop Loss</div>
           <div className="target-value stoploss">
-            ₹{analysis.stop_loss?.toFixed(2) || '—'}
+            {stopLoss ? `₹${stopLoss.toFixed(2)}` : '—'}
           </div>
         </div>
       </div>

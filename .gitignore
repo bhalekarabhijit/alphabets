@@ -26,3 +26,6 @@ dist-ssr
 # Privacy and Security
 server/.env
 .env
+
+# Generated files
+server/data/nseStocks.js

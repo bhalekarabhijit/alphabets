@@ -1,4 +1,4 @@
-export default function StockOverview({ quote, className = '' }) {
+export default function StockOverview({ quote, synthetic = false, className = '' }) {
   if (!quote) return null;
 
   const isPositive = quote.change >= 0;
@@ -16,6 +16,11 @@ export default function StockOverview({ quote, className = '' }) {
 
   return (
     <div className={`glass-card stock-overview fade-in ${className}`}>
+      {synthetic && (
+        <div className="synthetic-warning">
+          ⚠️ Using estimated data — Yahoo Finance rate-limited. Values may not reflect real market prices.
+        </div>
+      )}
       <div className="stock-name">{quote.name}</div>
       <div className="stock-ticker-row">
         <span className="stock-ticker">{quote.symbol}</span>

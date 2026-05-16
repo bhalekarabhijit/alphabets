@@ -55,17 +55,17 @@ export function computeIndicators(historicalData) {
   let adxValues = [];
   try {
     adxValues = ADX.calculate({ period: 14, high: highs, low: lows, close: closes });
-  } catch (e) { /* insufficient data */ }
+  } catch { /* insufficient data */ }
 
   let williamsR = [];
   try {
     williamsR = WilliamsR.calculate({ period: 14, high: highs, low: lows, close: closes });
-  } catch (e) { /* insufficient data */ }
+  } catch { /* insufficient data */ }
 
   let cci = [];
   try {
     cci = CCI.calculate({ period: 20, high: highs, low: lows, close: closes });
-  } catch (e) { /* insufficient data */ }
+  } catch { /* insufficient data */ }
 
   // Get latest values
   const currentPrice = closes[closes.length - 1];
