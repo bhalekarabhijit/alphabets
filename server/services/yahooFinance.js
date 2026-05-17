@@ -75,12 +75,24 @@ function seededRandom(seedStr) {
   return ((h ^ h >>> 16) >>> 0) / 4294967296;
 }
 
-let yahooBlocked = false;
+let yahooRateLimited = false;
+let yahooCooldownUntil = 0;
+const YAHOO_COOLDOWN_MS = 5 * 60 * 1000; // 5 minutes
+
+function isYahooAvailable() {
+  if (!yahooRateLimited) return true;
+  if (Date.now() > yahooCooldownUntil) {
+    console.log('🔄 Yahoo Finance cooldown expired, retrying...');
+    yahooRateLimited = false;
+    return true;
+  }
+  return false;
+}
 
 export async function getQuote(roughTicker) {
   const ticker = formatTicker(roughTicker);
   
-  if (!yahooBlocked) {
+  if (isYahooAvailable()) {
     try {
       const quote = await yf.quote(ticker);
       
@@ -116,8 +128,9 @@ export async function getQuote(roughTicker) {
       };
     } catch (error) {
       if (error.message.includes('429') || error.message.includes('Too Many Requests')) {
-        yahooBlocked = true;
-        console.warn('⚠️  Yahoo Finance rate limited. Using synthetic data until next restart.');
+        yahooRateLimited = true;
+        yahooCooldownUntil = Date.now() + YAHOO_COOLDOWN_MS;
+        console.warn(`⚠️  Yahoo Finance rate limited. Cooldown for ${YAHOO_COOLDOWN_MS / 60000}min.`);
       } else {
         console.error(`Yahoo Finance quote error for ${ticker}:`, error.message);
       }
@@ -158,7 +171,7 @@ function getSyntheticQuote(ticker) {
 export async function getFundamentals(roughTicker) {
   const ticker = formatTicker(roughTicker);
   
-  if (!yahooBlocked) {
+  if (isYahooAvailable()) {
     try {
       const modules = await yf.quoteSummary(ticker, {
         modules: [
@@ -211,8 +224,9 @@ export async function getFundamentals(roughTicker) {
       };
     } catch (error) {
       if (error.message.includes('429') || error.message.includes('Too Many Requests')) {
-        yahooBlocked = true;
-        console.warn('⚠️  Yahoo Finance rate limited. Using synthetic data until next restart.');
+        yahooRateLimited = true;
+        yahooCooldownUntil = Date.now() + YAHOO_COOLDOWN_MS;
+        console.warn(`⚠️  Yahoo Finance rate limited. Cooldown for ${YAHOO_COOLDOWN_MS / 60000}min.`);
       } else {
         console.error(`Yahoo Finance fundamentals error for ${ticker}:`, error.message);
       }
@@ -266,7 +280,7 @@ function getSyntheticFundamentals(ticker) {
 export async function getHistoricalData(roughTicker, period = '1d') {
   const ticker = formatTicker(roughTicker);
   
-  if (!yahooBlocked) {
+  if (isYahooAvailable()) {
     try {
       const now = new Date();
       let startDate;
@@ -309,8 +323,9 @@ export async function getHistoricalData(roughTicker, period = '1d') {
       }));
     } catch (error) {
       if (error.message.includes('429') || error.message.includes('Too Many Requests')) {
-        yahooBlocked = true;
-        console.warn('⚠️  Yahoo Finance rate limited. Using synthetic data until next restart.');
+        yahooRateLimited = true;
+        yahooCooldownUntil = Date.now() + YAHOO_COOLDOWN_MS;
+        console.warn(`⚠️  Yahoo Finance rate limited. Cooldown for ${YAHOO_COOLDOWN_MS / 60000}min.`);
       } else {
         console.error(`Yahoo Finance history error for ${ticker}:`, error.message);
       }
@@ -360,7 +375,7 @@ export async function searchTickers(query) {
 
   const localResults = searchLocalStocks(query);
 
-  if (!yahooBlocked) {
+  if (isYahooAvailable()) {
     try {
       const results = await yf.autoc(query);
       
@@ -390,8 +405,9 @@ export async function searchTickers(query) {
       }
     } catch (error) {
       if (error.message.includes('429') || error.message.includes('Too Many Requests')) {
-        yahooBlocked = true;
-        console.warn('⚠️  Yahoo Finance rate limited. Using synthetic data until next restart.');
+        yahooRateLimited = true;
+        yahooCooldownUntil = Date.now() + YAHOO_COOLDOWN_MS;
+        console.warn(`⚠️  Yahoo Finance rate limited. Cooldown for ${YAHOO_COOLDOWN_MS / 60000}min.`);
       } else {
         console.error(`Yahoo Finance search error:`, error.message);
       }
@@ -404,7 +420,7 @@ export async function searchTickers(query) {
 export async function getYahooNews(roughTicker) {
   const ticker = formatTicker(roughTicker);
   
-  if (!yahooBlocked) {
+  if (isYahooAvailable()) {
     try {
       const results = await yf.search(ticker, { newsCount: 5 });
       
@@ -421,8 +437,9 @@ export async function getYahooNews(roughTicker) {
       }));
     } catch (error) {
       if (error.message.includes('429') || error.message.includes('Too Many Requests')) {
-        yahooBlocked = true;
-        console.warn('⚠️  Yahoo Finance rate limited. Using synthetic data until next restart.');
+        yahooRateLimited = true;
+        yahooCooldownUntil = Date.now() + YAHOO_COOLDOWN_MS;
+        console.warn(`⚠️  Yahoo Finance rate limited. Cooldown for ${YAHOO_COOLDOWN_MS / 60000}min.`);
       } else {
         console.error(`Yahoo Finance news error for ${ticker}:`, error.message);
       }
@@ -452,5 +469,6 @@ export async function getYahooNews(roughTicker) {
 }
 
 export function resetYahooStatus() {
-  yahooBlocked = false;
+  yahooRateLimited = false;
+  yahooCooldownUntil = 0;
 }
