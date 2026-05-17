@@ -85,7 +85,17 @@ function App() {
       {/* Top Navigation */}
       <header className="header">
         <div className="header-brand">
-          <div className="header-logo">α</div>
+          <svg className="header-logo" viewBox="0 0 100 100" width="32" height="32">
+            <defs>
+              <linearGradient id="logo-bg" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#0052ff"/>
+                <stop offset="100%" stopColor="#0038d4"/>
+              </linearGradient>
+            </defs>
+            <rect width="100" height="100" rx="22" fill="url(#logo-bg)"/>
+            <path d="M50 16 L78 84 L68 84 L62 64 L38 64 L32 84 L22 84 Z" fill="white"/>
+            <path d="M50 32 L58 56 L42 56 Z" fill="url(#logo-bg)" opacity="0.2"/>
+          </svg>
           <div>
             <div className="header-title">Alphabets</div>
           </div>
