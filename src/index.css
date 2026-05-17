@@ -12,7 +12,7 @@
   --primary-disabled: #a8b8cc;
   --primary-glow: rgba(0, 82, 255, 0.15);
 
-  /* Surface */
+  /* Surface — Light */
   --canvas: #ffffff;
   --surface-soft: #f7f7f7;
   --surface-strong: #eef0f3;
@@ -68,6 +68,29 @@
   /* Transitions */
   --transition-fast: 150ms ease;
   --transition-normal: 250ms ease;
+}
+
+/* Dark Mode */
+html.dark {
+  --canvas: #0a0b0d;
+  --surface-soft: #16181c;
+  --surface-strong: #1e2025;
+  --surface-dark: #ffffff;
+  --surface-dark-elevated: #f0f1f3;
+
+  --hairline: #2a2d34;
+  --hairline-soft: #1e2025;
+
+  --ink: #f0f1f3;
+  --body: #a8acb3;
+  --body-strong: #f0f1f3;
+  --muted: #7c828a;
+  --muted-soft: #5b616e;
+  --on-dark: #0a0b0d;
+  --on-dark-soft: #5b616e;
+
+  --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.2);
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 /* ============================================ */
@@ -246,6 +269,31 @@ body {
   gap: var(--spacing-sm);
 }
 
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-base);
+}
+
+.theme-toggle {
+  background: var(--surface-soft);
+  border: 1px solid var(--hairline-soft);
+  border-radius: var(--rounded-full);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all var(--transition-fast);
+}
+
+.theme-toggle:hover {
+  background: var(--surface-strong);
+  border-color: var(--hairline);
+}
+
 .header-logo {
   width: 32px;
   height: 32px;
@@ -294,37 +342,22 @@ body {
 
 .hero-band {
   background: var(--surface-dark);
-  padding: var(--spacing-section) var(--spacing-xl);
+  padding: var(--spacing-xl) var(--spacing-xl);
   text-align: center;
 }
 
 .hero-content {
-  max-width: 800px;
+  max-width: 600px;
   margin: 0 auto;
 }
 
-.hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-xs) var(--spacing-base);
-  background: var(--surface-dark-elevated);
-  border-radius: var(--rounded-pill);
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--on-dark-soft);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: var(--spacing-xl);
-}
-
 .hero-title {
-  font-size: clamp(36px, 6vw, 64px);
+  font-size: clamp(28px, 4vw, 40px);
   font-weight: 400;
-  line-height: 1.05;
-  letter-spacing: -1.5px;
+  line-height: 1.1;
+  letter-spacing: -1px;
   color: var(--on-dark);
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--spacing-sm);
 }
 
 .hero-title .accent {
@@ -332,12 +365,11 @@ body {
 }
 
 .hero-subtitle {
-  font-size: 18px;
+  font-size: 15px;
   font-weight: 400;
-  line-height: 1.5;
+  line-height: 1.4;
   color: var(--on-dark-soft);
-  max-width: 600px;
-  margin: 0 auto var(--spacing-xxl);
+  margin: 0 auto var(--spacing-base);
 }
 
 .hero-actions {
@@ -346,6 +378,23 @@ body {
   justify-content: center;
   gap: var(--spacing-base);
   flex-wrap: wrap;
+}
+
+html.dark .hero-band {
+  background: var(--canvas);
+  border-bottom: 1px solid var(--hairline-soft);
+}
+
+html.dark .hero-title {
+  color: var(--ink);
+}
+
+html.dark .hero-subtitle {
+  color: var(--body);
+}
+
+html.dark .hero-title .accent {
+  color: var(--primary);
 }
 
 /* ============================================ */
@@ -557,7 +606,7 @@ body {
 .content-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: var(--spacing-xxl) var(--spacing-xl);
+  padding: var(--spacing-xl) var(--spacing-xl);
 }
 
 /* ============================================ */
@@ -567,7 +616,7 @@ body {
 .dashboard-grid {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xxl);
+  gap: var(--spacing-xl);
 }
 
 .dashboard-top {
@@ -1475,7 +1524,7 @@ body {
 
 .daily-pick-header {
   text-align: center;
-  margin-bottom: var(--spacing-xxl);
+  margin-bottom: var(--spacing-xl);
 }
 
 .daily-pick-badge {
@@ -1501,7 +1550,7 @@ body {
 }
 
 .daily-pick-card {
-  padding: var(--spacing-xxl);
+  padding: var(--spacing-xl);
 }
 
 .pick-header {
@@ -1615,7 +1664,7 @@ body {
 }
 
 .pick-section {
-  margin: var(--spacing-xl) 0;
+  margin: var(--spacing-lg) 0;
 }
 
 .pick-thesis {
@@ -1636,7 +1685,7 @@ body {
 }
 
 .pick-actions {
-  margin-top: var(--spacing-xxl);
+  margin-top: var(--spacing-xl);
   text-align: center;
 }
 
@@ -1833,7 +1882,7 @@ body {
 /* ============================================ */
 
 .disclaimer {
-  margin-top: var(--spacing-section);
+  margin-top: var(--spacing-xxl);
   padding: var(--spacing-xl) var(--spacing-xxl);
   background: var(--surface-soft);
   border-top: 1px solid var(--hairline-soft);
@@ -1865,6 +1914,227 @@ body {
 .stagger-3 { animation-delay: 0.15s; opacity: 0; }
 .stagger-4 { animation-delay: 0.2s; opacity: 0; }
 .stagger-5 { animation-delay: 0.25s; opacity: 0; }
+
+/* ============================================ */
+/*  Dark Mode Overrides                         */
+/* ============================================ */
+
+html.dark .card {
+  border-color: var(--hairline);
+  background: var(--canvas);
+}
+
+html.dark .card:hover {
+  box-shadow: var(--shadow-soft);
+}
+
+html.dark .search-input-wrapper {
+  background: var(--surface-soft);
+  border-color: var(--hairline);
+}
+
+html.dark .search-suggestions {
+  background: var(--surface-strong);
+  border-color: var(--hairline);
+}
+
+html.dark .search-suggestion-item:hover {
+  background: var(--surface-soft);
+}
+
+html.dark .stock-meta-grid .meta-item,
+html.dark .target-item,
+html.dark .score-item,
+html.dark .signal-card,
+html.dark .signal-summary-bar,
+html.dark .week52-gauge,
+html.dark .pick-horizon,
+html.dark .pick-thesis,
+html.dark .news-item,
+html.dark .ai-detailed-analysis,
+html.dark .math-item,
+html.dark .fundamental-category .metric-row {
+  background: var(--surface-soft);
+}
+
+html.dark .gauge-track {
+  background: var(--hairline);
+}
+
+html.dark .volume-bar-bg,
+html.dark .confidence-bar-container,
+html.dark .score-bar {
+  background: var(--hairline);
+}
+
+html.dark .data-table th {
+  border-bottom-color: var(--hairline);
+}
+
+html.dark .data-table td {
+  border-bottom-color: var(--hairline-soft);
+}
+
+html.dark .data-table tr:hover {
+  background: var(--surface-soft);
+}
+
+html.dark .metric-row {
+  border-bottom-color: var(--hairline-soft);
+}
+
+html.dark .category-title {
+  border-bottom-color: var(--hairline-soft);
+}
+
+html.dark .factor-item,
+html.dark .risk-item {
+  border-bottom-color: var(--hairline-soft);
+}
+
+html.dark .disclaimer {
+  background: var(--surface-soft);
+  border-top-color: var(--hairline-soft);
+}
+
+html.dark .search-section {
+  border-bottom-color: var(--hairline-soft);
+}
+
+html.dark .error-message {
+  background: rgba(207, 32, 47, 0.1);
+  border-color: rgba(207, 32, 47, 0.2);
+}
+
+html.dark .synthetic-warning {
+  background: rgba(244, 176, 0, 0.1);
+  border-color: rgba(244, 176, 0, 0.25);
+}
+
+html.dark .btn-secondary {
+  background: var(--surface-soft);
+}
+
+html.dark .btn-secondary:hover {
+  background: var(--surface-strong);
+}
+
+html.dark .period-tab {
+  background: var(--surface-soft);
+  border-color: var(--hairline-soft);
+}
+
+html.dark .period-tab:hover {
+  background: var(--surface-strong);
+}
+
+html.dark .ai-recommendation.buy::before {
+  background: var(--semantic-up);
+}
+
+html.dark .ai-recommendation.sell::before {
+  background: var(--semantic-down);
+}
+
+html.dark .ai-recommendation.hold::before {
+  background: var(--accent-yellow);
+}
+
+html.dark .action-badge.swing {
+  background: rgba(0, 82, 255, 0.12);
+  border-color: rgba(0, 82, 255, 0.3);
+}
+
+html.dark .action-badge.position {
+  background: rgba(5, 177, 105, 0.12);
+  border-color: rgba(5, 177, 105, 0.3);
+}
+
+html.dark .action-badge.long_term {
+  background: rgba(244, 176, 0, 0.12);
+  border-color: rgba(244, 176, 0, 0.3);
+}
+
+html.dark .risk-badge.low {
+  background: rgba(5, 177, 105, 0.12);
+}
+
+html.dark .risk-badge.moderate {
+  background: rgba(244, 176, 0, 0.12);
+}
+
+html.dark .risk-badge.high {
+  background: rgba(207, 32, 47, 0.12);
+}
+
+html.dark .ai-action-badge.buy {
+  background: rgba(5, 177, 105, 0.12);
+  border-color: rgba(5, 177, 105, 0.3);
+}
+
+html.dark .ai-action-badge.sell {
+  background: rgba(207, 32, 47, 0.12);
+  border-color: rgba(207, 32, 47, 0.3);
+}
+
+html.dark .ai-action-badge.hold {
+  background: rgba(244, 176, 0, 0.12);
+  border-color: rgba(244, 176, 0, 0.3);
+}
+
+html.dark .signal-badge.buy {
+  background: rgba(5, 177, 105, 0.12);
+}
+
+html.dark .signal-badge.sell {
+  background: rgba(207, 32, 47, 0.12);
+}
+
+html.dark .signal-badge.neutral {
+  background: var(--surface-strong);
+}
+
+html.dark .signal-card.buy-signal {
+  border-left-color: var(--semantic-up);
+}
+
+html.dark .signal-card.sell-signal {
+  border-left-color: var(--semantic-down);
+}
+
+html.dark .signal-card.neutral-signal {
+  border-left-color: var(--muted-soft);
+}
+
+html.dark .loading-spinner {
+  border-color: var(--hairline-soft);
+  border-top-color: var(--primary);
+}
+
+html.dark .empty-icon {
+  opacity: 0.2;
+}
+
+html.dark .news-item:hover {
+  background: var(--surface-strong);
+}
+
+html.dark .watchlist-input {
+  background: var(--surface-soft);
+  border-color: var(--hairline-soft);
+}
+
+html.dark .daily-pick-badge {
+  background: var(--primary);
+}
+
+html.dark .ai-detailed-analysis {
+  border-left-color: var(--primary);
+}
+
+html.dark .pick-thesis {
+  border-left-color: var(--primary);
+}
 
 /* ============================================ */
 /*  Responsive                                  */
@@ -1901,7 +2171,7 @@ body {
   }
 
   .hero-band {
-    padding: var(--spacing-xxl) var(--spacing-base);
+    padding: var(--spacing-lg) var(--spacing-base);
   }
 
   .content-container {
@@ -1909,7 +2179,11 @@ body {
   }
 
   .search-section {
-    padding: var(--spacing-xl) var(--spacing-base);
+    padding: var(--spacing-lg) var(--spacing-base);
+  }
+
+  .daily-pick-header {
+    margin-bottom: var(--spacing-xl);
   }
 
   .stock-price {

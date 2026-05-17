@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import SearchBar from './components/SearchBar';
 import StockOverview from './components/StockOverview';
 import AIRecommendation from './components/AIRecommendation';
@@ -17,6 +17,18 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [currentTicker, setCurrentTicker] = useState('');
+  const [darkMode, setDarkMode] = useState(() => {
+    try {
+      return localStorage.getItem('alphabets_dark') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', darkMode);
+    try { localStorage.setItem('alphabets_dark', darkMode); } catch {}
+  }, [darkMode]);
 
   const analyzeStock = useCallback(async (ticker) => {
     setLoading(true);
@@ -78,9 +90,18 @@ function App() {
             <div className="header-title">Alphabets</div>
           </div>
         </div>
-        <div className="header-status">
-          <span className="status-dot"></span>
-          <span>NSE/BSE</span>
+        <div className="header-right">
+          <div className="header-status">
+            <span className="status-dot"></span>
+            <span>NSE/BSE</span>
+          </div>
+          <button
+            className="theme-toggle"
+            onClick={() => setDarkMode(!darkMode)}
+            title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+          >
+            {darkMode ? '☀️' : '🌙'}
+          </button>
         </div>
       </header>
 
@@ -88,25 +109,16 @@ function App() {
       {!analysisData && !dailyPickData && !loading && (
         <section className="hero-band">
           <div className="hero-content">
-            <div className="hero-badge">
-              <span>AI-Powered</span>
-              <span>·</span>
-              <span>Nifty 50 Scanner</span>
-            </div>
             <h1 className="hero-title">
-              Institutional-grade<br />
-              stock <span className="accent">analysis</span>
+              Stock <span className="accent">analysis</span>
             </h1>
             <p className="hero-subtitle">
-              AI-curated investment picks backed by fundamental health, technical setups, and news sentiment — the way professionals analyze.
+              AI-curated picks backed by fundamentals, technicals, and sentiment.
             </p>
             <div className="hero-actions">
-              <button onClick={fetchDailyPick} className="btn btn-primary">
-                Find Today's Best Pick
+              <button onClick={fetchDailyPick} className="btn btn-primary btn-sm">
+                Today's Pick
               </button>
-              <a href="#search" className="btn btn-outline-dark">
-                Search a Stock
-              </a>
             </div>
           </div>
         </section>
