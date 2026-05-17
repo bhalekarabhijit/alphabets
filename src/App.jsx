@@ -9,7 +9,7 @@ import WatchlistScanner from './components/WatchlistScanner';
 import DailyPick from './components/DailyPick';
 import './App.css';
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'https://alphabets-ap.onrender.com/api';
+const API_BASE = (import.meta.env.VITE_API_BASE || 'https://alphabets-ap.onrender.com/api').replace(/\/+$/, '');
 
 function App() {
   const [analysisData, setAnalysisData] = useState(null);
