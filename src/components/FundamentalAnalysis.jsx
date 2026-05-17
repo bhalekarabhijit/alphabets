@@ -66,12 +66,9 @@ export default function FundamentalAnalysis({ fundamentals, className = '' }) {
   ];
 
   return (
-    <div className={`glass-card fade-in ${className}`}>
+    <div className={`card fade-in ${className}`}>
       <div className="card-header">
-        <div className="card-title">
-          <span className="card-title-icon">📋</span>
-          Fundamental Analysis
-        </div>
+        <div className="card-title">Fundamental Analysis</div>
       </div>
 
       <div className="fundamentals-grid">
@@ -97,20 +94,13 @@ export default function FundamentalAnalysis({ fundamentals, className = '' }) {
 
 function formatValue(val, format) {
   if (val === null || val === undefined) return '—';
-
   switch (format) {
-    case 'percent':
-      return (val * 100).toFixed(1) + '%';
-    case 'dollar':
-      return '₹' + Number(val).toFixed(2);
-    case 'number':
-      return Number(val).toFixed(2);
-    case 'large':
-      return formatLargeNumber(val);
-    case 'text':
-      return String(val).toUpperCase();
-    default:
-      return String(val);
+    case 'percent': return (val * 100).toFixed(1) + '%';
+    case 'dollar': return '₹' + Number(val).toFixed(2);
+    case 'number': return Number(val).toFixed(2);
+    case 'large': return formatLargeNumber(val);
+    case 'text': return String(val).toUpperCase();
+    default: return String(val);
   }
 }
 

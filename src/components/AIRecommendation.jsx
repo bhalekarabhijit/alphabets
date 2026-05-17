@@ -4,7 +4,6 @@ export default function AIRecommendation({ analysis, quote, className = '' }) {
   const action = (analysis.action || 'HOLD').toUpperCase();
   const actionClass = action === 'BUY' ? 'buy' : action === 'SELL' ? 'sell' : 'hold';
   const confidence = analysis.confidence || 0;
-  const confidenceClass = confidence >= 70 ? 'high' : confidence >= 40 ? 'medium' : 'low';
 
   const riskLevel = (analysis.risk_level || 'MODERATE').toUpperCase();
   const riskClass = riskLevel === 'LOW' ? 'low' : riskLevel === 'HIGH' ? 'high' : 'moderate';
@@ -20,25 +19,20 @@ export default function AIRecommendation({ analysis, quote, className = '' }) {
     : null;
 
   return (
-    <div className={`glass-card ai-recommendation ${actionClass} fade-in ${className}`}>
+    <div className={`card ai-recommendation ${actionClass} fade-in ${className}`}>
       <div className="card-header">
-        <div className="card-title">
-          <span className="card-title-icon">🤖</span>
-          AI Investment Recommendation
-        </div>
+        <div className="card-title">AI Recommendation</div>
         <span className={`risk-badge ${riskClass}`}>
           {riskLevel === 'LOW' ? '🟢' : riskLevel === 'HIGH' ? '🔴' : '🟡'} {riskLevel}
         </span>
       </div>
 
-      {/* Verdict */}
       <div className="ai-verdict">
         <div className={`ai-action-badge ${actionClass}`}>
           {action === 'BUY' ? '📈' : action === 'SELL' ? '📉' : '⏸️'} {action}
         </div>
       </div>
 
-      {/* Confidence */}
       <div className="ai-confidence">
         <div className="confidence-label">
           <span>Confidence</span>
@@ -46,13 +40,12 @@ export default function AIRecommendation({ analysis, quote, className = '' }) {
         </div>
         <div className="confidence-bar-container">
           <div
-            className={`confidence-bar ${confidenceClass}`}
+            className="confidence-bar"
             style={{ width: `${confidence}%` }}
           ></div>
         </div>
       </div>
 
-      {/* Price Targets */}
       <div className="ai-targets">
         <div className="target-item">
           <div className="target-label">Entry Price</div>
@@ -74,15 +67,13 @@ export default function AIRecommendation({ analysis, quote, className = '' }) {
         </div>
       </div>
 
-      {/* Time Horizon */}
       {analysis.time_horizon && (
         <div className="time-horizon">
-          <span className="time-icon">⏱️</span>
+          <span>⏱️</span>
           Time Horizon: <strong>{analysis.time_horizon}</strong>
         </div>
       )}
 
-      {/* Scores */}
       <div className="section-subtitle">Analysis Scores</div>
       <div className="ai-scores">
         {[
@@ -109,7 +100,6 @@ export default function AIRecommendation({ analysis, quote, className = '' }) {
         ))}
       </div>
 
-      {/* Key Factors */}
       {analysis.key_factors && analysis.key_factors.length > 0 && (
         <div className="ai-factors">
           <div className="section-subtitle">Key Factors</div>
@@ -124,7 +114,6 @@ export default function AIRecommendation({ analysis, quote, className = '' }) {
         </div>
       )}
 
-      {/* Risks */}
       {analysis.risks && analysis.risks.length > 0 && (
         <div className="ai-factors">
           <div className="section-subtitle">Risk Factors</div>
@@ -139,7 +128,6 @@ export default function AIRecommendation({ analysis, quote, className = '' }) {
         </div>
       )}
 
-      {/* Math Analysis */}
       {analysis.math_analysis && (
         <>
           <div className="section-subtitle">Mathematical Analysis</div>
@@ -164,7 +152,6 @@ export default function AIRecommendation({ analysis, quote, className = '' }) {
         </>
       )}
 
-      {/* Detailed Analysis */}
       {analysis.detailed_analysis && (
         <div className="ai-detailed-analysis">
           <div className="section-subtitle" style={{ marginTop: 0 }}>Detailed Analysis</div>
@@ -178,7 +165,7 @@ export default function AIRecommendation({ analysis, quote, className = '' }) {
 }
 
 function getScoreColor(value) {
-  if (value >= 70) return 'linear-gradient(90deg, #10b981, #06b6d4)';
-  if (value >= 40) return 'linear-gradient(90deg, #f59e0b, #6366f1)';
-  return 'linear-gradient(90deg, #ef4444, #f59e0b)';
+  if (value >= 70) return 'var(--semantic-up)';
+  if (value >= 40) return 'var(--primary)';
+  return 'var(--semantic-down)';
 }

@@ -9,7 +9,7 @@ export default function SearchBar({ onAnalyze, apiBase, loading }) {
 
   useEffect(() => {
     function handleClickOutside(e) {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+      if (wrapperRef.current && !wrapperRef.contains(e.target)) {
         setShowSuggestions(false);
       }
     }
@@ -56,15 +56,15 @@ export default function SearchBar({ onAnalyze, apiBase, loading }) {
   };
 
   return (
-    <div className="search-section" ref={wrapperRef}>
-      <form className="search-container" onSubmit={handleSubmit}>
+    <div className="search-container" ref={wrapperRef}>
+      <form onSubmit={handleSubmit}>
         <div className="search-input-wrapper">
           <span className="search-icon">🔍</span>
           <input
             id="stock-search-input"
             className="search-input"
             type="text"
-            placeholder="Search stock ticker (e.g., AAPL, GOOGL, MSFT)..."
+            placeholder="Search any NSE/BSE stock..."
             value={query}
             onChange={handleInputChange}
             onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}

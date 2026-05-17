@@ -1,16 +1,13 @@
 export default function NewsFeed({ news, className = '' }) {
   if (!news || news.length === 0) {
     return (
-      <div className={`glass-card fade-in ${className}`}>
+      <div className={`card fade-in ${className}`}>
         <div className="card-header">
-          <div className="card-title">
-            <span className="card-title-icon">📰</span>
-            Latest News
-          </div>
+          <div className="card-title">Latest News</div>
         </div>
-        <div style={{ textAlign: 'center', padding: '32px 0', color: 'var(--text-dim)' }}>
-          <div style={{ fontSize: '32px', marginBottom: '8px' }}>📰</div>
-          <div style={{ fontSize: '13px' }}>
+        <div className="empty-state">
+          <div className="empty-icon">📰</div>
+          <div className="empty-text">
             No news available. Configure your Finnhub API key to enable news feed.
           </div>
         </div>
@@ -19,15 +16,10 @@ export default function NewsFeed({ news, className = '' }) {
   }
 
   return (
-    <div className={`glass-card fade-in ${className}`}>
+    <div className={`card fade-in ${className}`}>
       <div className="card-header">
-        <div className="card-title">
-          <span className="card-title-icon">📰</span>
-          Latest News
-        </div>
-        <span style={{ fontSize: '12px', color: 'var(--text-dim)' }}>
-          {news.length} articles
-        </span>
+        <div className="card-title">Latest News</div>
+        <span className="card-meta">{news.length} articles</span>
       </div>
 
       <div className="news-list">
@@ -51,7 +43,7 @@ export default function NewsFeed({ news, className = '' }) {
               <div className="news-headline">{article.headline}</div>
               <div className="news-meta">
                 <span className="news-source">{article.source}</span>
-                <span>·</span>
+                <span className="meta-dot">·</span>
                 <span>{formatTimeAgo(article.datetime)}</span>
               </div>
             </div>

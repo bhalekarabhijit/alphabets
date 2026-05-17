@@ -5,22 +5,24 @@ export default function StockOverview({ quote, synthetic = false, className = ''
   const changeClass = isPositive ? 'positive' : 'negative';
   const changeIcon = isPositive ? '▲' : '▼';
 
-  // 52-week position (0-100)
   const weekRange = quote.fiftyTwoWeekHigh - quote.fiftyTwoWeekLow;
   const weekPosition = weekRange > 0
     ? ((quote.price - quote.fiftyTwoWeekLow) / weekRange) * 100
     : 50;
 
-  // Volume ratio
   const volumeRatio = quote.avgVolume > 0 ? (quote.volume / quote.avgVolume) * 100 : 0;
 
   return (
-    <div className={`glass-card stock-overview fade-in ${className}`}>
+    <div className={`card stock-overview fade-in ${className}`}>
       {synthetic && (
         <div className="synthetic-warning">
           ⚠️ Using estimated data — Yahoo Finance rate-limited. Values may not reflect real market prices.
         </div>
       )}
+      <div className="card-header">
+        <div className="card-title">Stock Overview</div>
+      </div>
+
       <div className="stock-name">{quote.name}</div>
       <div className="stock-ticker-row">
         <span className="stock-ticker">{quote.symbol}</span>
@@ -44,7 +46,7 @@ export default function StockOverview({ quote, synthetic = false, className = ''
         <div className="meta-item">
           <div className="meta-label">Day Range</div>
           <div className="meta-value">
-            ₹{quote.low?.toFixed(2)} - ₹{quote.high?.toFixed(2)}
+            ₹{quote.low?.toFixed(2)} – ₹{quote.high?.toFixed(2)}
           </div>
         </div>
         <div className="meta-item">
@@ -65,20 +67,17 @@ export default function StockOverview({ quote, synthetic = false, className = ''
         </div>
       </div>
 
-      {/* 52-Week Gauge */}
       <div className="week52-gauge">
-        <div className="gauge-title">52-Week Range</div>
-        <div className="gauge-track">
-          <div className="gauge-fill" style={{ width: '100%' }}></div>
-          <div className="gauge-marker" style={{ left: `${weekPosition}%` }}></div>
-        </div>
         <div className="gauge-labels">
           <span className="gauge-low">₹{quote.fiftyTwoWeekLow?.toFixed(2)}</span>
           <span className="gauge-high">₹{quote.fiftyTwoWeekHigh?.toFixed(2)}</span>
         </div>
+        <div className="gauge-track">
+          <div className="gauge-fill"></div>
+          <div className="gauge-marker" style={{ left: `${weekPosition}%` }}></div>
+        </div>
       </div>
 
-      {/* Volume Indicator */}
       <div style={{ marginTop: '12px' }}>
         <div className="meta-label">Volume vs Average</div>
         <div className="volume-indicator">

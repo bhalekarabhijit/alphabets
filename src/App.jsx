@@ -7,7 +7,7 @@ import TechnicalAnalysis from './components/TechnicalAnalysis';
 import NewsFeed from './components/NewsFeed';
 import WatchlistScanner from './components/WatchlistScanner';
 import DailyPick from './components/DailyPick';
-import './App.css';
+import './index.css';
 
 const API_BASE = (import.meta.env.VITE_API_BASE || 'https://alphabets-ap.onrender.com/api').replace(/\/+$/, '');
 
@@ -70,81 +70,108 @@ function App() {
 
   return (
     <div className="app">
+      {/* Top Navigation */}
       <header className="header">
         <div className="header-brand">
           <div className="header-logo">α</div>
           <div>
             <div className="header-title">Alphabets</div>
-            <div className="header-subtitle">AI-Powered Financial Intelligence</div>
           </div>
         </div>
         <div className="header-status">
           <span className="status-dot"></span>
-          <span>NSE/BSE Markets</span>
+          <span>NSE/BSE</span>
         </div>
       </header>
 
-      <SearchBar onAnalyze={analyzeStock} apiBase={API_BASE} loading={loading} />
-
-      {!loading && !analysisData && !dailyPickData && !error && (
-        <div style={{ textAlign: 'center', marginTop: '16px' }}>
-          <button 
-            onClick={fetchDailyPick} 
-            className="watchlist-add-btn" 
-            style={{ fontSize: '15px', padding: '12px 24px', borderRadius: '24px', backgroundColor: '#6366f1', color: 'white' }}
-          >
-            🔍 Find Today's Best Investment Pick
-          </button>
-        </div>
+      {/* Hero Band */}
+      {!analysisData && !dailyPickData && !loading && (
+        <section className="hero-band">
+          <div className="hero-content">
+            <div className="hero-badge">
+              <span>AI-Powered</span>
+              <span>·</span>
+              <span>Nifty 50 Scanner</span>
+            </div>
+            <h1 className="hero-title">
+              Institutional-grade<br />
+              stock <span className="accent">analysis</span>
+            </h1>
+            <p className="hero-subtitle">
+              AI-curated investment picks backed by fundamental health, technical setups, and news sentiment — the way professionals analyze.
+            </p>
+            <div className="hero-actions">
+              <button onClick={fetchDailyPick} className="btn btn-primary">
+                Find Today's Best Pick
+              </button>
+              <a href="#search" className="btn btn-outline-dark">
+                Search a Stock
+              </a>
+            </div>
+          </div>
+        </section>
       )}
 
+      {/* Search Section */}
+      <section id="search" className="search-section">
+        <SearchBar onAnalyze={analyzeStock} apiBase={API_BASE} loading={loading} />
+      </section>
+
+      {/* Loading State */}
       {loading && (
         <div className="loading-container">
           <div className="loading-spinner"></div>
           <div className="loading-text">
-            {dailyPickData ? `Analyzing ${currentTicker}...` : 'Researching the market...'}
+            {dailyPickData ? `Analyzing ${currentTicker}` : 'Scanning the market'}
           </div>
           <div className="loading-subtext">
             {dailyPickData 
-              ? 'Fetching fundamentals, computing technical indicators, running AI analysis'
-              : 'Scanning Nifty 50 stocks, analyzing fundamentals, technicals, news sentiment, and AI reasoning'}
+              ? 'Fetching fundamentals, computing technicals, running AI analysis'
+              : 'Scanning Nifty 50 stocks, analyzing fundamentals, technicals, news sentiment'}
           </div>
         </div>
       )}
 
+      {/* Error State */}
       {error && (
         <div className="error-message">
-          ⚠️ {error}
+          {error}
         </div>
       )}
 
+      {/* Daily Pick */}
       {dailyPickData && !loading && !analysisData && (
-        <DailyPick 
-          data={dailyPickData} 
-          onAnalyzeStock={analyzeDailyPickStock}
-          className="fade-in"
-        />
+        <div className="content-container">
+          <DailyPick 
+            data={dailyPickData} 
+            onAnalyzeStock={analyzeDailyPickStock}
+            className="fade-in"
+          />
+        </div>
       )}
 
+      {/* Empty State */}
       {!loading && !analysisData && !dailyPickData && !error && (
-        <div className="empty-state">
-          <div className="empty-icon">📊</div>
-          <div className="empty-title">Ready to Analyze</div>
-          <div className="empty-desc">
-            Search for a stock ticker or get today's AI-curated investment pick from the Nifty 50.
+        <div className="content-container">
+          <div className="empty-state">
+            <div className="empty-icon">📊</div>
+            <div className="empty-title">Ready to analyze</div>
+            <div className="empty-desc">
+              Search for any NSE/BSE stock or get today's AI-curated investment pick.
+            </div>
           </div>
         </div>
       )}
 
+      {/* Analysis Dashboard */}
       {analysisData && !loading && (
-        <div>
-          <div style={{ marginBottom: '16px' }}>
+        <div className="content-container">
+          <div style={{ marginBottom: '24px' }}>
             <button 
               onClick={() => { setAnalysisData(null); setCurrentTicker(''); }} 
-              className="watchlist-add-btn"
-              style={{ fontSize: '13px', padding: '8px 16px', borderRadius: '20px' }}
+              className="btn btn-secondary btn-sm"
             >
-              ← Back to Daily Pick
+              ← Back
             </button>
           </div>
           <div className="dashboard-grid fade-in">
@@ -189,9 +216,10 @@ function App() {
         </div>
       )}
 
+      {/* Disclaimer */}
       <div className="disclaimer">
-        <strong>⚠️ Disclaimer:</strong> Alphabets provides AI-generated analysis for educational and informational purposes only.
-        This is NOT certified financial advice. All trading and investment decisions carry risk. Past performance does not guarantee future results.
+        <strong>Disclaimer:</strong> Alphabets provides AI-generated analysis for educational and informational purposes only.
+        This is not certified financial advice. All trading and investment decisions carry risk. Past performance does not guarantee future results.
         Always do your own research and consult a qualified financial advisor before making investment decisions.
       </div>
     </div>

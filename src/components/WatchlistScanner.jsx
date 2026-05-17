@@ -56,24 +56,18 @@ export default function WatchlistScanner({ onSelectTicker, apiBase }) {
   };
 
   return (
-    <div className="glass-card fade-in">
+    <div className="card fade-in">
       <div className="card-header">
-        <div className="card-title">
-          <span className="card-title-icon">👁️</span>
-          Watchlist Scanner
-        </div>
-        <span style={{ fontSize: '12px', color: 'var(--text-dim)' }}>
-          {watchlist.length} stocks
-        </span>
+        <div className="card-title">Watchlist Scanner</div>
+        <span className="card-meta">{watchlist.length} stocks</span>
       </div>
 
-      {/* Add Ticker */}
       <div className="watchlist-input-row">
         <input
           id="watchlist-ticker-input"
-          className="watchlist-input"
+          className="input-pill"
           type="text"
-          placeholder="Add ticker..."
+          placeholder="Add ticker (e.g. RELIANCE.NS)"
           value={newTicker}
           onChange={(e) => setNewTicker(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -81,15 +75,14 @@ export default function WatchlistScanner({ onSelectTicker, apiBase }) {
         />
         <button
           id="watchlist-add-button"
-          className="watchlist-add-btn"
+          className="btn-secondary"
           onClick={addTicker}
         >
           + Add
         </button>
       </div>
 
-      {/* Watchlist Table */}
-      <table className="watchlist-table">
+      <table className="data-table">
         <thead>
           <tr>
             <th>Ticker</th>
@@ -106,19 +99,18 @@ export default function WatchlistScanner({ onSelectTicker, apiBase }) {
               <tr key={ticker}>
                 <td>
                   <span
-                    className="watchlist-ticker"
+                    className="ticker-link"
                     onClick={() => onSelectTicker(ticker)}
                   >
                     {ticker}
                   </span>
                 </td>
-                <td style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '13px' }}>
+                <td className="mono">
                   {result?.price ? `₹${result.price.toFixed(2)}` : '—'}
                 </td>
                 <td>
                   {result?.change != null ? (
-                    <span className={result.change >= 0 ? 'positive' : 'negative'}
-                      style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '13px' }}>
+                    <span className={result.change >= 0 ? 'positive' : 'negative'}>
                       {result.change >= 0 ? '+' : ''}{result.change.toFixed(2)}%
                     </span>
                   ) : '—'}
@@ -132,7 +124,7 @@ export default function WatchlistScanner({ onSelectTicker, apiBase }) {
                 </td>
                 <td>
                   <button
-                    className="watchlist-remove"
+                    className="btn-icon"
                     onClick={() => removeTicker(ticker)}
                     title="Remove"
                   >
@@ -145,14 +137,13 @@ export default function WatchlistScanner({ onSelectTicker, apiBase }) {
         </tbody>
       </table>
 
-      {/* Scan Button */}
       <button
         id="scan-watchlist-button"
-        className="scan-btn"
+        className="btn-primary"
         onClick={scanWatchlist}
         disabled={scanning || watchlist.length === 0}
       >
-        {scanning ? '🔄 Scanning...' : '🔍 Scan Watchlist for Opportunities'}
+        {scanning ? 'Scanning...' : 'Scan Watchlist'}
       </button>
     </div>
   );
