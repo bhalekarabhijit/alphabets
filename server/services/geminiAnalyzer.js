@@ -9,52 +9,93 @@ export function initOpenRouter(apiKey) {
   });
 }
 
+// Free-model chain: OpenRouter delists :free models without warning
+// (owl-alpha, deepseek-v4-flash, qwen3-coder all died this way), so we try
+// each in order instead of hardcoding one. Override with OPENROUTER_MODELS
+// env var (comma-separated). Verified live 2026-09-05: all $0 + JSON mode.
+const DEFAULT_MODELS = [
+  'google/gemma-4-31b-it:free',
+  'nvidia/nemotron-3-super-120b-a12b:free',
+  'openrouter/free', // auto-router across free models, last resort
+];
+
+function getModelChain() {
+  const env = (process.env.OPENROUTER_MODELS || '').split(',').map(s => s.trim()).filter(Boolean);
+  return env.length ? env : DEFAULT_MODELS;
+}
+
+function isModelGone(error) {
+  const msg = (error.message || '').toLowerCase();
+  return error.status === 404 || msg.includes('404') || msg.includes('no endpoints');
+}
+
+async function tryModel(model, prompt, maxTokens, useJsonMode) {
+  const body = {
+    model,
+    messages: [
+      {
+        role: 'system',
+        content: 'You are a JSON-only API. Respond with valid JSON only. No markdown, no explanation, no code blocks.',
+      },
+      { role: 'user', content: prompt },
+    ],
+    temperature: 0.1,
+    max_tokens: maxTokens,
+  };
+  if (useJsonMode) body.response_format = { type: 'json_object' };
+
+  const response = await client.chat.completions.create(body);
+  const text = response.choices[0].message.content;
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (jsonMatch) return JSON.parse(jsonMatch[0]);
+    throw new Error('Failed to parse AI response as JSON');
+  }
+}
+
 async function callModel(prompt, maxTokens = 4096) {
   if (!client) {
     throw new Error('OpenRouter API not initialized. Set OPENROUTER_API_KEY in .env');
   }
 
-  const maxRetries = 3;
+  const models = getModelChain();
   let lastError = null;
 
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      const response = await client.chat.completions.create({
-        model: 'openrouter/owl-alpha',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are a JSON-only API. Respond with valid JSON only. No markdown, no explanation, no code blocks.',
-          },
-          { role: 'user', content: prompt },
-        ],
-        temperature: 0.1,
-        max_tokens: maxTokens,
-        response_format: { type: 'json_object' },
-      });
-
-      const text = response.choices[0].message.content;
-
+  for (const model of models) {
+    // Attempt 1: JSON mode. Attempt 2 (on 429): same model after backoff.
+    // Attempt 3: same model without JSON mode (some free models reject it).
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      const useJsonMode = attempt < 3;
       try {
-        return JSON.parse(text);
-      } catch {
-        const jsonMatch = text.match(/\{[\s\S]*\}/);
-        if (jsonMatch) return JSON.parse(jsonMatch[0]);
-        throw new Error('Failed to parse AI response as JSON');
-      }
-    } catch (error) {
-      lastError = error;
-      if (error.status === 429 || (error.message && error.message.includes('429'))) {
-        const waitMs = attempt * 5000;
-        console.warn(`⏳ OpenRouter rate limited (attempt ${attempt}/${maxRetries}). Waiting ${waitMs}ms...`);
-        await new Promise(r => setTimeout(r, waitMs));
-      } else {
-        throw error;
+        const parsed = await tryModel(model, prompt, maxTokens, useJsonMode);
+        if (model !== models[0]) console.log(`  ↪ AI response via fallback model ${model}`);
+        return parsed;
+      } catch (error) {
+        lastError = error;
+        if (isModelGone(error)) {
+          console.warn(`⚠️  Model ${model} unavailable (${error.message?.slice(0, 80)}). Trying next...`);
+          break; // next model, don't waste retries on a dead endpoint
+        }
+        if (error.status === 429 || (error.message && error.message.includes('429'))) {
+          if (attempt < 2) {
+            const waitMs = 5000;
+            console.warn(`⏳ OpenRouter rate limited on ${model}. Waiting ${waitMs}ms...`);
+            await new Promise(r => setTimeout(r, waitMs));
+            continue;
+          }
+          console.warn(`⏳ ${model} still rate-limited. Trying next model...`);
+          break;
+        }
+        if (error.status === 400 && useJsonMode) continue; // retry without JSON mode
+        throw error; // auth errors etc: fail fast, don't mask them
       }
     }
   }
 
-  throw lastError || new Error('Max retries exceeded');
+  throw lastError || new Error('All AI models unavailable');
 }
 
 export async function analyzeStock(ticker, data) {
