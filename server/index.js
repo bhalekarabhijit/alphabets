@@ -278,13 +278,15 @@ async function computeDailyPick() {
 }
 
 // ---------- TimesFM forecasts (nightly batch, see /forecast/README.md) ----------
-app.get('/api/universes', (req, res) => {
-  res.json({ success: true, data: getUniverseStatus() });
+// NOTE: forecast data is fetched from git disk + GitHub raw at runtime, so
+// new workflow results appear WITHOUT a redeploy (revalidated every 5 min).
+app.get('/api/universes', async (req, res) => {
+  res.json({ success: true, data: await getUniverseStatus() });
 });
 
-app.get('/api/forecast/:ticker', (req, res) => {
+app.get('/api/forecast/:ticker', async (req, res) => {
   const universe = req.query.universe || 'nifty50';
-  const fc = getForecast(req.params.ticker, universe);
+  const fc = await getForecast(req.params.ticker, universe);
   if (!fc) {
     return res.json({
       success: false,
@@ -294,9 +296,9 @@ app.get('/api/forecast/:ticker', (req, res) => {
   res.json({ success: true, data: fc });
 });
 
-app.get('/api/timesfm-picks', (req, res) => {
+app.get('/api/timesfm-picks', async (req, res) => {
   const universe = req.query.universe || 'nifty50';
-  const picks = getTimesfmPicks(universe);
+  const picks = await getTimesfmPicks(universe);
   if (!picks) {
     return res.json({
       success: false,
