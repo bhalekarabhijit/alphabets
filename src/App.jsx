@@ -7,6 +7,7 @@ import TechnicalAnalysis from './components/TechnicalAnalysis';
 import NewsFeed from './components/NewsFeed';
 import WatchlistScanner from './components/WatchlistScanner';
 import TimesFMForecast from './components/TimesFMForecast';
+import Recommendations from './components/Recommendations';
 import DailyPick from './components/DailyPick';
 import './index.css';
 
@@ -18,6 +19,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [currentTicker, setCurrentTicker] = useState('');
+  const [view, setView] = useState('analyze');
   const [darkMode, setDarkMode] = useState(() => {
     try {
       return localStorage.getItem('alphabets_dark') === 'true';
@@ -102,6 +104,20 @@ function App() {
           </div>
         </div>
         <div className="header-right">
+          <nav className="header-nav">
+            <button
+              className={`nav-tab ${view === 'analyze' ? 'active' : ''}`}
+              onClick={() => setView('analyze')}
+            >
+              Analyze
+            </button>
+            <button
+              className={`nav-tab ${view === 'recommendations' ? 'active' : ''}`}
+              onClick={() => setView('recommendations')}
+            >
+              Recommendations
+            </button>
+          </nav>
           <div className="header-status">
             <span className="status-dot"></span>
             <span>NSE/BSE</span>
@@ -116,6 +132,17 @@ function App() {
         </div>
       </header>
 
+      {/* Recommendations Page */}
+      {view === 'recommendations' && (
+        <div className="content-container">
+          <Recommendations
+            apiBase={API_BASE}
+            onAnalyze={(t) => { setView('analyze'); analyzeStock(t); }}
+          />
+        </div>
+      )}
+
+      {view === 'analyze' && (<>
       {/* Hero Band */}
       {!analysisData && !dailyPickData && !loading && (
         <section className="hero-band">
@@ -242,6 +269,7 @@ function App() {
           </div>
         </div>
       )}
+      </>)}
 
       {/* Disclaimer */}
       <div className="disclaimer">

@@ -1,10 +1,22 @@
 name: TimesFM nightly forecasts
 
-# After NSE close (13:30 UTC = 19:00 IST), weekdays only.
+# After NSE close (13:30 UTC = 19:00 IST), weekdays only (Nifty 50).
+# Any universe can be run on demand via "Run workflow" below.
 on:
   schedule:
     - cron: '30 13 * * 1-5'
-  workflow_dispatch: {}  # allow manual runs from the Actions tab
+  workflow_dispatch:
+    inputs:
+      universe:
+        description: 'Index universe to forecast'
+        required: true
+        default: 'nifty50'
+        type: choice
+        options:
+          - nifty50
+          - next50
+          - midcap50
+          - smallcap50
 
 permissions:
   contents: write
@@ -28,12 +40,12 @@ jobs:
           pip install -r forecast/requirements.txt
 
       - name: Run TimesFM batch forecast
-        run: python forecast/forecast_nifty.py
+        run: python forecast/forecast_nifty.py --universe "${{ inputs.universe || 'nifty50' }}"
 
       - name: Commit forecasts
         run: |
           git config user.name "timesfm-bot"
           git config user.email "timesfm-bot@users.noreply.github.com"
-          git add forecast/forecasts.json forecast/picks.json
-          git diff --cached --quiet || git commit -m "📈 TimesFM nightly forecasts $(date -u +%F)"
+          git add forecast/forecasts-*.json forecast/picks-*.json forecast/forecasts.json forecast/picks.json
+          git diff --cached --quiet || git commit -m "📈 TimesFM forecasts (${{ inputs.universe || 'nifty50' }}) $(date -u +%F)"
           git push

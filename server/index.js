@@ -5,7 +5,7 @@ import { getQuote, getQuotesBatch, getFundamentals, getHistoricalData, searchTic
 import { computeIndicators } from './services/technicalAnalysis.js';
 import { initOpenRouter, analyzeStock, deepDailyPickAnalysis } from './services/geminiAnalyzer.js';
 import { cached, TTL } from './services/cache.js';
-import { getForecast, getTimesfmPicks } from './services/timesfmForecast.js';
+import { getForecast, getTimesfmPicks, getUniverseStatus, UNIVERSES } from './services/timesfmForecast.js';
 
 dotenv.config();
 
@@ -278,26 +278,78 @@ async function computeDailyPick() {
 }
 
 // ---------- TimesFM forecasts (nightly batch, see /forecast/README.md) ----------
+app.get('/api/universes', (req, res) => {
+  res.json({ success: true, data: getUniverseStatus() });
+});
+
 app.get('/api/forecast/:ticker', (req, res) => {
-  const fc = getForecast(req.params.ticker);
+  const universe = req.query.universe || 'nifty50';
+  const fc = getForecast(req.params.ticker, universe);
   if (!fc) {
     return res.json({
       success: false,
-      error: 'No TimesFM forecast available for this ticker yet. Forecasts refresh nightly for Nifty 50 stocks.',
+      error: `No TimesFM forecast for this ticker in ${universe} yet. Forecasts refresh nightly; use the Refresh button on the Recommendations page to generate them on demand.`,
     });
   }
   res.json({ success: true, data: fc });
 });
 
 app.get('/api/timesfm-picks', (req, res) => {
-  const picks = getTimesfmPicks();
+  const universe = req.query.universe || 'nifty50';
+  const picks = getTimesfmPicks(universe);
   if (!picks) {
     return res.json({
       success: false,
-      error: 'TimesFM picks not generated yet. They refresh nightly via GitHub Actions.',
+      error: `TimesFM picks for ${universe} not generated yet. Hit Refresh on the Recommendations page (or wait for the nightly run).`,
     });
   }
   res.json({ success: true, data: picks });
+});
+
+// Trigger the TimesFM workflow on demand via the GitHub API.
+// Needs GH_PAT env (fine-grained PAT with Actions: read+write on this repo).
+// Free limits reminder: public repo = unlimited Actions minutes; each run
+// takes ~5-12 min. Don't spam it — forecasts only change after market close.
+const GH_REPO = process.env.GH_REPO || 'bhalekarabhijit/alphabets';
+const GH_WORKFLOW = 'timesfm-nightly.yml';
+
+app.post('/api/forecast/refresh', async (req, res) => {
+  const universe = req.body?.universe || 'nifty50';
+  if (!UNIVERSES.some(u => u.id === universe)) {
+    return res.status(400).json({ success: false, error: `Unknown universe: ${universe}` });
+  }
+  if (!process.env.GH_PAT) {
+    return res.status(503).json({
+      success: false,
+      error: 'Workflow trigger not configured. Set GH_PAT (GitHub PAT with Actions write) on the server to enable one-click refresh.',
+    });
+  }
+  try {
+    const ghRes = await fetch(
+      `https://api.github.com/repos/${GH_REPO}/actions/workflows/${GH_WORKFLOW}/dispatches`,
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/vnd.github+json',
+          Authorization: `Bearer ${process.env.GH_PAT}`,
+          'X-GitHub-Api-Version': '2022-11-28',
+        },
+        body: JSON.stringify({ ref: 'main', inputs: { universe } }),
+      }
+    );
+    if (ghRes.status === 204) {
+      return res.json({
+        success: true,
+        message: `Forecast run started for ${universe}. Fresh picks land in ~10 min (watch the Actions tab or wait for auto-refresh).`,
+        actionsUrl: `https://github.com/${GH_REPO}/actions/workflows/${GH_WORKFLOW}`,
+      });
+    }
+    const errText = await ghRes.text();
+    console.error('GitHub dispatch failed:', ghRes.status, errText.slice(0, 200));
+    return res.status(502).json({ success: false, error: `GitHub rejected the trigger (HTTP ${ghRes.status}). Check GH_PAT scopes.` });
+  } catch (e) {
+    return res.status(502).json({ success: false, error: `Could not reach GitHub: ${e.message}` });
+  }
 });
 
 app.listen(PORT, () => {  console.log(`\n🚀 Alphabets API Server running on http://localhost:${PORT}`);

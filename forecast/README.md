@@ -18,6 +18,38 @@ TimesFM 2.5 (200M) does ~2–5s per series on CPU → all 50 Nifty stocks in
 weekdays at 19:00 IST and commits `forecasts.json` + `picks.json`. The Node
 server just reads the JSON — zero runtime ML cost, zero new infra.
 
+## Universes
+
+`forecast_nifty.py --universe <id>` (also selectable in the workflow's
+"Run workflow" dialog and the app's Refresh button):
+
+| ID | Label | Constituents |
+|---|---|---|
+| `nifty50` | Nifty 50 | Top 50 largecap (nightly cron) |
+| `next50` | Nifty Next 50 | Next 50 largecap |
+| `midcap50` | Nifty Midcap 50 | Top 50 midcap |
+| `smallcap50` | Nifty Smallcap 50 | Top 50 smallcap |
+
+Constituents are fetched live from niftyindices.com CSVs each run (with a
+committed Nifty 50 fallback). Outputs: `forecasts-<id>.json` + `picks-<id>.json`.
+
+## Limits (all free)
+
+- **Repo is public → GitHub Actions minutes are unlimited.** (Private repos
+  would get 2,000 min/month ≈ ~200 runs.)
+- Each universe run takes ~5–12 min (model download cached after first run).
+- `workflow_dispatch` API calls: negligible (5,000/hr PAT limit).
+- Cron minimum frequency is 5 min — we run nightly + on demand, far below it.
+- Practical rule: refresh a universe at most 1–2×/day (forecasts only change
+  after market close anyway).
+
+## One-click refresh from the web UI
+
+`POST /api/forecast/refresh { universe }` dispatches the workflow via the
+GitHub API. Needs `GH_PAT` env on the server (fine-grained PAT, this repo
+only, **Actions: read + write**). Without it the button explains the setup
+instead of failing silently.
+
 ## Files
 
 - `forecast_nifty.py` — fetches 2y daily closes (yfinance) → TimesFM 2.5,

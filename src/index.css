@@ -275,6 +275,38 @@ body {
   gap: var(--spacing-base);
 }
 
+.header-nav {
+  display: flex;
+  gap: var(--spacing-xs);
+  background: var(--surface-soft);
+  border-radius: var(--rounded-pill);
+  padding: 3px;
+}
+
+.nav-tab {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  padding: 7px 16px;
+  border-radius: var(--rounded-pill);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  font-family: 'Inter', sans-serif;
+  white-space: nowrap;
+}
+
+.nav-tab:hover {
+  color: var(--ink);
+}
+
+.nav-tab.active {
+  background: var(--canvas);
+  color: var(--ink);
+  box-shadow: var(--shadow-card);
+}
+
 .theme-toggle {
   background: var(--surface-soft);
   border: 1px solid var(--hairline-soft);
@@ -637,9 +669,152 @@ html.dark .hero-title .accent {
 }
 
 /* ============================================ */
-/*  TimesFM Forecast                              */
+/*  Recommendations Page                          */
 /* ============================================ */
 
+.universe-pills {
+  display: flex;
+  gap: var(--spacing-xs);
+  flex-wrap: wrap;
+  margin-bottom: var(--spacing-base);
+}
+
+.refresh-status {
+  padding: var(--spacing-sm) var(--spacing-base);
+  border-radius: var(--rounded-lg);
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: var(--spacing-base);
+}
+
+.refresh-status.pending {
+  background: rgba(0, 82, 255, 0.08);
+  color: var(--primary);
+  border: 1px solid rgba(0, 82, 255, 0.2);
+}
+
+.refresh-status.ok {
+  background: rgba(5, 177, 105, 0.08);
+  color: var(--semantic-up);
+  border: 1px solid rgba(5, 177, 105, 0.2);
+}
+
+.refresh-status.error {
+  background: rgba(207, 32, 47, 0.08);
+  color: var(--semantic-down);
+  border: 1px solid rgba(207, 32, 47, 0.2);
+}
+
+.picks-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.pick-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-base);
+  padding: var(--spacing-base) var(--spacing-lg);
+  background: var(--surface-soft);
+  border-radius: var(--rounded-lg);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.pick-row:hover {
+  background: var(--surface-strong);
+  transform: translateX(4px);
+}
+
+.pick-rank {
+  font-size: 13px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--primary);
+  min-width: 32px;
+}
+
+.pick-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.pick-symbol {
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--ink);
+}
+
+.pick-name-sm {
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pick-numbers {
+  text-align: right;
+  font-size: 14px;
+  min-width: 90px;
+}
+
+.pick-band {
+  width: 180px;
+  flex-shrink: 0;
+}
+
+.pick-band-bar {
+  position: relative;
+  height: 6px;
+  background: var(--hairline-soft);
+  border-radius: var(--rounded-full);
+}
+
+.pick-band-fill {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  background: var(--primary-glow);
+  border: 1px solid var(--primary);
+  border-radius: var(--rounded-full);
+  opacity: 0.7;
+}
+
+.pick-band-marker {
+  position: absolute;
+  top: -3px;
+  width: 12px;
+  height: 12px;
+  border-radius: var(--rounded-full);
+  background: var(--primary);
+  border: 2px solid var(--canvas);
+  transform: translateX(-50%);
+}
+
+.pick-band-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.pick-cta {
+  color: var(--muted-soft);
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.pick-row:hover .pick-cta {
+  color: var(--primary);
+}
+
+/* ============================================ */
+/*  TimesFM Forecast Card                         */
+/* ============================================ */
 .forecast-hero {
   display: flex;
   gap: var(--spacing-xxl);
