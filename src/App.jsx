@@ -13,6 +13,19 @@ import './index.css';
 
 const API_BASE = (import.meta.env.VITE_API_BASE || 'https://alphabets-ap.onrender.com/api').replace(/\/+$/, '');
 
+// NSE equity hours: 9:15–15:30 IST, Monday–Friday.
+function isNseOpen(now = new Date()) {
+  try {
+    const ist = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+    const day = ist.getDay();
+    if (day === 0 || day === 6) return false;
+    const mins = ist.getHours() * 60 + ist.getMinutes();
+    return mins >= 9 * 60 + 15 && mins < 15 * 60 + 30;
+  } catch {
+    return false;
+  }
+}
+
 function App() {
   const [analysisData, setAnalysisData] = useState(null);
   const [dailyPickData, setDailyPickData] = useState(null);
@@ -32,6 +45,20 @@ function App() {
     document.documentElement.classList.toggle('dark', darkMode);
     try { localStorage.setItem('alphabets_dark', darkMode); } catch {}
   }, [darkMode]);
+
+  // Always land on the very top: no restored/hydrated scroll offset hiding
+  // the sticky header on load.
+  useEffect(() => {
+    try { window.history.scrollRestoration = 'manual'; } catch {}
+    window.scrollTo(0, 0);
+  }, []);
+
+  // Live NSE status (9:15–15:30 IST, Mon–Fri). Ticks every minute.
+  const [marketOpen, setMarketOpen] = useState(() => isNseOpen());
+  useEffect(() => {
+    const t = setInterval(() => setMarketOpen(isNseOpen()), 60000);
+    return () => clearInterval(t);
+  }, []);
 
   const analyzeStock = useCallback(async (ticker) => {
     setLoading(true);
@@ -118,9 +145,9 @@ function App() {
               Recommendations
             </button>
           </nav>
-          <div className="header-status">
-            <span className="status-dot"></span>
-            <span>NSE/BSE</span>
+          <div className="header-status" title="National Stock Exchange hours: 9:15–15:30 IST, Mon–Fri">
+            <span className={`status-dot ${marketOpen ? 'open' : 'closed'}`}></span>
+            <span>{marketOpen ? 'Market Open' : 'NSE/BSE'}</span>
           </div>
           <button
             className="theme-toggle"

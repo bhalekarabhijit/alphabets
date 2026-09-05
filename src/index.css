@@ -106,6 +106,7 @@ html.dark {
 html {
   font-size: 16px;
   scroll-behavior: smooth;
+  scroll-padding-top: 76px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -116,6 +117,7 @@ body {
   color: var(--body);
   line-height: 1.5;
   min-height: 100vh;
+  overflow-x: clip;
 }
 
 #root {
@@ -243,7 +245,9 @@ body {
 
 .app {
   max-width: 100%;
-  overflow-x: hidden;
+  /* NOTE: overflow-x must stay `clip` (not hidden/auto) — any scroll
+     container here breaks the sticky header, hiding it on load/scroll. */
+  overflow-x: clip;
 }
 
 /* ============================================ */
@@ -256,7 +260,11 @@ body {
   justify-content: space-between;
   padding: var(--spacing-base) var(--spacing-xl);
   background: var(--canvas);
+  background: color-mix(in srgb, var(--canvas) 84%, transparent);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--hairline-soft);
+  box-shadow: 0 1px 12px rgba(0, 0, 0, 0.04);
   height: 64px;
   position: sticky;
   top: 0;
@@ -355,10 +363,25 @@ body {
 }
 
 .status-dot {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
   border-radius: var(--rounded-full);
   background: var(--semantic-up);
+}
+
+.status-dot.open {
+  background: var(--semantic-up);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+.status-dot.closed {
+  background: var(--semantic-down);
+  animation: none;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(5, 177, 105, 0.45); }
+  50% { box-shadow: 0 0 0 5px rgba(5, 177, 105, 0); }
 }
 
 /* ============================================ */
@@ -369,24 +392,44 @@ body {
   background: var(--surface-dark);
   padding: var(--spacing-xl) var(--spacing-xl);
   text-align: center;
+  position: relative;
+  overflow: clip;
+}
+
+.hero-band::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 90% at 50% 110%, rgba(0, 82, 255, 0.22), transparent 70%);
+  pointer-events: none;
 }
 
 .hero-content {
   max-width: 600px;
   margin: 0 auto;
+  position: relative;
 }
 
 .hero-title {
-  font-size: clamp(28px, 4vw, 40px);
+  font-size: clamp(30px, 4.5vw, 44px);
   font-weight: 400;
-  line-height: 1.1;
-  letter-spacing: -1px;
+  line-height: 1.08;
+  letter-spacing: -1.2px;
   color: var(--on-dark);
   margin-bottom: var(--spacing-sm);
 }
 
 .hero-title .accent {
-  color: var(--primary);
+  background: linear-gradient(100deg, #4d8dff, #0052ff 60%, #4d8dff);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: accent-shine 6s linear infinite;
+}
+
+@keyframes accent-shine {
+  to { background-position: 200% center; }
 }
 
 .hero-subtitle {
@@ -452,6 +495,13 @@ html.dark .hero-title .accent {
 
 .btn-primary:hover {
   background: var(--primary-active);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 82, 255, 0.28);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: none;
 }
 
 .btn-primary:disabled {
