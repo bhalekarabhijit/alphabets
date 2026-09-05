@@ -14,6 +14,7 @@ export function initOpenRouter(apiKey) {
 // each in order instead of hardcoding one. Override with OPENROUTER_MODELS
 // env var (comma-separated). Verified live 2026-09-05: all $0 + JSON mode.
 const DEFAULT_MODELS = [
+  'minimax/minimax-m3:free',
   'google/gemma-4-31b-it:free',
   'nvidia/nemotron-3-super-120b-a12b:free',
   'openrouter/free', // auto-router across free models, last resort
