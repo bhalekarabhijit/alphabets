@@ -630,6 +630,57 @@ html.dark .hero-title .accent {
   gap: var(--spacing-lg);
 }
 
+.dashboard-full {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-lg);
+}
+
+/* ============================================ */
+/*  TimesFM Forecast                              */
+/* ============================================ */
+
+.forecast-hero {
+  display: flex;
+  gap: var(--spacing-xxl);
+  align-items: flex-end;
+  margin-bottom: var(--spacing-base);
+  flex-wrap: wrap;
+}
+
+.forecast-exp {
+  font-size: 32px;
+  font-weight: 500;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: -0.5px;
+}
+
+.forecast-target {
+  font-size: 22px;
+  font-weight: 500;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--ink);
+}
+
+.forecast-range {
+  font-size: 15px;
+  color: var(--body);
+}
+
+.forecast-chart {
+  width: 100%;
+  height: 140px;
+  margin: var(--spacing-sm) 0;
+  background: var(--surface-soft);
+  border-radius: var(--rounded-lg);
+}
+
+.forecast-note {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
 /* ============================================ */
 /*  Cards                                       */
 /* ============================================ */

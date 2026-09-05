@@ -6,6 +6,7 @@ import FundamentalAnalysis from './components/FundamentalAnalysis';
 import TechnicalAnalysis from './components/TechnicalAnalysis';
 import NewsFeed from './components/NewsFeed';
 import WatchlistScanner from './components/WatchlistScanner';
+import TimesFMForecast from './components/TimesFMForecast';
 import DailyPick from './components/DailyPick';
 import './index.css';
 
@@ -233,6 +234,10 @@ function App() {
                 onSelectTicker={analyzeStock}
                 apiBase={API_BASE}
               />
+            </div>
+
+            <div className="dashboard-full">
+              <TimesFMForecast ticker={currentTicker} apiBase={API_BASE} />
             </div>
           </div>
         </div>

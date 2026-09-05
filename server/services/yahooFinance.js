@@ -2,11 +2,22 @@ import YahooFinance from 'yahoo-finance2';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+import { cached, cacheGet, cacheSet, TTL } from './cache.js';
+import { getNSEQuote, getNSEHistory, getDownstoxFundamentals } from './fallbackProviders.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const yf = new YahooFinance();
+
+// Long-running processes accumulate stale Yahoo cookies/crumbs (known
+// yahoo-finance2 issue #741). Refresh the jar every 10 min to stay healthy.
+setInterval(() => {
+  try {
+    yf._opts?.cookieJar?.removeAllCookiesSync?.();
+    // console.log('🍪 Yahoo cookie jar refreshed');
+  } catch { /* best effort */ }
+}, 10 * 60 * 1000).unref?.();
 
 let nseStocksCache = null;
 
@@ -89,52 +100,115 @@ function isYahooAvailable() {
   return false;
 }
 
+function handleYahooError(error, context) {
+  if (error.message.includes('429') || error.message.includes('Too Many Requests')) {
+    yahooRateLimited = true;
+    yahooCooldownUntil = Date.now() + YAHOO_COOLDOWN_MS;
+    console.warn(`⚠️  Yahoo Finance rate limited (${context}). Cooldown for ${YAHOO_COOLDOWN_MS / 60000}min.`);
+  } else {
+    console.error(`Yahoo Finance error (${context}):`, error.message);
+  }
+}
+
 export async function getQuote(roughTicker) {
   const ticker = formatTicker(roughTicker);
-  
+  return cached(`quote:${ticker}`, TTL.QUOTE, () => fetchQuoteWithFallback(ticker));
+}
+
+// Batched quotes: ONE Yahoo HTTP request for many symbols (quote endpoint
+// accepts an array). Used by daily-pick screening + watchlist scans.
+// This is the single biggest 429 fix: 50 stocks = 1 request, not 50.
+export async function getQuotesBatch(roughTickers) {
+  const tickers = [...new Set(roughTickers.map(formatTicker))];
+  const results = new Map();
+  const missing = [];
+
+  for (const t of tickers) {
+    const hit = cacheGet(`quote:${t}`);
+    if (hit !== undefined) results.set(t, hit);
+    else missing.push(t);
+  }
+
+  if (missing.length && isYahooAvailable()) {
+    try {
+      const quotes = await yf.quote(missing);
+      const list = Array.isArray(quotes) ? quotes : [quotes];
+      for (const q of list) {
+        if (!q || !q.regularMarketPrice) continue;
+        const mapped = mapYahooQuote(q, q.symbol);
+        results.set(mapped.symbol, mapped);
+        cacheSet(`quote:${mapped.symbol}`, mapped, TTL.QUOTE);
+      }
+    } catch (error) {
+      handleYahooError(error, 'batch quote');
+    }
+  }
+
+  // Fill gaps (cache miss + batch miss) via the normal single path,
+  // which itself falls back to NSE then synthetic.
+  for (const t of missing) {
+    if (!results.has(t)) {
+      try {
+        results.set(t, await getQuote(t));
+      } catch (e) {
+        console.error(`Quote failed for ${t}: ${e.message}`);
+      }
+    }
+  }
+
+  return tickers.map((t) => results.get(t)).filter(Boolean);
+}
+
+function mapYahooQuote(quote, ticker) {
+  const price = quote.regularMarketPrice;
+  const prevClose = quote.regularMarketPreviousClose || price;
+  const change = price - prevClose;
+  const changePercent = (change / prevClose) * 100;
+
+  return {
+    symbol: quote.symbol || ticker,
+    name: quote.longName || quote.shortName || ticker,
+    price: Number(price),
+    change: Number(change),
+    changePercent: Number(changePercent),
+    volume: quote.regularMarketVolume || 0,
+    avgVolume: quote.averageDailyVolume10Day || quote.averageDailyVolume3Month || 0,
+    marketCap: quote.marketCap || null,
+    high: quote.regularMarketDayHigh || price,
+    low: quote.regularMarketDayLow || price,
+    open: quote.regularMarketOpen || prevClose,
+    prevClose: Number(prevClose),
+    fiftyTwoWeekHigh: quote.fiftyTwoWeekHigh || null,
+    fiftyTwoWeekLow: quote.fiftyTwoWeekLow || null,
+    exchange: quote.fullExchangeName || quote.exchange || 'NSE',
+    currency: quote.currency || 'INR',
+    marketState: quote.marketState || 'CLOSED',
+    bid: quote.bid || null,
+    ask: quote.ask || null,
+    source: 'yahoo',
+  };
+}
+
+async function fetchQuoteWithFallback(ticker) {
   if (isYahooAvailable()) {
     try {
       const quote = await yf.quote(ticker);
-      
+
       if (!quote || !quote.regularMarketPrice) {
         throw new Error(`No data found for ${ticker}`);
       }
 
-      const price = quote.regularMarketPrice;
-      const prevClose = quote.regularMarketPreviousClose || price;
-      const change = price - prevClose;
-      const changePercent = (change / prevClose) * 100;
-
-      return {
-        symbol: quote.symbol || ticker,
-        name: quote.longName || quote.shortName || ticker,
-        price: Number(price),
-        change: Number(change),
-        changePercent: Number(changePercent),
-        volume: quote.regularMarketVolume || 0,
-        avgVolume: quote.averageDailyVolume10Day || quote.averageDailyVolume3Month || 0,
-        marketCap: quote.marketCap || null,
-        high: quote.regularMarketDayHigh || price,
-        low: quote.regularMarketDayLow || price,
-        open: quote.regularMarketOpen || prevClose,
-        prevClose: Number(prevClose),
-        fiftyTwoWeekHigh: quote.fiftyTwoWeekHigh || null,
-        fiftyTwoWeekLow: quote.fiftyTwoWeekLow || null,
-        exchange: quote.fullExchangeName || quote.exchange || 'NSE',
-        currency: quote.currency || 'INR',
-        marketState: quote.marketState || 'CLOSED',
-        bid: quote.bid || null,
-        ask: quote.ask || null,
-      };
+      return mapYahooQuote(quote, ticker);
     } catch (error) {
-      if (error.message.includes('429') || error.message.includes('Too Many Requests')) {
-        yahooRateLimited = true;
-        yahooCooldownUntil = Date.now() + YAHOO_COOLDOWN_MS;
-        console.warn(`⚠️  Yahoo Finance rate limited. Cooldown for ${YAHOO_COOLDOWN_MS / 60000}min.`);
-      } else {
-        console.error(`Yahoo Finance quote error for ${ticker}:`, error.message);
-      }
+      handleYahooError(error, `quote ${ticker}`);
     }
+  }
+
+  // Fallback 1: NSE direct (official exchange feed, no Yahoo involved)
+  const nseQuote = await getNSEQuote(ticker);
+  if (nseQuote) {
+    console.log(`  ↪ ${ticker} quote via NSE direct fallback`);
+    return nseQuote;
   }
 
   return getSyntheticQuote(ticker);
@@ -164,13 +238,17 @@ function getSyntheticQuote(ticker) {
     marketState: 'REGULAR',
     bid: null,
     ask: null,
+    source: 'synthetic',
     _synthetic: true,
   };
 }
 
 export async function getFundamentals(roughTicker) {
   const ticker = formatTicker(roughTicker);
-  
+  return cached(`fund:${ticker}`, TTL.FUNDAMENTALS, () => fetchFundamentalsWithFallback(ticker));
+}
+
+async function fetchFundamentalsWithFallback(ticker) {
   if (isYahooAvailable()) {
     try {
       const modules = await yf.quoteSummary(ticker, {
@@ -221,16 +299,19 @@ export async function getFundamentals(roughTicker) {
         floatShares: ks.floatShares || null,
         heldPercentInsiders: ks.heldPercentInsiders || null,
         heldPercentInstitutions: ks.heldPercentInstitutions || null,
+        source: 'yahoo',
       };
     } catch (error) {
-      if (error.message.includes('429') || error.message.includes('Too Many Requests')) {
-        yahooRateLimited = true;
-        yahooCooldownUntil = Date.now() + YAHOO_COOLDOWN_MS;
-        console.warn(`⚠️  Yahoo Finance rate limited. Cooldown for ${YAHOO_COOLDOWN_MS / 60000}min.`);
-      } else {
-        console.error(`Yahoo Finance fundamentals error for ${ticker}:`, error.message);
-      }
+      handleYahooError(error, `fundamentals ${ticker}`);
     }
+  }
+
+  // Fallback: Downstox free API (no key). Partial coverage (PE/ROE/PB/
+  // div/mcap/sector) but real data — far better than synthetic.
+  const ds = await getDownstoxFundamentals(ticker);
+  if (ds) {
+    console.log(`  ↪ ${ticker} fundamentals via Downstox fallback`);
+    return ds;
   }
 
   return getSyntheticFundamentals(ticker);
@@ -273,13 +354,18 @@ function getSyntheticFundamentals(ticker) {
     floatShares: 8e8 + seededRandom(ticker+'fs') * 4e9,
     heldPercentInsiders: seededRandom(ticker+'hpi') * 0.3,
     heldPercentInstitutions: 0.2 + seededRandom(ticker+'hpin') * 0.6,
+    source: 'synthetic',
     _synthetic: true,
   };
 }
 
 export async function getHistoricalData(roughTicker, period = '1d') {
   const ticker = formatTicker(roughTicker);
-  
+  const ttl = period === 'intraday' ? TTL.CHART_INTRADAY : TTL.CHART_DAILY;
+  return cached(`hist:${ticker}:${period}`, ttl, () => fetchHistoryWithFallback(ticker, period));
+}
+
+async function fetchHistoryWithFallback(ticker, period) {
   if (isYahooAvailable()) {
     try {
       const now = new Date();
@@ -322,14 +408,16 @@ export async function getHistoricalData(roughTicker, period = '1d') {
         volume: bar.volume || 0,
       }));
     } catch (error) {
-      if (error.message.includes('429') || error.message.includes('Too Many Requests')) {
-        yahooRateLimited = true;
-        yahooCooldownUntil = Date.now() + YAHOO_COOLDOWN_MS;
-        console.warn(`⚠️  Yahoo Finance rate limited. Cooldown for ${YAHOO_COOLDOWN_MS / 60000}min.`);
-      } else {
-        console.error(`Yahoo Finance history error for ${ticker}:`, error.message);
-      }
+      handleYahooError(error, `history ${ticker}`);
     }
+  }
+
+  // Fallback: NSE charting API (daily bars only — used for intraday too,
+  // technicals degrade gracefully to daily).
+  const nseHist = await getNSEHistory(ticker);
+  if (nseHist) {
+    console.log(`  ↪ ${ticker} history via NSE direct fallback`);
+    return nseHist;
   }
 
   return getSyntheticHistorical(ticker, period);
@@ -372,12 +460,16 @@ function getSyntheticHistorical(ticker, period = '1d') {
 
 export async function searchTickers(query) {
   if (!query || query.length < 1) return [];
+  const q = query.trim().toUpperCase();
+  return cached(`search:${q}`, TTL.SEARCH, () => fetchSearchResults(q));
+}
 
-  const localResults = searchLocalStocks(query);
+async function fetchSearchResults(q) {
+  const localResults = searchLocalStocks(q);
 
   if (isYahooAvailable()) {
     try {
-      const results = await yf.autoc(query);
+      const results = await yf.autoc(q);
       
       if (results && results.quotes && results.quotes.length > 0) {
         const yahooResults = results.quotes
@@ -404,13 +496,7 @@ export async function searchTickers(query) {
         return combined.slice(0, 15);
       }
     } catch (error) {
-      if (error.message.includes('429') || error.message.includes('Too Many Requests')) {
-        yahooRateLimited = true;
-        yahooCooldownUntil = Date.now() + YAHOO_COOLDOWN_MS;
-        console.warn(`⚠️  Yahoo Finance rate limited. Cooldown for ${YAHOO_COOLDOWN_MS / 60000}min.`);
-      } else {
-        console.error(`Yahoo Finance search error:`, error.message);
-      }
+      handleYahooError(error, 'search');
     }
   }
 
@@ -419,11 +505,14 @@ export async function searchTickers(query) {
 
 export async function getYahooNews(roughTicker) {
   const ticker = formatTicker(roughTicker);
-  
+  return cached(`news:${ticker}`, TTL.NEWS, () => fetchNewsWithFallback(ticker));
+}
+
+async function fetchNewsWithFallback(ticker) {
   if (isYahooAvailable()) {
     try {
       const results = await yf.search(ticker, { newsCount: 5 });
-      
+
       if (!results || !results.news || results.news.length === 0) {
         return [];
       }
@@ -436,13 +525,7 @@ export async function getYahooNews(roughTicker) {
         image: item.thumbnail?.resolutions?.[0]?.url || null,
       }));
     } catch (error) {
-      if (error.message.includes('429') || error.message.includes('Too Many Requests')) {
-        yahooRateLimited = true;
-        yahooCooldownUntil = Date.now() + YAHOO_COOLDOWN_MS;
-        console.warn(`⚠️  Yahoo Finance rate limited. Cooldown for ${YAHOO_COOLDOWN_MS / 60000}min.`);
-      } else {
-        console.error(`Yahoo Finance news error for ${ticker}:`, error.message);
-      }
+      handleYahooError(error, `news ${ticker}`);
     }
   }
 

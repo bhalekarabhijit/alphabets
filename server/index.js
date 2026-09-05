@@ -1,9 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { getQuote, getFundamentals, getHistoricalData, searchTickers, getYahooNews } from './services/yahooFinance.js';
+import { getQuote, getQuotesBatch, getFundamentals, getHistoricalData, searchTickers, getYahooNews } from './services/yahooFinance.js';
 import { computeIndicators } from './services/technicalAnalysis.js';
 import { initOpenRouter, analyzeStock, deepDailyPickAnalysis } from './services/geminiAnalyzer.js';
+import { cached, TTL } from './services/cache.js';
+import { getForecast, getTimesfmPicks } from './services/timesfmForecast.js';
 
 dotenv.config();
 
@@ -141,15 +143,20 @@ app.get('/api/analyze/:ticker', async (req, res) => {
 
 app.post('/api/watchlist/scan', async (req, res) => {
   try {
-    const { tickers } = req.body;
-    if (!tickers || !Array.isArray(tickers) || tickers.length === 0) {
+    const { tickers: rawTickers } = req.body;
+    if (!rawTickers || !Array.isArray(rawTickers) || rawTickers.length === 0) {
       return res.status(400).json({ success: false, error: 'Provide an array of tickers' });
     }
 
+    const tickers = rawTickers.slice(0, 10).map(t => t.toUpperCase());
+    // One batched request for all prices instead of one per ticker.
+    const quotes = await getQuotesBatch(tickers);
+    const quoteBySymbol = new Map(quotes.map(q => [q.symbol.toUpperCase(), q]));
+
     const results = [];
-    for (const ticker of tickers.slice(0, 10)) {
+    for (const ticker of tickers) {
       try {
-        const quote = await getQuote(ticker);
+        const quote = quoteBySymbol.get(ticker) || await getQuote(ticker);
         const intradayChart = await getHistoricalData(ticker, 'intraday');
         const technicals = computeIndicators(intradayChart);
 
@@ -179,74 +186,8 @@ app.post('/api/watchlist/scan', async (req, res) => {
 
 app.get('/api/daily-pick', async (req, res) => {
   try {
-    console.log('\n🧠 Starting Deep Daily Pick Analysis...');
-    console.log(`   Scanning ${NIFTY_50.length} Nifty 50 stocks...`);
-
-    const candidates = [];
-    const batchSize = 5;
-
-    for (let i = 0; i < NIFTY_50.length; i += batchSize) {
-      const batch = NIFTY_50.slice(i, i + batchSize);
-      console.log(`   Processing batch ${Math.floor(i / batchSize) + 1}...`);
-
-      const batchResults = await Promise.allSettled(
-        batch.map(async (ticker) => {
-          const [quote, fundamentals, dailyChart, news] = await Promise.all([
-            getQuote(ticker),
-            getFundamentals(ticker),
-            getHistoricalData(ticker, '1d'),
-            getYahooNews(ticker),
-          ]);
-
-          const technicals = computeIndicators(dailyChart);
-          const volumeRatio = quote.avgVolume > 0 ? (quote.volume / quote.avgVolume) * 100 : 100;
-          let marketCapFormatted = 'N/A';
-          if (quote.marketCap) {
-            if (quote.marketCap >= 1e12) marketCapFormatted = (quote.marketCap / 1e12).toFixed(2) + 'T';
-            else if (quote.marketCap >= 1e9) marketCapFormatted = (quote.marketCap / 1e9).toFixed(2) + 'B';
-            else marketCapFormatted = (quote.marketCap / 1e6).toFixed(2) + 'M';
-          }
-
-          return {
-            ticker,
-            name: quote.name,
-            price: quote.price,
-            changePercent: quote.changePercent,
-            volumeRatio,
-            marketCap: quote.marketCap,
-            marketCapFormatted,
-            fiftyTwoWeekHigh: quote.fiftyTwoWeekHigh,
-            fiftyTwoWeekLow: quote.fiftyTwoWeekLow,
-            fundamentals,
-            technicals,
-            news: news || [],
-          };
-        })
-      );
-
-      batchResults.forEach((result) => {
-        if (result.status === 'fulfilled') {
-          candidates.push(result.value);
-        }
-      });
-    }
-
-    console.log(`   ✅ Successfully gathered data for ${candidates.length} stocks`);
-    console.log(`   🤖 Sending to Gemini for deep analysis...`);
-
-    const aiDecision = await deepDailyPickAnalysis(candidates);
-
-    console.log(`   ✅ Daily Pick: ${aiDecision.best_ticker}`);
-    console.log(`   📊 Confidence: ${aiDecision.confidence}%\n`);
-
-    res.json({
-      success: true,
-      data: {
-        pick: aiDecision,
-        candidates_analyzed: candidates.length,
-        timestamp: new Date().toISOString(),
-      },
-    });
+    const data = await cached('daily-pick', TTL.DAILY_PICK, computeDailyPick);
+    res.json({ success: true, data });
   } catch (error) {
     console.error('❌ Daily pick analysis failed:', error.message);
     res.status(500).json({
@@ -257,8 +198,109 @@ app.get('/api/daily-pick', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`\n🚀 Alphabets API Server running on http://localhost:${PORT}`);
+// Cheap daily pick: 1 batched quote request screens all 50 stocks,
+// full 4-call analysis runs only on the top 10. ~11 Yahoo requests
+// total instead of ~200. Result cached 12h (it's a *daily* pick).
+async function computeDailyPick() {
+  console.log('\n🧠 Starting Deep Daily Pick Analysis...');
+  console.log(`   Screening ${NIFTY_50.length} Nifty 50 stocks (1 batched request)...`);
+
+  const allQuotes = await getQuotesBatch(NIFTY_50);
+  const realQuotes = allQuotes.filter(q => q && q.source !== 'synthetic' && q.price > 0);
+
+  // Screen: momentum + volume activity + distance from 52w low (value).
+  const screened = (realQuotes.length ? realQuotes : allQuotes)
+    .map(q => {
+      const range = (q.fiftyTwoWeekHigh || 0) - (q.fiftyTwoWeekLow || 0);
+      const offLow = range > 0 ? ((q.price - q.fiftyTwoWeekLow) / range) * 100 : 50;
+      const volRatio = q.avgVolume > 0 ? q.volume / q.avgVolume : 1;
+      const score = (q.changePercent || 0) * 2 + Math.min(volRatio, 3) * 5 + (100 - offLow) * 0.1;
+      return { q, score };
+    })
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 10)
+    .map(s => s.q.symbol);
+
+  console.log(`   ✅ Screened to ${screened.length} candidates, running full analysis...`);
+
+  const candidates = [];
+  for (const ticker of screened) {
+    try {
+      const [quote, fundamentals, dailyChart, news] = await Promise.all([
+        getQuote(ticker),
+        getFundamentals(ticker),
+        getHistoricalData(ticker, '1d'),
+        getYahooNews(ticker),
+      ]);
+
+      const technicals = computeIndicators(dailyChart);
+      const volumeRatio = quote.avgVolume > 0 ? (quote.volume / quote.avgVolume) * 100 : 100;
+      let marketCapFormatted = 'N/A';
+      if (quote.marketCap) {
+        if (quote.marketCap >= 1e12) marketCapFormatted = (quote.marketCap / 1e12).toFixed(2) + 'T';
+        else if (quote.marketCap >= 1e9) marketCapFormatted = (quote.marketCap / 1e9).toFixed(2) + 'B';
+        else marketCapFormatted = (quote.marketCap / 1e6).toFixed(2) + 'M';
+      }
+
+      candidates.push({
+        ticker,
+        name: quote.name,
+        price: quote.price,
+        changePercent: quote.changePercent,
+        volumeRatio,
+        marketCap: quote.marketCap,
+        marketCapFormatted,
+        fiftyTwoWeekHigh: quote.fiftyTwoWeekHigh,
+        fiftyTwoWeekLow: quote.fiftyTwoWeekLow,
+        fundamentals,
+        technicals,
+        news: news || [],
+      });
+    } catch (e) {
+      console.warn(`   ⚠️ Skipping ${ticker}: ${e.message}`);
+    }
+  }
+
+  console.log(`   ✅ Full data for ${candidates.length} candidates`);
+  console.log(`   🤖 Sending to AI for deep analysis...`);
+
+  const aiDecision = await deepDailyPickAnalysis(candidates);
+
+  console.log(`   ✅ Daily Pick: ${aiDecision.best_ticker}`);
+  console.log(`   📊 Confidence: ${aiDecision.confidence}%\n`);
+
+  return {
+    pick: aiDecision,
+    candidates_analyzed: candidates.length,
+    screened_from: NIFTY_50.length,
+    timestamp: new Date().toISOString(),
+  };
+}
+
+// ---------- TimesFM forecasts (nightly batch, see /forecast/README.md) ----------
+app.get('/api/forecast/:ticker', (req, res) => {
+  const fc = getForecast(req.params.ticker);
+  if (!fc) {
+    return res.json({
+      success: false,
+      error: 'No TimesFM forecast available for this ticker yet. Forecasts refresh nightly for Nifty 50 stocks.',
+    });
+  }
+  res.json({ success: true, data: fc });
+});
+
+app.get('/api/timesfm-picks', (req, res) => {
+  const picks = getTimesfmPicks();
+  if (!picks) {
+    return res.json({
+      success: false,
+      error: 'TimesFM picks not generated yet. They refresh nightly via GitHub Actions.',
+    });
+  }
+  res.json({ success: true, data: picks });
+});
+
+app.listen(PORT, () => {  console.log(`\n🚀 Alphabets API Server running on http://localhost:${PORT}`);
   console.log(`   Market Focus: India (NSE/BSE)`);
   console.log(`   Daily Pick: Scans ${NIFTY_50.length} Nifty 50 stocks`);
   console.log(`\n   Try: http://localhost:${PORT}/api/analyze/RELIANCE.NS\n`);
