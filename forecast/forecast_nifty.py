@@ -112,7 +112,7 @@ def fetch_closes(ticker: str) -> pd.Series | None:
 
 
 def main() -> int:
-    import timesfm
+    from timesfm import TimesFM_2p5_200M_torch, ForecastConfig
 
     ap = argparse.ArgumentParser()
     ap.add_argument("--universe", default="nifty50", choices=list(UNIVERSES))
@@ -131,16 +131,16 @@ def main() -> int:
         members = [(t, t.replace(".NS", "")) for t in FALLBACK_NIFTY50]
         print(f"Using fallback list ({len(members)}).")
 
-    print(f"Loading {MODEL_ID} (CPU, this downloads ~800MB once)...")
-    tfm = timesfm.TimesFm(
-        hparams=timesfm.TimesFmHparams(
-            backend="cpu",
-            per_core_batch_size=8,
-            horizon_len=HORIZON,
-        ),
-        checkpoint=timesfm.TimesFmCheckpoint(
-            huggingface_repo_id=MODEL_ID),
-    )
+    print(f"Loading {MODEL_ID} (CPU, ~800MB download once)...")
+    # torch_compile=False: skips the slow inductor compile; plain eager is
+    # faster overall for a 50-series batch on CPU.
+    model = TimesFM_2p5_200M_torch.from_pretrained(
+        MODEL_ID, torch_compile=False)
+    model.compile(ForecastConfig(
+        max_context=MAX_CONTEXT,
+        max_horizon=HORIZON,
+        per_core_batch_size=8,
+    ))
     print("Model ready.\n")
 
     forecasts: dict = {}
@@ -157,9 +157,10 @@ def main() -> int:
             last_close = float(context[-1])
             last_date = closes.index[-1].date().isoformat()
 
-            point, quantile = tfm.forecast(horizon=HORIZON, inputs=[context])
-            p10 = np.asarray(quantile[0][:, 0], dtype=float)  # 10th pct
-            p50 = np.asarray(point[0], dtype=float)           # mean
+            point, quantile = model.forecast(HORIZON, [context])
+            # quantile cols = [median, q10..q90]: col 0 is NOT p10.
+            p10 = np.asarray(quantile[0][:, 1], dtype=float)   # 10th pct
+            p50 = np.asarray(point[0], dtype=float)            # mean
             p90 = np.asarray(quantile[0][:, -1], dtype=float)  # 90th pct
 
             future_dates = pd.bdate_range(

@@ -1,6 +1,8 @@
 # timesfm[torch] pulls torch; the workflow pre-installs the smaller CPU-only
 # torch wheel first so pip reuses it instead of downloading the CUDA build.
-timesfm[torch]>=2.0
+# Pinned to 2.x: v3 rewrote the Python API (TimesFm class removed), and the
+# 500M v2.0 checkpoint needs 16GB RAM while v2.5 (200M) fits GHA runners.
+timesfm[torch]>=2.0,<3
 yfinance>=0.2.40
 pandas>=2.0
 numpy>=1.26
