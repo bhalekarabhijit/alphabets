@@ -1267,6 +1267,30 @@ html.dark .hero-title .accent {
   margin-top: var(--spacing-xs);
 }
 
+/* Quant model agreement verdict */
+.quant-verdict {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-xs);
+  font-size: 13px;
+  line-height: 1.5;
+  padding: var(--spacing-sm) var(--spacing-base);
+  border-radius: var(--rounded-lg);
+  margin-top: var(--spacing-sm);
+}
+
+.quant-verdict.agree {
+  background: rgba(5, 177, 105, 0.08);
+  color: var(--semantic-up);
+  border: 1px solid rgba(5, 177, 105, 0.2);
+}
+
+.quant-verdict.disagree {
+  background: rgba(244, 176, 0, 0.08);
+  color: var(--accent-yellow);
+  border: 1px solid rgba(244, 176, 0, 0.25);
+}
+
 /* Scores */
 .section-subtitle {
   font-size: 12px;

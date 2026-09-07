@@ -74,6 +74,16 @@ export default function AIRecommendation({ analysis, quote, className = '' }) {
         </div>
       )}
 
+      {analysis.quant_agreement && analysis.quant_agreement !== 'NO_DATA' && (
+        <div className={`quant-verdict ${analysis.quant_agreement === 'AGREE' ? 'agree' : 'disagree'}`}>
+          <span>{analysis.quant_agreement === 'AGREE' ? '✓' : '✕'}</span>
+          <span>
+            Quant model {analysis.quant_agreement === 'AGREE' ? 'agrees' : 'overruled'}
+            {analysis.quant_note ? ` — ${analysis.quant_note}` : ''}
+          </span>
+        </div>
+      )}
+
       <div className="section-subtitle">Analysis Scores</div>
       <div className="ai-scores">
         {[

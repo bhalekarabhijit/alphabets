@@ -96,14 +96,15 @@ app.get('/api/analyze/:ticker', async (req, res) => {
     const ticker = req.params.ticker;
     console.log(`\n🔍 Analyzing ${ticker} for Investment...`);
 
-    const [quote, fundamentals, dailyChart, news] = await Promise.all([
+    const [quote, fundamentals, dailyChart, news, timesfm] = await Promise.all([
       getQuote(ticker),
       getFundamentals(ticker),
       getHistoricalData(ticker, '1d'),
       getYahooNews(ticker),
+      getForecast(ticker).catch(() => null),
     ]);
 
-    console.log(`  ✅ Market & News Data fetched`);
+    console.log(`  ✅ Market & News Data fetched${timesfm ? ' (incl. TimesFM quant)' : ''}`);
 
     const dailyTechnicals = computeIndicators(dailyChart);
     console.log(`  ✅ Technical Indicators (Daily) complete`);
@@ -113,6 +114,7 @@ app.get('/api/analyze/:ticker', async (req, res) => {
       fundamentals,
       dailyTechnicals,
       news,
+      timesfm,
     });
     console.log(`  ✅ AI Investment Analysis complete`);
 
@@ -132,6 +134,7 @@ app.get('/api/analyze/:ticker', async (req, res) => {
         chartIndicators: dailyTechnicals.series,
         news,
         aiAnalysis,
+        timesfm: timesfm || null,
       },
       synthetic: isSynthetic,
     });
@@ -226,11 +229,12 @@ async function computeDailyPick() {
   const candidates = [];
   for (const ticker of screened) {
     try {
-      const [quote, fundamentals, dailyChart, news] = await Promise.all([
+      const [quote, fundamentals, dailyChart, news, timesfm] = await Promise.all([
         getQuote(ticker),
         getFundamentals(ticker),
         getHistoricalData(ticker, '1d'),
         getYahooNews(ticker),
+        getForecast(ticker).catch(() => null),
       ]);
 
       const technicals = computeIndicators(dailyChart);
@@ -255,6 +259,7 @@ async function computeDailyPick() {
         fundamentals,
         technicals,
         news: news || [],
+        timesfm: timesfm || null,
       });
     } catch (e) {
       console.warn(`   ⚠️ Skipping ${ticker}: ${e.message}`);

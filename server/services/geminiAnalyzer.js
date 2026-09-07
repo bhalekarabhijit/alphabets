@@ -100,8 +100,8 @@ async function callModel(prompt, maxTokens = 4096) {
 }
 
 export async function analyzeStock(ticker, data) {
-  const { quote, fundamentals, dailyTechnicals, news } = data;
-  const prompt = buildInvestmentPrompt(ticker, quote, fundamentals, dailyTechnicals, news);
+  const { quote, fundamentals, dailyTechnicals, news, timesfm } = data;
+  const prompt = buildInvestmentPrompt(ticker, quote, fundamentals, dailyTechnicals, news, timesfm);
 
   try {
     return await callModel(prompt);
@@ -111,7 +111,21 @@ export async function analyzeStock(ticker, data) {
   }
 }
 
-function buildInvestmentPrompt(ticker, quote, fundamentals, dailyTechnicals, news) {
+function formatTimesfmSection(timesfm, currentPrice) {
+  if (!timesfm || timesfm.expected_return_pct === undefined) {
+    return 'No quantitative forecast available — judge purely on fundamentals, technicals, and news.';
+  }
+  const gen = timesfm.generated_at
+    ? new Date(timesfm.generated_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })
+    : 'recently';
+  return `Google TimesFM 2.5 time-series model, 20-trading-day horizon (generated ${gen}):
+- Expected move: ${timesfm.expected_return_pct >= 0 ? '+' : ''}${timesfm.expected_return_pct?.toFixed(1)}%
+- Implied target: ₹${timesfm.target_20d?.toFixed(2)} (vs current ₹${currentPrice?.toFixed(2)})
+- Uncertainty band (p10–p90): ₹${timesfm.p10?.[timesfm.p10.length - 1]?.toFixed(2)} to ₹${timesfm.p90?.[timesfm.p90.length - 1]?.toFixed(2)}
+- IMPORTANT: this model sees ONLY past closing prices. It knows nothing about earnings, news, valuations, or market regime. Treat it as a statistical drift prior, never as a verdict.`;
+}
+
+function buildInvestmentPrompt(ticker, quote, fundamentals, dailyTechnicals, news, timesfm) {
   const newsContext = news && news.length > 0
     ? news.map(n => `- ${n.headline}`).join('\n')
     : 'No recent news available.';
@@ -181,6 +195,9 @@ Current Price: ₹${currentPrice?.toFixed(2) || 'N/A'} (Indian Rupees - INR)
 === RECENT NEWS ===
 ${newsContext}
 
+=== QUANTITATIVE DRIFT MODEL ===
+${formatTimesfmSection(timesfm, currentPrice)}
+
 === YOUR ANALYSIS FRAMEWORK ===
 
 1. FUNDAMENTAL HEALTH (25% weight)
@@ -209,6 +226,12 @@ ${newsContext}
    - Is the stock in a sector that's currently favored?
    - Is the broader market trend supportive?
 
+6. QUANT CROSS-CHECK (gating evidence, not a vote)
+   - If fundamentals + technicals + news AGREE with the quant direction, raise confidence by ~10 points.
+   - If fundamentals or news CONTRADICT the quant direction (e.g. model says +5% but earnings missed / fraud news / absurd PE), fundamentals+news OVERRULE the model: keep your verdict, set quant_agreement to DISAGREE, explain in quant_note, and LOWER confidence.
+   - A wide quant band (p10–p90) means high uncertainty: demand stronger fundamental/technical evidence before a BUY.
+   - If no quant forecast exists, set quant_agreement to NO_DATA and judge without it.
+
 === OUTPUT REQUIREMENTS ===
 
 Respond with ONLY this exact JSON structure. CRITICAL RULES:
@@ -236,6 +259,8 @@ Respond with ONLY this exact JSON structure. CRITICAL RULES:
   },
   "key_factors": ["<factor 1>", "<factor 2>", "<factor 3>"],
   "risks": ["<risk 1>", "<risk 2>", "<risk 3>"],
+  "quant_agreement": "AGREE" | "DISAGREE" | "NO_DATA",
+  "quant_note": "<one line: how the TimesFM quant forecast factored into your verdict>",
   "detailed_analysis": "<2-3 paragraphs explaining the full investment thesis combining fundamentals, technicals, and news>",
   "math_analysis": {
     "pe_vs_sector": "<analysis of whether P/E is cheap/expensive vs typical sector P/E>",
@@ -311,8 +336,11 @@ TECHNICAL INDICATORS (Daily):
 RECENT NEWS:
 ${newsSummary}
 
-52-WEEK RANGE: ₹${c.fiftyTwoWeekLow?.toFixed(2) || 'N/A'} - ₹${c.fiftyTwoWeekHigh?.toFixed(2) || 'N/A'}
+ 52-WEEK RANGE: ₹${c.fiftyTwoWeekLow?.toFixed(2) || 'N/A'} - ₹${c.fiftyTwoWeekHigh?.toFixed(2) || 'N/A'}
 VOLUME vs AVG: ${c.volumeRatio?.toFixed(0) || 'N/A'}%
+TIMESFM 20D QUANT: ${c.timesfm && c.timesfm.expected_return_pct !== undefined
+    ? `${c.timesfm.expected_return_pct >= 0 ? '+' : ''}${c.timesfm.expected_return_pct.toFixed(1)}% (target ₹${c.timesfm.target_20d?.toFixed(2)}, band ₹${c.timesfm.p10?.[c.timesfm.p10.length - 1]?.toFixed(2)}–₹${c.timesfm.p90?.[c.timesfm.p90.length - 1]?.toFixed(2)}) — price-history-only statistical drift, blind to news/earnings`
+    : 'no quant data — judge on fundamentals/technicals/news only'}
 `;
   }).join('\n');
 
@@ -347,6 +375,11 @@ ANALYSIS FRAMEWORK (apply to each candidate):
 5. MARKET CONTEXT (15% weight)
    - Is the stock in a sector that's currently favored?
    - Is the broader market trend supportive?
+
+6. QUANT PRIOR (tie-breaker, not a verdict)
+   - The TIMESFM 20D line is a price-history-only statistical drift estimate.
+   - Prefer candidates where quant direction agrees with fundamentals/news, but a strong fundamental+news case OVERRULES a weak or contradictory quant signal.
+   - Mention the quant signal's role in why_this_stock in one clause.
 
 CANDIDATES TO ANALYZE:
 
