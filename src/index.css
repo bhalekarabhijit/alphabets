@@ -721,7 +721,6 @@ html.dark .hero-title .accent {
 /* ============================================ */
 /*  Recommendations Page                          */
 /* ============================================ */
-
 .universe-pills {
   display: flex;
   gap: var(--spacing-xs);
@@ -860,6 +859,39 @@ html.dark .hero-title .accent {
 
 .pick-row:hover .pick-cta {
   color: var(--primary);
+}
+
+/* ============================================ */
+/*  Straddle Screener                             */
+/* ============================================ */
+
+.straddle-explainer {
+  font-size: 13px;
+  color: var(--body);
+  line-height: 1.6;
+  padding: var(--spacing-base) var(--spacing-lg);
+  background: var(--surface-soft);
+  border-radius: var(--rounded-lg);
+  border-left: 3px solid var(--primary);
+  margin-bottom: var(--spacing-lg);
+}
+
+.straddle-explainer strong {
+  color: var(--ink);
+}
+
+.table-scroll {
+  overflow-x: auto;
+  margin: 0 calc(-1 * var(--spacing-xl));
+  padding: 0 var(--spacing-xl);
+}
+
+.straddle-table {
+  min-width: 760px;
+}
+
+.straddle-table td {
+  white-space: nowrap;
 }
 
 /* ============================================ */

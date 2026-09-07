@@ -6,6 +6,7 @@ import { computeIndicators } from './services/technicalAnalysis.js';
 import { initOpenRouter, analyzeStock, deepDailyPickAnalysis } from './services/geminiAnalyzer.js';
 import { cached, TTL } from './services/cache.js';
 import { getForecast, getTimesfmPicks, getUniverseStatus, UNIVERSES } from './services/timesfmForecast.js';
+import { screenStraddles } from './services/straddle.js';
 
 dotenv.config();
 
@@ -311,6 +312,17 @@ app.get('/api/timesfm-picks', async (req, res) => {
     });
   }
   res.json({ success: true, data: picks });
+});
+
+// ---------- Long-straddle screener (NSE option chains + TimesFM/ATR edge) ----------
+app.get('/api/straddle', async (req, res) => {
+  try {
+    const data = await screenStraddles();
+    res.json({ success: true, data });
+  } catch (error) {
+    console.error('❌ Straddle screen failed:', error.message);
+    res.status(500).json({ success: false, error: error.message });
+  }
 });
 
 // Trigger the TimesFM workflow on demand via the GitHub API.

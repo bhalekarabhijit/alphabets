@@ -73,6 +73,7 @@ function searchLocalStocks(query) {
 
 function formatTicker(ticker) {
   let t = ticker.toUpperCase().trim();
+  if (t.startsWith('^')) return t; // index symbols like ^NSEI pass through
   if (!t.includes('.') && !t.includes('-')) {
     return `${t}.NS`;
   }
