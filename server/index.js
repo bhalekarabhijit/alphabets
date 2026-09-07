@@ -7,6 +7,7 @@ import { initOpenRouter, analyzeStock, deepDailyPickAnalysis } from './services/
 import { cached, TTL } from './services/cache.js';
 import { getForecast, getTimesfmPicks, getUniverseStatus, UNIVERSES } from './services/timesfmForecast.js';
 import { screenStraddles } from './services/straddle.js';
+import { loadRepoJson } from './services/repoJson.js';
 
 dotenv.config();
 
@@ -323,6 +324,15 @@ app.get('/api/straddle', async (req, res) => {
     console.error('❌ Straddle screen failed:', error.message);
     res.status(500).json({ success: false, error: error.message });
   }
+});
+
+// Paper-trade track record (committed daily by the papertrade workflow).
+app.get('/api/paper-trades', async (req, res) => {
+  const data = await loadRepoJson('papertrade/paper-trades.json');
+  if (!data) {
+    return res.json({ success: false, error: 'No paper trades yet. The tracker runs weekdays after market close.' });
+  }
+  res.json({ success: true, data });
 });
 
 // Trigger the TimesFM workflow on demand via the GitHub API.

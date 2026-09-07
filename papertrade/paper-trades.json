@@ -1,0 +1,55 @@
+{
+  "open": [
+    {
+      "status": "open",
+      "underlying": "TCS",
+      "strike": 2300,
+      "expiry": "2026-09-29",
+      "entryDate": "2026-09-07",
+      "entryCost": 111.9,
+      "entrySpot": 2304,
+      "entryEdge": 1.55,
+      "entryBreakevenPct": 4.86,
+      "lastValue": 111.9,
+      "lastSpot": 2304,
+      "lastChecked": "2026-09-07"
+    },
+    {
+      "status": "open",
+      "underlying": "AXISBANK",
+      "strike": 1280,
+      "expiry": "2026-09-29",
+      "entryDate": "2026-09-07",
+      "entryCost": 42.25,
+      "entrySpot": 1273,
+      "entryEdge": 1.55,
+      "entryBreakevenPct": 3.32,
+      "lastValue": 42.25,
+      "lastSpot": 1273,
+      "lastChecked": "2026-09-07"
+    },
+    {
+      "status": "open",
+      "underlying": "HDFCBANK",
+      "strike": 710,
+      "expiry": "2026-09-29",
+      "entryDate": "2026-09-07",
+      "entryCost": 25.8,
+      "entrySpot": 712.1,
+      "entryEdge": 1.51,
+      "entryBreakevenPct": 3.62,
+      "lastValue": 25.8,
+      "lastSpot": 712.1,
+      "lastChecked": "2026-09-07"
+    }
+  ],
+  "closed": [],
+  "stats": {
+    "updated": "2026-09-07",
+    "openCount": 3,
+    "closedCount": 0,
+    "winRate": null,
+    "avgPnlPct": null,
+    "totalPnlPct": 0
+  }
+}

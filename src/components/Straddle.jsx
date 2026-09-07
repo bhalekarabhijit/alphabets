@@ -6,6 +6,7 @@ import { useState, useEffect, useCallback } from 'react';
 export default function Straddle({ apiBase, className = '' }) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [paper, setPaper] = useState(null);
 
   const load = useCallback(async () => {
     try {
@@ -20,6 +21,13 @@ export default function Straddle({ apiBase, className = '' }) {
     const t = setInterval(load, 5 * 60 * 1000); // chains cached 10 min server-side
     return () => clearInterval(t);
   }, [load]);
+
+  useEffect(() => {
+    fetch(`${apiBase}/paper-trades`)
+      .then(r => r.json())
+      .then(j => { if (j.success) setPaper(j.data); })
+      .catch(() => {});
+  }, [apiBase]);
 
   const rows = data?.rows || [];
   const genLabel = data?.generated_at
@@ -99,6 +107,91 @@ export default function Straddle({ apiBase, className = '' }) {
         Model σ = TimesFM 20-day band ÷ 2.56, time-scaled to expiry. Real σ = 20-day
         realized volatility, time-scaled. Market σ = breakeven ÷ 0.8. Educational
         screener — options lose money fast; this is not financial advice.
+      </div>
+
+      <PaperTrackRecord paper={paper} />
+    </div>
+  );
+}
+
+function PaperTrackRecord({ paper }) {
+  if (!paper) return null;
+  const s = paper.stats || {};
+  const open = paper.open || [];
+  const closed = (paper.closed || []).slice(-5).reverse();
+
+  return (
+    <div className="paper-panel">
+      <div className="section-subtitle">Paper track record 🤖</div>
+      <div className="paper-stats">
+        <div className="paper-stat">
+          <div className="meta-label">Open</div>
+          <div className="mono">{s.openCount ?? open.length}</div>
+        </div>
+        <div className="paper-stat">
+          <div className="meta-label">Closed</div>
+          <div className="mono">{s.closedCount ?? 0}</div>
+        </div>
+        <div className="paper-stat">
+          <div className="meta-label">Win rate</div>
+          <div className="mono">{s.winRate != null ? `${s.winRate}%` : '—'}</div>
+        </div>
+        <div className="paper-stat">
+          <div className="meta-label">Avg P&L</div>
+          <div className={`mono ${s.avgPnlPct > 0 ? 'positive' : s.avgPnlPct < 0 ? 'negative' : ''}`}>
+            {s.avgPnlPct != null ? `${s.avgPnlPct > 0 ? '+' : ''}${s.avgPnlPct}%` : '—'}
+          </div>
+        </div>
+      </div>
+
+      {open.length > 0 && (
+        <>
+          <div className="meta-label" style={{ margin: '12px 0 6px' }}>Open paper positions</div>
+          <div className="picks-list">
+            {open.map((p, i) => {
+              const live = p.lastValue != null ? ((p.lastValue - p.entryCost) / p.entryCost) * 100 : null;
+              return (
+                <div key={i} className="pick-row" style={{ cursor: 'default' }}>
+                  <div className="pick-info">
+                    <div className="pick-symbol">{p.underlying} {p.strike}</div>
+                    <div className="pick-name-sm">exp {p.expiry} · in {p.entryDate} @ ₹{p.entryCost}</div>
+                  </div>
+                  <div className="pick-numbers">
+                    <div className={`mono ${live > 0 ? 'positive' : live < 0 ? 'negative' : ''}`}>
+                      {live != null ? `${live >= 0 ? '+' : ''}${live.toFixed(1)}%` : '—'}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </>
+      )}
+
+      {closed.length > 0 && (
+        <>
+          <div className="meta-label" style={{ margin: '12px 0 6px' }}>Recently closed</div>
+          <div className="picks-list">
+            {closed.map((p, i) => (
+              <div key={i} className="pick-row" style={{ cursor: 'default' }}>
+                <div className="pick-info">
+                  <div className="pick-symbol">{p.underlying} {p.strike}</div>
+                  <div className="pick-name-sm">{p.exitReason} · {p.exitDate}</div>
+                </div>
+                <div className="pick-numbers">
+                  <div className={`mono ${p.pnlPct > 0 ? 'positive' : 'negative'}`}>
+                    {p.pnlPct >= 0 ? '+' : ''}{p.pnlPct?.toFixed(1)}%
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
+      <div className="forecast-note" style={{ marginTop: '12px' }}>
+        Paper trades run by a daily GitHub job after close: enters EDGE ≥ 1.3 (max 3/day),
+        exits at +50% / −50% / 3 days to expiry. No real money. Updated {s.updated || '—'}.
       </div>
     </div>
   );

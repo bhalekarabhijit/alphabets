@@ -895,6 +895,35 @@ html.dark .hero-title .accent {
 }
 
 /* ============================================ */
+/*  Paper track record                            */
+/* ============================================ */
+
+.paper-panel {
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--hairline-soft);
+}
+
+.paper-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+}
+
+.paper-stat {
+  text-align: center;
+  padding: var(--spacing-sm);
+  background: var(--surface-soft);
+  border-radius: var(--rounded-lg);
+}
+
+.paper-stat .mono {
+  font-size: 16px;
+  color: var(--ink);
+}
+
+/* ============================================ */
 /*  TimesFM Forecast Card                         */
 /* ============================================ */
 .forecast-hero {
