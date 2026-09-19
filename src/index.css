@@ -862,6 +862,45 @@ html.dark .hero-title .accent {
 }
 
 /* ============================================ */
+/*  Portfolio                                   */
+/* ============================================ */
+
+.holding-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-sm);
+}
+
+.holding-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 6px 6px 14px;
+  background: var(--surface-soft);
+  border: 1px solid var(--hairline-soft);
+  border-radius: var(--rounded-pill);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--primary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.holding-chip:hover {
+  background: var(--surface-strong);
+  border-color: var(--primary);
+}
+
+.brief-result {
+  margin-top: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+/* ============================================ */
 /*  Straddle Screener                             */
 /* ============================================ */
 

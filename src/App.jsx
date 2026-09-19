@@ -9,6 +9,7 @@ import WatchlistScanner from './components/WatchlistScanner';
 import TimesFMForecast from './components/TimesFMForecast';
 import Recommendations from './components/Recommendations';
 import Straddle from './components/Straddle';
+import Portfolio from './components/Portfolio';
 import DailyPick from './components/DailyPick';
 import './index.css';
 
@@ -151,6 +152,12 @@ function App() {
             >
               Straddle
             </button>
+            <button
+              className={`nav-tab ${view === 'portfolio' ? 'active' : ''}`}
+              onClick={() => setView('portfolio')}
+            >
+              Portfolio
+            </button>
           </nav>
           <div className="header-status" title="National Stock Exchange hours: 9:15–15:30 IST, Mon–Fri">
             <span className={`status-dot ${marketOpen ? 'open' : 'closed'}`}></span>
@@ -180,6 +187,16 @@ function App() {
       {view === 'straddle' && (
         <div className="content-container">
           <Straddle apiBase={API_BASE} />
+        </div>
+      )}
+
+      {/* Portfolio Page */}
+      {view === 'portfolio' && (
+        <div className="content-container">
+          <Portfolio
+            apiBase={API_BASE}
+            onAnalyze={(t) => { setView('analyze'); analyzeStock(t); }}
+          />
         </div>
       )}
 

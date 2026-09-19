@@ -289,8 +289,36 @@ Respond with ONLY this exact JSON structure. CRITICAL RULES:
 }`;
 }
 
-export async function researchBestPick(candidates) {
-  const candidatesText = candidates.map(c => 
+export async function portfolioBrief(items) {
+  const lines = items.map(it =>
+    `- ${it.ticker} (${it.name}): ₹${it.price?.toFixed(2)} (${it.changePct >= 0 ? '+' : ''}${it.changePct?.toFixed(1)}%), ` +
+    `RSI ${it.rsi ?? 'n/a'}, signal ${it.signal}, quant ${it.quantDirection} ${it.quantMagnitude != null ? (it.quantMagnitude >= 0 ? '+' : '') + it.quantMagnitude.toFixed(1) + '%' : ''}, ` +
+    `PE ${it.pe ?? 'n/a'}, 52w position ${it.offLowPct != null ? it.offLowPct.toFixed(0) + '% from low' : 'n/a'}`
+  ).join('\n');
+
+  const prompt = `You are a portfolio manager's morning briefing assistant for Indian equities (NSE/BSE).
+Holdings data (compact, precomputed — do not invent other numbers):
+
+${lines}
+
+Write a tight morning brief as JSON ONLY:
+{
+  "summary": "<2-3 sentences: portfolio posture in plain words>",
+  "per_ticker": [{"ticker": "<sym>", "stance": "HOLD" | "TRIM" | "ADD" | "WATCH", "one_liner": "<why, referencing the numbers above>"}],
+  "actions": ["<top 1-3 concrete actions, most important first>"],
+  "risks": ["<1-3 portfolio-level risks: concentration, correlated names, overbought cluster>"]
+}
+Rules: stances must follow the numbers (overbought RSI>70 + far above 52w low = TRIM candidate, not ADD). Never recommend specific trade sizes. Keep one_liners under 20 words.`;
+
+  try {
+    return await callModel(prompt, 1500);
+  } catch (error) {
+    console.error('AI portfolio brief error:', error.message);
+    throw error;
+  }
+}
+
+export async function researchBestPick(candidates) {  const candidatesText = candidates.map(c => 
     `TICKER: ${c.ticker}
     - Buy Signals: ${c.buySignals}
     - RSI: ${c.rsi}

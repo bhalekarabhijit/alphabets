@@ -10,6 +10,7 @@ import { cached, TTL } from './services/cache.js';
 import { getForecast, getTimesfmPicks, getUniverseStatus, UNIVERSES } from './services/timesfmForecast.js';
 import { screenStraddles } from './services/straddle.js';
 import { loadRepoJson } from './services/repoJson.js';
+import { buildBrief } from './services/portfolio.js';
 
 dotenv.config();
 
@@ -332,6 +333,16 @@ app.get('/api/straddle', async (req, res) => {
   } catch (error) {
     console.error('❌ Straddle screen failed:', error.message);
     res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ---------- Portfolio brief (holdings in, morning brief out) ----------
+app.post('/api/portfolio/brief', async (req, res) => {
+  try {
+    const data = await buildBrief(req.body?.tickers || []);
+    res.json({ success: true, data });
+  } catch (error) {
+    res.status(400).json({ success: false, error: error.message });
   }
 });
 
