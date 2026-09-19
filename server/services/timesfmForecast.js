@@ -90,7 +90,7 @@ async function fetchRemoteJson(url) {
 function persistDisk(kind, universe, doc) {
   try {
     const prefix = kind === 'picks' ? 'picks' : 'forecasts';
-    writeFileSync(join(forecastDir(), `${prefix}-${universe}.json`), JSON.stringify(doc));
+    writeFileSync(join(forecastDir(), `${prefix}-${universe}.json`), JSON.stringify(doc, null, 2));
     fileCache.delete(join(forecastDir(), `${prefix}-${universe}.json`));
   } catch { /* read-only FS? ignore */ }
 }

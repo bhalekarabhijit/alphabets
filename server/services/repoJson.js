@@ -58,7 +58,7 @@ export async function loadRepoJson(relPath) {
   if (remote && JSON.stringify(remote) !== JSON.stringify(doc)) {
     doc = remote;
     try {
-      writeFileSync(abs, JSON.stringify(doc));
+      writeFileSync(abs, JSON.stringify(doc, null, 2));
       fileCache.delete(abs);
     } catch { /* ephemeral/read-only FS: ignore */ }
   }
