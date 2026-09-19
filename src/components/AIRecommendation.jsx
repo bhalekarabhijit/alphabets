@@ -84,6 +84,13 @@ export default function AIRecommendation({ analysis, quote, className = '' }) {
         </div>
       )}
 
+      {analysis.mind_changer && (
+        <div className="mind-changer">
+          <span>🔄</span>
+          <span><strong>Would flip this:</strong> {analysis.mind_changer}</span>
+        </div>
+      )}
+
       <div className="section-subtitle">Analysis Scores</div>
       <div className="ai-scores">
         {[

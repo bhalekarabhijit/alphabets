@@ -485,7 +485,8 @@ async function fetchSearchResults(q) {
 
   if (isYahooAvailable()) {
     try {
-      const results = await yf.autoc(q);
+      // v4 removed autoc() (dead Yahoo endpoint); search() covers quotes.
+      const results = await yf.search(q, { quotesCount: 10 });
       
       if (results && results.quotes && results.quotes.length > 0) {
         const yahooResults = results.quotes
@@ -527,7 +528,9 @@ export async function getYahooNews(roughTicker) {
 async function fetchNewsWithFallback(ticker) {
   if (isYahooAvailable()) {
     try {
-      const results = await yf.search(ticker, { newsCount: 5 });
+      // Search the bare symbol (v4 matches names better without .NS suffix).
+      const bare = ticker.replace(/\.NS$/, '').replace(/\.BO$/, '');
+      const results = await yf.search(bare, { newsCount: 5 });
 
       if (!results || !results.news || results.news.length === 0) {
         recordSource(`news:${ticker}`, 'yahoo-empty');

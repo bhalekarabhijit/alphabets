@@ -1352,6 +1352,19 @@ html.dark .hero-title .accent {
   border: 1px solid rgba(244, 176, 0, 0.25);
 }
 
+.mind-changer {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-xs);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--body);
+  padding: var(--spacing-sm) var(--spacing-base);
+  border-radius: var(--rounded-lg);
+  margin-top: var(--spacing-xs);
+  background: var(--surface-soft);
+}
+
 /* Scores */
 .section-subtitle {
   font-size: 12px;

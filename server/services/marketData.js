@@ -17,6 +17,7 @@ import {
 import { computeIndicators } from './technicalAnalysis.js';
 import { getForecast } from './timesfmForecast.js';
 import { loadRepoJson } from './repoJson.js';
+import { buildQuantView } from './quantView.js';
 
 export { getQuotesBatch };
 
@@ -67,6 +68,7 @@ export async function getMarketSnapshot(ticker, period = '1d') {
   };
 
   const technicals = computeIndicators(history);
+  const quantView = buildQuantView({ quote, history, timesfm, technicals });
 
   return {
     ticker: canon,
@@ -75,6 +77,7 @@ export async function getMarketSnapshot(ticker, period = '1d') {
     fundamentals,
     history,
     technicals,
+    quantView,
     news,
     timesfm,
     sources,

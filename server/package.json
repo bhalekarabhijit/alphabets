@@ -14,6 +14,9 @@
     "openai": "^4.85.0",
     "stock-nse-india": "^1.4.0",
     "technicalindicators": "^3.1.0",
-    "yahoo-finance2": "^3.14.0"
+    "yahoo-finance2": "^4.0.2"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }

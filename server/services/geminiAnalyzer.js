@@ -100,8 +100,8 @@ async function callModel(prompt, maxTokens = 4096) {
 }
 
 export async function analyzeStock(ticker, data) {
-  const { quote, fundamentals, dailyTechnicals, news, timesfm } = data;
-  const prompt = buildInvestmentPrompt(ticker, quote, fundamentals, dailyTechnicals, news, timesfm);
+  const { quote, fundamentals, dailyTechnicals, news, timesfm, quantView } = data;
+  const prompt = buildInvestmentPrompt(ticker, quote, fundamentals, dailyTechnicals, news, timesfm, quantView);
 
   try {
     return await callModel(prompt);
@@ -125,7 +125,16 @@ function formatTimesfmSection(timesfm, currentPrice) {
 - IMPORTANT: this model sees ONLY past closing prices. It knows nothing about earnings, news, valuations, or market regime. Treat it as a statistical drift prior, never as a verdict.`;
 }
 
-function buildInvestmentPrompt(ticker, quote, fundamentals, dailyTechnicals, news, timesfm) {
+function formatQuantView(qv) {
+  if (!qv) return 'No structured quant view available.';
+  const lines = [
+    `Direction: ${qv.direction} | Magnitude: ${qv.magnitudePct >= 0 ? '+' : ''}${qv.magnitudePct}% | Quant confidence: ${qv.confidence}/100`,
+    ...(qv.drivers || []).map(d => `- ${d}`),
+  ];
+  return lines.join('\n');
+}
+
+function buildInvestmentPrompt(ticker, quote, fundamentals, dailyTechnicals, news, timesfm, quantView) {
   const newsContext = news && news.length > 0
     ? news.map(n => `- ${n.headline}`).join('\n')
     : 'No recent news available.';
@@ -198,6 +207,9 @@ ${newsContext}
 === QUANTITATIVE DRIFT MODEL ===
 ${formatTimesfmSection(timesfm, currentPrice)}
 
+=== STRUCTURED QUANT VIEW ===
+${formatQuantView(quantView)}
+
 === YOUR ANALYSIS FRAMEWORK ===
 
 1. FUNDAMENTAL HEALTH (25% weight)
@@ -232,6 +244,11 @@ ${formatTimesfmSection(timesfm, currentPrice)}
    - A wide quant band (p10–p90) means high uncertainty: demand stronger fundamental/technical evidence before a BUY.
    - If no quant forecast exists, set quant_agreement to NO_DATA and judge without it.
 
+7. ADVERSARIAL REVIEW (mandatory before finalizing)
+   - Steel-man the OPPOSITE of your verdict in one sentence: what is the strongest case against you?
+   - State mind_changer: the single concrete fact (a number, event, or level) that would flip your verdict.
+   - If you cannot name one, your confidence is too high — lower it.
+
 === OUTPUT REQUIREMENTS ===
 
 Respond with ONLY this exact JSON structure. CRITICAL RULES:
@@ -261,6 +278,7 @@ Respond with ONLY this exact JSON structure. CRITICAL RULES:
   "risks": ["<risk 1>", "<risk 2>", "<risk 3>"],
   "quant_agreement": "AGREE" | "DISAGREE" | "NO_DATA",
   "quant_note": "<one line: how the TimesFM quant forecast factored into your verdict>",
+  "mind_changer": "<the single concrete fact that would flip this verdict>",
   "detailed_analysis": "<2-3 paragraphs explaining the full investment thesis combining fundamentals, technicals, and news>",
   "math_analysis": {
     "pe_vs_sector": "<analysis of whether P/E is cheap/expensive vs typical sector P/E>",
@@ -338,6 +356,7 @@ ${newsSummary}
 
  52-WEEK RANGE: ₹${c.fiftyTwoWeekLow?.toFixed(2) || 'N/A'} - ₹${c.fiftyTwoWeekHigh?.toFixed(2) || 'N/A'}
 VOLUME vs AVG: ${c.volumeRatio?.toFixed(0) || 'N/A'}%
+${c.quantView ? `QUANT VIEW: ${c.quantView.direction} ${c.quantView.magnitudePct >= 0 ? '+' : ''}${c.quantView.magnitudePct}% (conf ${c.quantView.confidence}/100) — ${(c.quantView.drivers || []).join('; ')}` : ''}
 TIMESFM 20D QUANT: ${c.timesfm && c.timesfm.expected_return_pct !== undefined
     ? `${c.timesfm.expected_return_pct >= 0 ? '+' : ''}${c.timesfm.expected_return_pct.toFixed(1)}% (target ₹${c.timesfm.target_20d?.toFixed(2)}, band ₹${c.timesfm.p10?.[c.timesfm.p10.length - 1]?.toFixed(2)}–₹${c.timesfm.p90?.[c.timesfm.p90.length - 1]?.toFixed(2)}) — price-history-only statistical drift, blind to news/earnings`
     : 'no quant data — judge on fundamentals/technicals/news only'}
@@ -412,7 +431,8 @@ RESPOND WITH ONLY THIS EXACT JSON STRUCTURE:
   "key_risks": ["<risk 1>", "<risk 2>", "<risk 3>"],
   "what_to_watch": ["<specific event/metric to monitor>", "<another thing to watch>"],
   "position_sizing": "<Recommended allocation as % of portfolio, e.g., 5-10%>",
-  "exit_strategy": "<When to take profits, when to cut losses>"
+  "exit_strategy": "<When to take profits, when to cut losses>",
+  "mind_changer": "<the single concrete fact that would flip this pick>"
 }
 
 BE STRICT. If no stock meets quality criteria, still pick the best one but lower the confidence and clearly state the risks. Always prioritize capital preservation over aggressive gains.`;

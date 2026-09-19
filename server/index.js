@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { getQuote, getQuotesBatch, getFundamentals, getHistoricalData, searchTickers, getYahooNews } from './services/yahooFinance.js';
 import { getMarketSnapshot, getScreeningBundle, getSnapshotQuotes, getSnapshotTechnicals } from './services/marketData.js';
+import { buildQuantView } from './services/quantView.js';
 import { computeIndicators } from './services/technicalAnalysis.js';
 import { initOpenRouter, analyzeStock, deepDailyPickAnalysis } from './services/geminiAnalyzer.js';
 import { cached, TTL } from './services/cache.js';
@@ -112,6 +113,7 @@ app.get('/api/analyze/:ticker', async (req, res) => {
       dailyTechnicals,
       news,
       timesfm,
+      quantView: snap.quantView || null,
     });
     console.log(`  ✅ AI Investment Analysis complete`);
 
@@ -268,6 +270,7 @@ async function computeDailyPick() {
         technicals,
         news: news || [],
         timesfm: timesfm || null,
+        quantView: buildQuantView({ quote, history: bundle.history, timesfm, technicals }),
       });
     } catch (e) {
       console.warn(`   ⚠️ Skipping ${ticker}: ${e.message}`);

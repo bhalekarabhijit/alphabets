@@ -3,14 +3,15 @@ Nightly TimesFM batch forecasts (runs on GitHub Actions CPU).
 
 - Universe selectable: nifty50 (default), next50, midcap50, smallcap50.
   Constituents are fetched live from niftyindices.com CSVs.
-- Fetches ~2y of daily closes via yfinance (fresh GHA IP, no rate limits).
-- Runs Google TimesFM 2.5 (200M, zero-shot, CPU) -> 20-trading-day forecast
-  with p10 / p50 / p90 quantile bands.
+- Fetches ~2y of daily closes + volumes via yfinance.
+- Runs Google TimesFM 3.0 (330M, zero-shot, CPU) -> 20-trading-day forecast
+  with p10 / p50 / p90 quantile bands, conditioned on past-only covariates
+  (normalized volume + 20d rolling volatility of log returns).
 - Writes forecast/forecasts-<universe>.json + forecast/picks-<universe>.json,
   committed to main. (nifty50 also keeps legacy forecasts.json/picks.json.)
 - The Node server serves these with zero runtime ML cost.
 
-~2-5s per ticker on CPU => ~3-5 min per 50-stock universe.
+CPU single-forward-pass inference: seconds per ticker.
 """
 
 import argparse
@@ -27,10 +28,12 @@ import numpy as np
 import pandas as pd
 import yfinance as yf
 
-MODEL_ID = "google/timesfm-2.5-200m-pytorch"
+MODEL_ID = "google/timesfm-3.0-pytorch"
+MODEL_LABEL = "timesfm-3.0"
 HORIZON = 20          # trading days ahead
 MAX_CONTEXT = 512     # trading days of history to feed the model
 MIN_HISTORY = 200     # skip tickers with less history than this
+RV_WINDOW = 20        # rolling window for the volatility covariate
 
 UNIVERSES = {
     "nifty50": {
@@ -93,26 +96,42 @@ def fetch_universe(universe_id: str) -> list[tuple[str, str]]:
     return uniq
 
 
-def fetch_closes(ticker: str) -> pd.Series | None:
+def fetch_ohlcv(ticker: str) -> pd.DataFrame | None:
+    """2y daily closes + volumes. None when unusable."""
     try:
         df = yf.download(ticker, period="2y", interval="1d",
                          progress=False, auto_adjust=True)
         if df is None or df.empty:
             return None
         closes = df["Close"]
+        vols = df["Volume"]
         if isinstance(closes, pd.DataFrame):  # multi-ticker frame guard
             closes = closes.iloc[:, 0]
-        closes = closes.dropna()
-        if len(closes) < MIN_HISTORY:
+        if isinstance(vols, pd.DataFrame):
+            vols = vols.iloc[:, 0]
+        out = pd.DataFrame({"close": closes, "volume": vols}).dropna()
+        if len(out) < MIN_HISTORY:
             return None
-        return closes
+        return out
     except Exception as e:
         print(f"  ⚠️ {ticker}: history fetch failed: {e}")
         return None
 
 
+def build_covariates(df: pd.DataFrame) -> np.ndarray:
+    """Past-only covariates, shape (2, T): normalized volume + rolling vol."""
+    closes = df["close"].values.astype(np.float64)
+    vols = df["volume"].values.astype(np.float64)
+    vol_n = vols / max(vols.mean(), 1e-9)
+    logp = np.log(np.maximum(closes, 1e-9))
+    rets = np.diff(logp, prepend=logp[0])
+    rv = np.array([rets[max(0, i - RV_WINDOW):i + 1].std()
+                   for i in range(len(rets))])
+    return np.stack([vol_n, rv], axis=0).astype(np.float32)
+
+
 def main() -> int:
-    from timesfm import TimesFM_2p5_200M_torch, ForecastConfig
+    from timesfm3 import TimesFM3Forecaster
 
     ap = argparse.ArgumentParser()
     ap.add_argument("--universe", default="nifty50", choices=list(UNIVERSES))
@@ -131,16 +150,8 @@ def main() -> int:
         members = [(t, t.replace(".NS", "")) for t in FALLBACK_NIFTY50]
         print(f"Using fallback list ({len(members)}).")
 
-    print(f"Loading {MODEL_ID} (CPU, ~800MB download once)...")
-    # torch_compile=False: skips the slow inductor compile; plain eager is
-    # faster overall for a 50-series batch on CPU.
-    model = TimesFM_2p5_200M_torch.from_pretrained(
-        MODEL_ID, torch_compile=False)
-    model.compile(ForecastConfig(
-        max_context=MAX_CONTEXT,
-        max_horizon=HORIZON,
-        per_core_batch_size=8,
-    ))
+    print(f"Loading {MODEL_ID} (CPU, ~1.3GB download once)...")
+    forecaster = TimesFM3Forecaster.from_pretrained(MODEL_ID, device="cpu")
     print("Model ready.\n")
 
     forecasts: dict = {}
@@ -149,22 +160,26 @@ def main() -> int:
     for i, (ticker, name) in enumerate(members, 1):
         symbol = ticker.replace(".NS", "")
         try:
-            closes = fetch_closes(ticker)
-            if closes is None:
+            df = fetch_ohlcv(ticker)
+            if df is None:
                 skipped += 1
                 continue
-            context = closes.values.astype(np.float32)[-MAX_CONTEXT:]
+            context = df["close"].values.astype(np.float32)[-MAX_CONTEXT:]
+            cov = build_covariates(df)[..., -len(context):]
             last_close = float(context[-1])
-            last_date = closes.index[-1].date().isoformat()
+            last_date = df.index[-1].date().isoformat()
 
-            point, quantile = model.forecast(HORIZON, [context])
-            # quantile cols = [median, q10..q90]: col 0 is NOT p10.
-            p10 = np.asarray(quantile[0][:, 1], dtype=float)   # 10th pct
-            p50 = np.asarray(point[0], dtype=float)            # mean
-            p90 = np.asarray(quantile[0][:, -1], dtype=float)  # 90th pct
+            out = forecaster.predict(
+                context=context, horizon=HORIZON,
+                past_only_covariates=cov, return_quantiles=True)
+            # quantiles cols are [q10..q90]; forecast is the median (p50).
+            q = np.asarray(out.quantiles, dtype=float)
+            p10 = q[:, 0]
+            p50 = np.asarray(out.forecast, dtype=float)
+            p90 = q[:, -1]
 
             future_dates = pd.bdate_range(
-                start=closes.index[-1], periods=HORIZON + 1)[1:]
+                start=df.index[-1], periods=HORIZON + 1)[1:]
             dates = [d.date().isoformat() for d in future_dates]
 
             target = float(p50[-1])
@@ -199,7 +214,7 @@ def main() -> int:
             traceback.print_exc(limit=3)
 
     generated_at = datetime.now(timezone.utc).isoformat()
-    payload = {"generated_at": generated_at, "model": "timesfm-2.5-200m",
+    payload = {"generated_at": generated_at, "model": MODEL_LABEL,
                "universe": universe_id, "universe_label": label,
                "horizon_days": HORIZON, "forecasts": forecasts}
     with open(os.path.join(OUT_DIR, f"forecasts-{universe_id}.json"), "w") as f:
@@ -209,7 +224,7 @@ def main() -> int:
                     reverse=True)[:5]
     picks = [{"rank": r + 1, "symbol": sym, **fc}
              for r, (sym, fc) in enumerate(ranked)]
-    picks_payload = {"generated_at": generated_at, "model": "timesfm-2.5-200m",
+    picks_payload = {"generated_at": generated_at, "model": MODEL_LABEL,
                      "universe": universe_id, "universe_label": label,
                      "universe_size": len(forecasts), "picks": picks}
     with open(os.path.join(OUT_DIR, f"picks-{universe_id}.json"), "w") as f:
