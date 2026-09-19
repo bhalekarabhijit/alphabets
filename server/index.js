@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { getQuote, getQuotesBatch, getFundamentals, getHistoricalData, searchTickers, getYahooNews } from './services/yahooFinance.js';
-import { getMarketSnapshot, getScreeningBundle } from './services/marketData.js';
+import { getMarketSnapshot, getScreeningBundle, getSnapshotQuotes, getSnapshotTechnicals } from './services/marketData.js';
 import { computeIndicators } from './services/technicalAnalysis.js';
 import { initOpenRouter, analyzeStock, deepDailyPickAnalysis } from './services/geminiAnalyzer.js';
 import { cached, TTL } from './services/cache.js';
@@ -198,14 +198,25 @@ app.get('/api/daily-pick', async (req, res) => {
   }
 });
 
-// Cheap daily pick: 1 batched quote request screens all 50 stocks,
-// full 4-call analysis runs only on the top 10. ~11 Yahoo requests
-// total instead of ~200. Result cached 12h (it's a *daily* pick).
+// Cheap daily pick: snapshots screen all 50 stocks with ZERO live calls
+// when fresh, else 1 batched quote request. Full analysis on top 10, with
+// precomputed technicals when fresh. Result cached 12h (it's a *daily* pick).
 async function computeDailyPick() {
   console.log('\n🧠 Starting Deep Daily Pick Analysis...');
-  console.log(`   Screening ${NIFTY_50.length} Nifty 50 stocks (1 batched request)...`);
 
-  const allQuotes = await getQuotesBatch(NIFTY_50);
+  // Screen off the 30-min snapshot when fresh, else one batched call.
+  let allQuotes;
+  const snapQuotes = await getSnapshotQuotes();
+  if (snapQuotes) {
+    console.log(`   Screening ${NIFTY_50.length} Nifty 50 stocks (snapshot ${snapQuotes.asOf})...`);
+    // Snapshot map is keyed by symbol; restore the symbol field.
+    allQuotes = NIFTY_50
+      .filter(t => snapQuotes.quotes[t] && snapQuotes.quotes[t].price > 0)
+      .map(t => ({ symbol: t, ...snapQuotes.quotes[t] }));
+  } else {
+    console.log(`   Screening ${NIFTY_50.length} Nifty 50 stocks (1 batched request)...`);
+    allQuotes = await getQuotesBatch(NIFTY_50);
+  }
   const realQuotes = allQuotes.filter(q => q && q.source !== 'synthetic' && q.price > 0);
 
   // Screen: momentum + volume activity + distance from 52w low (value).
@@ -223,11 +234,18 @@ async function computeDailyPick() {
 
   console.log(`   ✅ Screened to ${screened.length} candidates, running full analysis...`);
 
+  // Precomputed technicals (after-close snapshot) skip 10 live chart calls.
+  const snapTech = await getSnapshotTechnicals();
+  if (snapTech) console.log(`   Using snapshot technicals (${snapTech.asOf})`);
+
   const candidates = [];
   for (const ticker of screened) {
     try {
-      const bundle = await getScreeningBundle(ticker, { period: '1d', news: true, timesfm: true });
-      const { quote, fundamentals, technicals, news, timesfm } = bundle;
+      // Snapshot technicals skip the live chart fetch for this ticker.
+      const snapT = snapTech?.technicals?.[ticker] || null;
+      const bundle = await getScreeningBundle(ticker, { period: '1d', news: true, timesfm: true, skipHistory: !!snapT });
+      const technicals = snapT || bundle.technicals;
+      const { quote, fundamentals, news, timesfm } = bundle;
       const volumeRatio = quote.avgVolume > 0 ? (quote.volume / quote.avgVolume) * 100 : 100;
       let marketCapFormatted = 'N/A';
       if (quote.marketCap) {
@@ -321,6 +339,15 @@ app.get('/api/paper-trades', async (req, res) => {
     return res.json({ success: false, error: 'No paper trades yet. The tracker runs weekdays after market close.' });
   }
   res.json({ success: true, data });
+});
+
+// ---------- Snapshots (precomputed board, see /snapshot/README.md) ----------
+app.get('/api/snapshot', async (req, res) => {
+  const [quotes, technicals] = await Promise.all([
+    loadRepoJson('snapshot/quotes.json'),
+    loadRepoJson('snapshot/technicals.json'),
+  ]);
+  res.json({ success: true, data: { quotes, technicals } });
 });
 
 // Trigger the TimesFM workflow on demand via the GitHub API.

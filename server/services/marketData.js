@@ -16,8 +16,29 @@ import {
 } from './yahooFinance.js';
 import { computeIndicators } from './technicalAnalysis.js';
 import { getForecast } from './timesfmForecast.js';
+import { loadRepoJson } from './repoJson.js';
 
 export { getQuotesBatch };
+
+export const SNAPSHOT_QUOTES_MAX_AGE_MS = 45 * 60 * 1000;  // 30-min cadence + slack
+export const SNAPSHOT_TECH_MAX_AGE_MS = 26 * 60 * 60 * 1000; // daily after close
+
+function isFresh(doc, maxAgeMs) {
+  if (!doc || !doc.asOf) return false;
+  return Date.now() - new Date(doc.asOf).getTime() < maxAgeMs;
+}
+
+/** Precomputed Nifty board (30-min cadence). Null when missing/stale. */
+export async function getSnapshotQuotes() {
+  const doc = await loadRepoJson('snapshot/quotes.json');
+  return isFresh(doc, SNAPSHOT_QUOTES_MAX_AGE_MS) ? doc : null;
+}
+
+/** Precomputed daily technicals (after close). Null when missing/stale. */
+export async function getSnapshotTechnicals() {
+  const doc = await loadRepoJson('snapshot/technicals.json');
+  return isFresh(doc, SNAPSHOT_TECH_MAX_AGE_MS) ? doc : null;
+}
 
 function isSyntheticSource(s) {
   return s === 'synthetic';
@@ -67,11 +88,11 @@ export async function getMarketSnapshot(ticker, period = '1d') {
  * News is included but callers may skip it for speed via opts.news=false.
  */
 export async function getScreeningBundle(ticker, opts = {}) {
-  const { period = '1d', news: wantNews = true, timesfm: wantTimesfm = false } = opts;
+  const { period = '1d', news: wantNews = true, timesfm: wantTimesfm = false, skipHistory = false } = opts;
   const [quote, fundamentals, history, news, timesfm] = await Promise.all([
     getQuote(ticker),
     getFundamentals(ticker),
-    getHistoricalData(ticker, period),
+    skipHistory ? Promise.resolve(null) : getHistoricalData(ticker, period),
     wantNews ? getYahooNews(ticker) : Promise.resolve([]),
     wantTimesfm ? getForecast(ticker).catch(() => null) : Promise.resolve(null),
   ]);
@@ -80,7 +101,7 @@ export async function getScreeningBundle(ticker, opts = {}) {
   const sources = {
     quote: quote.source || 'unknown',
     fundamentals: fundamentals.source || 'unknown',
-    history: getLastSource(`hist:${canon}:${period}`),
+    history: skipHistory ? 'skipped' : getLastSource(`hist:${canon}:${period}`),
     news: wantNews ? getLastSource(`news:${canon}`) : 'skipped',
     timesfm: timesfm ? 'timesfm' : 'none',
   };
@@ -91,7 +112,7 @@ export async function getScreeningBundle(ticker, opts = {}) {
     quote,
     fundamentals,
     history,
-    technicals: computeIndicators(history),
+    technicals: skipHistory ? null : computeIndicators(history),
     news,
     timesfm,
     sources,

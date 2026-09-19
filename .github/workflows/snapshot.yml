@@ -1,0 +1,62 @@
+name: Market snapshots
+
+# Quotes every 30 min in market hours (04:00-10:00 UTC = 09:30-15:30 IST),
+# technicals once after close. Weekdays only. All free (public repo).
+on:
+  schedule:
+    - cron: '0,30 4-9 * * 1-5'
+    - cron: '45 10 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      job:
+        description: 'Snapshot job'
+        required: true
+        default: 'quotes'
+        type: choice
+        options:
+          - quotes
+          - technicals
+
+permissions:
+  contents: write
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: server/package-lock.json
+
+      - name: Install server deps
+        run: npm ci
+
+      - name: Run snapshotter
+        run: |
+          # Cron decides the job by time; manual runs use the input.
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            H=$(date -u +%H); M=$(date -u +%M)
+            if [ "$H" = "10" ]; then JOB=technicals; else JOB=quotes; fi
+          else
+            JOB="${{ inputs.job }}"
+          fi
+          echo "job=$JOB"
+          node ../snapshot/snapshot.mjs --job=$JOB
+
+      - name: Commit snapshots
+        run: |
+          cd ..
+          git config user.name "snapshot-bot"
+          git config user.email "snapshot-bot@users.noreply.github.com"
+          git add snapshot/quotes.json snapshot/technicals.json
+          git diff --cached --quiet || git commit -m "📸 Market snapshot $(date -u +%FT%H:%MZ)"
+          git pull --rebase origin main
+          git push
