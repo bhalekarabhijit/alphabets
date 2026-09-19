@@ -862,6 +862,30 @@ html.dark .hero-title .accent {
 }
 
 /* ============================================ */
+/*  Command bar (ask terminal)                    */
+/* ============================================ */
+
+.command-bar {
+  max-width: 640px;
+  margin: 0 auto var(--spacing-sm);
+}
+
+.command-answer {
+  margin-top: var(--spacing-sm);
+  padding: var(--spacing-base) var(--spacing-lg);
+  background: var(--surface-soft);
+  border-radius: var(--rounded-lg);
+  border-left: 3px solid var(--primary);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--body);
+}
+
+.command-answer p {
+  margin: 0;
+}
+
+/* ============================================ */
 /*  Portfolio                                   */
 /* ============================================ */
 

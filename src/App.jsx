@@ -10,6 +10,7 @@ import TimesFMForecast from './components/TimesFMForecast';
 import Recommendations from './components/Recommendations';
 import Straddle from './components/Straddle';
 import Portfolio from './components/Portfolio';
+import CommandBar from './components/CommandBar';
 import DailyPick from './components/DailyPick';
 import './index.css';
 
@@ -222,6 +223,8 @@ function App() {
 
       {/* Search Section */}
       <section id="search" className="search-section">
+        <CommandBar apiBase={API_BASE} onAnalyze={analyzeStock} />
+        <div style={{ height: '12px' }} />
         <SearchBar onAnalyze={analyzeStock} apiBase={API_BASE} loading={loading} />
       </section>
 

@@ -14,7 +14,6 @@ export function initOpenRouter(apiKey) {
 // each in order instead of hardcoding one. Override with OPENROUTER_MODELS
 // env var (comma-separated). Verified live 2026-09-05: all $0 + JSON mode.
 const DEFAULT_MODELS = [
-  'minimax/minimax-m3:free',
   'google/gemma-4-31b-it:free',
   'nvidia/nemotron-3-super-120b-a12b:free',
   'openrouter/free', // auto-router across free models, last resort
@@ -46,7 +45,12 @@ async function tryModel(model, prompt, maxTokens, useJsonMode) {
   if (useJsonMode) body.response_format = { type: 'json_object' };
 
   const response = await client.chat.completions.create(body);
-  const text = response.choices[0].message.content;
+  const text = response.choices?.[0]?.message?.content;
+  if (!text) {
+    const err = new Error('Empty response from model');
+    err.code = 'EMPTY_RESPONSE';
+    throw err;
+  }
 
   try {
     return JSON.parse(text);
@@ -91,6 +95,10 @@ async function callModel(prompt, maxTokens = 4096) {
           break;
         }
         if (error.status === 400 && useJsonMode) continue; // retry without JSON mode
+        if (error.code === 'EMPTY_RESPONSE' || (error.status >= 500 && error.status < 600)) {
+          console.warn(`⚠️  Model ${model} returned ${error.code || error.status}. Trying next...`);
+          break; // malformed/server error: next model, don't fail the request
+        }
         throw error; // auth errors etc: fail fast, don't mask them
       }
     }
@@ -314,6 +322,33 @@ Rules: stances must follow the numbers (overbought RSI>70 + far above 52w low = 
     return await callModel(prompt, 1500);
   } catch (error) {
     console.error('AI portfolio brief error:', error.message);
+    throw error;
+  }
+}
+
+export async function askAlphabets(question, context) {
+  const prompt = `You are Alphabets, a stock-market assistant for Indian equities (NSE/BSE).
+Live context (precomputed today — use ONLY these numbers, never invent prices):
+
+BOARD (Nifty 50 snapshot${context.boardAsOf ? ', as of ' + context.boardAsOf : ''}):
+${context.boardLines || 'unavailable'}
+TIMESFM TOP PICKS (20-day model ranking):
+${context.picksLines || 'unavailable'}
+USER HOLDINGS:
+${context.holdingsLines || 'none shared'}
+
+QUESTION: ${question}
+
+Respond with ONLY this JSON:
+{
+  "answer": "<2-4 sentences, plain words, referencing the numbers above. If the question needs data you don't have, say what's missing instead of guessing. Educational, not financial advice.>",
+  "tickers": ["<NSE symbols mentioned, e.g. RELIANCE.NS>"]
+}`;
+
+  try {
+    return await callModel(prompt, 1000);
+  } catch (error) {
+    console.error('AI ask error:', error.message);
     throw error;
   }
 }

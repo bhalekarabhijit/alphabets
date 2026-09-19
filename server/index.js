@@ -11,6 +11,7 @@ import { getForecast, getTimesfmPicks, getUniverseStatus, UNIVERSES } from './se
 import { screenStraddles } from './services/straddle.js';
 import { loadRepoJson } from './services/repoJson.js';
 import { buildBrief } from './services/portfolio.js';
+import { askAlphabets } from './services/geminiAnalyzer.js';
 
 dotenv.config();
 
@@ -343,6 +344,46 @@ app.post('/api/portfolio/brief', async (req, res) => {
     res.json({ success: true, data });
   } catch (error) {
     res.status(400).json({ success: false, error: error.message });
+  }
+});
+
+// ---------- Ask terminal (one grounded LLM call over live context) ----------
+app.post('/api/ask', async (req, res) => {
+  try {
+    const question = String(req.body?.question || '').slice(0, 500).trim();
+    if (!question) return res.status(400).json({ success: false, error: 'Ask a question' });
+    const holdings = Array.isArray(req.body?.tickers) ? req.body.tickers.slice(0, 12) : [];
+
+    const [snapQuotes, picks] = await Promise.all([
+      getSnapshotQuotes().catch(() => null),
+      getTimesfmPicks('nifty50').catch(() => null),
+    ]);
+
+    let boardLines = '';
+    let boardAsOf = '';
+    if (snapQuotes?.quotes) {
+      boardAsOf = snapQuotes.asOf;
+      const rows = Object.entries(snapQuotes.quotes)
+        .filter(([, q]) => q && q.price)
+        .map(([sym, q]) => ({ sym, ...q }))
+        .sort((a, b) => Math.abs(b.changePercent || 0) - Math.abs(a.changePercent || 0))
+        .slice(0, 8);
+      const nifty = snapQuotes.quotes['^NSEI'];
+      boardLines = (nifty ? `NIFTY ${nifty.price} (${nifty.changePercent?.toFixed(2)}%)\n` : '') +
+        rows.map(r => `${r.sym}: ₹${r.price} (${r.changePercent >= 0 ? '+' : ''}${r.changePercent?.toFixed(2)}%)`).join('\n');
+    }
+
+    const picksLines = picks?.picks
+      ? picks.picks.slice(0, 5).map(p => `${p.symbol}: ${p.expected_return_pct >= 0 ? '+' : ''}${p.expected_return_pct}% exp 20d`).join('\n')
+      : '';
+
+    const answer = await askAlphabets(question, {
+      boardAsOf, boardLines, picksLines,
+      holdingsLines: holdings.length ? holdings.join(', ') : '',
+    });
+    res.json({ success: true, data: answer });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
