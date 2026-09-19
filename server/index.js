@@ -387,6 +387,21 @@ app.post('/api/ask', async (req, res) => {
   }
 });
 
+// ---------- Calibration scorecard (does the model keep its promises?) ----------
+app.get('/api/calibration', async (req, res) => {
+  const [calibration, aiDecisions] = await Promise.all([
+    loadRepoJson('forecast/calibration.json'),
+    loadRepoJson('forecast/ai-decisions.json'),
+  ]);
+  res.json({
+    success: true,
+    data: {
+      calibration: calibration || { snapshots_evaluated: 0, snapshots_pending: 0, results: {} },
+      aiDecisions: Array.isArray(aiDecisions) ? aiDecisions.slice(-20) : [],
+    },
+  });
+});
+
 // Paper-trade track record (committed daily by the papertrade workflow).
 app.get('/api/paper-trades', async (req, res) => {
   const data = await loadRepoJson('papertrade/paper-trades.json');

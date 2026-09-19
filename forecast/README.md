@@ -13,7 +13,7 @@ Inference Provider), so it must be self-hosted in Python. The numbers:
 | BigQuery ML `AI.FORECAST` | managed | needs GCP billing account | ❌ not free |
 | **GitHub Actions CPU runner** | **7 GB RAM** | **$0 (free tier; unlimited on public repos)** | ✅ **chosen** |
 
-TimesFM 2.5 (200M) does ~2–5s per series on CPU → all 50 Nifty stocks in
+TimesFM 3.0 (330M, with volume + volatility covariates) does ~2–5s per series on CPU → all 50 Nifty stocks in
 ~3–5 minutes. The workflow (`.github/workflows/timesfm-nightly.yml`) runs
 weekdays at 19:00 IST and commits `forecasts.json` + `picks.json`. The Node
 server just reads the JSON — zero runtime ML cost, zero new infra.

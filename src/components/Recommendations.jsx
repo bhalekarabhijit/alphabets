@@ -10,6 +10,7 @@ export default function Recommendations({ apiBase, onAnalyze, className = '' }) 
   const [universeSize, setUniverseSize] = useState(0);
   const [loading, setLoading] = useState(true);
   const [refreshState, setRefreshState] = useState(null); // { type, text }
+  const [scorecard, setScorecard] = useState(null);
 
   const loadPicks = useCallback(async (u) => {
     try {
@@ -33,6 +34,10 @@ export default function Recommendations({ apiBase, onAnalyze, className = '' }) 
     fetch(`${apiBase}/universes`)
       .then(r => r.json())
       .then(j => { if (j.success) setUniverses(j.data); })
+      .catch(() => {});
+    fetch(`${apiBase}/calibration`)
+      .then(r => r.json())
+      .then(j => { if (j.success) setScorecard(j.data); })
       .catch(() => {});
   }, [apiBase]);
 
@@ -159,10 +164,72 @@ export default function Recommendations({ apiBase, onAnalyze, className = '' }) 
       )}
 
       <div className="forecast-note" style={{ marginTop: '16px' }}>
-        Ranked by risk-adjusted 20-day expected return from Google TimesFM 2.5
-        (p50 target ÷ band width). Runs are free and unlimited on this public repo —
+        Ranked by risk-adjusted 20-day expected return from Google TimesFM 3.0
+        (p50 target ÷ band width, conditioned on volume + volatility). Runs are free and unlimited on this public repo —
         each takes ~5–12 min. Forecasts refresh nightly after market close.
       </div>
+
+      <Scorecard scorecard={scorecard} onAnalyze={onAnalyze} />
+    </div>
+  );
+}
+
+function Scorecard({ scorecard, onAnalyze }) {
+  if (!scorecard) return null;
+  const cal = scorecard.calibration || {};
+  const results = Object.values(cal.results || {});
+  const decisions = scorecard.aiDecisions || [];
+
+  const avg = (f) => results.length
+    ? (results.reduce((a, r) => a + (r[f] ?? 0), 0) / results.length).toFixed(1)
+    : null;
+
+  return (
+    <div className="paper-panel">
+      <div className="section-subtitle">Model scorecard 📊</div>
+      {results.length > 0 ? (
+        <div className="paper-stats">
+          <div className="paper-stat">
+            <div className="meta-label">In band</div>
+            <div className="mono">{avg('coverage_pct')}%</div>
+          </div>
+          <div className="paper-stat">
+            <div className="meta-label">Right direction</div>
+            <div className="mono">{avg('sign_accuracy_pct')}%</div>
+          </div>
+          <div className="paper-stat">
+            <div className="meta-label">Avg error</div>
+            <div className="mono">{avg('mae_pct')}%</div>
+          </div>
+          <div className="paper-stat">
+            <div className="meta-label">Graded</div>
+            <div className="mono">{cal.snapshots_evaluated}</div>
+          </div>
+        </div>
+      ) : (
+        <div className="forecast-note">
+          Keeping score honestly: every forecast is archived and graded against reality
+          once its 20-day horizon elapses. {cal.snapshots_pending || 0} snapshot(s) waiting —
+          first grades land when horizons expire. Paper straddle results live on the Straddle tab.
+        </div>
+      )}
+
+      {decisions.length > 0 && (
+        <>
+          <div className="meta-label" style={{ margin: '12px 0 6px' }}>Recent AI picks (logged for grading)</div>
+          <div className="picks-list">
+            {decisions.slice(-5).reverse().map((d, i) => (
+              <div key={i} className="pick-row" onClick={() => d.ticker && onAnalyze(d.ticker)}>
+                <div className="pick-info">
+                  <div className="pick-symbol">{d.ticker}</div>
+                  <div className="pick-name-sm">{d.date} · conf {d.confidence}% · entry ₹{d.entry}</div>
+                </div>
+                <div className="pick-cta">→</div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

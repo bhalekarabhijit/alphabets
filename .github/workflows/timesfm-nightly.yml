@@ -42,13 +42,17 @@ jobs:
       - name: Run TimesFM batch forecast
         run: python forecast/forecast_nifty.py --universe "${{ inputs.universe || 'nifty50' }}"
 
+      - name: Archive forecast for calibration
+        run: |
+          U="${{ inputs.universe || 'nifty50' }}"
+          mkdir -p forecast/archive
+          cp "forecast/forecasts-$U.json" "forecast/archive/$(date -u +%F)-$U.json" || true
+
       - name: Commit forecasts
         run: |
           git config user.name "timesfm-bot"
           git config user.email "timesfm-bot@users.noreply.github.com"
-          git add forecast/forecasts-*.json forecast/picks-*.json forecast/forecasts.json forecast/picks.json
+          git add forecast/forecasts-*.json forecast/picks-*.json forecast/forecasts.json forecast/picks.json forecast/archive/
           git diff --cached --quiet || git commit -m "📈 TimesFM forecasts (${{ inputs.universe || 'nifty50' }}) $(date -u +%F)"
-          # The runner's checkout can go stale mid-run (another push landing
-          # rejects a plain push), so rebase onto latest main first.
           git pull --rebase origin main
           git push

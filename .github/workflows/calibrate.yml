@@ -1,0 +1,69 @@
+name: Model calibration
+
+# Mondays 12:30 IST: score expired TimesFM forecasts against reality and
+# log the current AI daily-pick for future grading. Light job (no torch).
+on:
+  schedule:
+    - cron: '0 7 * * 1'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  calibrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install light deps (no torch needed)
+        run: pip install yfinance pandas numpy
+
+      - name: Score expired forecasts
+        run: python forecast/calibrate.py
+
+      - name: Log current AI daily-pick (best effort)
+        continue-on-error: true
+        run: |
+          python - <<'EOF'
+          import json, os, urllib.request
+          from datetime import datetime, timezone
+          try:
+              with urllib.request.urlopen('https://alphabets-ap.onrender.com/api/daily-pick', timeout=280) as r:
+                  d = json.load(r)
+              pick = d['data']['pick']
+              entry = {
+                  'date': datetime.now(timezone.utc).date().isoformat(),
+                  'ticker': pick.get('best_ticker'),
+                  'action': pick.get('investment_type'),
+                  'entry': pick.get('entry_price'),
+                  'target': pick.get('target_price'),
+                  'stop': pick.get('stop_loss'),
+                  'confidence': pick.get('confidence'),
+              }
+              path = 'forecast/ai-decisions.json'
+              log = json.load(open(path)) if os.path.exists(path) else []
+              if not log or log[-1].get('date') != entry['date']:
+                  log.append(entry)
+                  json.dump(log, open(path, 'w'), indent=2)
+                  print('logged', entry['ticker'])
+              else:
+                  print('already logged today')
+          except Exception as e:
+              print('AI log skipped:', str(e)[:200])
+          EOF
+
+      - name: Commit calibration
+        run: |
+          git config user.name "calibration-bot"
+          git config user.email "calibration-bot@users.noreply.github.com"
+          git add forecast/calibration.json forecast/ai-decisions.json
+          git diff --cached --quiet || git commit -m "📊 Model calibration $(date -u +%F)"
+          git pull --rebase origin main
+          git push
