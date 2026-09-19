@@ -11,6 +11,7 @@ import Recommendations from './components/Recommendations';
 import Straddle from './components/Straddle';
 import Portfolio from './components/Portfolio';
 import CommandBar from './components/CommandBar';
+import NewListings from './components/NewListings';
 import DailyPick from './components/DailyPick';
 import './index.css';
 
@@ -264,6 +265,7 @@ function App() {
       {/* Empty State */}
       {!loading && !analysisData && !dailyPickData && !error && (
         <div className="content-container">
+          <NewListings apiBase={API_BASE} onAnalyze={analyzeStock} />
           <div className="empty-state">
             <div className="empty-icon">📊</div>
             <div className="empty-title">Ready to analyze</div>

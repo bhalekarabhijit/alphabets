@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { getQuote, getQuotesBatch, getFundamentals, getHistoricalData, searchTickers, getYahooNews } from './services/yahooFinance.js';
+import { getQuote, getQuotesBatch, getFundamentals, getHistoricalData, searchTickers, getYahooNews, getUniverseInfo, getNewListings } from './services/yahooFinance.js';
 import { getMarketSnapshot, getScreeningBundle, getSnapshotQuotes, getSnapshotTechnicals } from './services/marketData.js';
 import { buildQuantView } from './services/quantView.js';
 import { computeIndicators } from './services/technicalAnalysis.js';
@@ -57,6 +57,16 @@ app.get('/api/search', async (req, res) => {
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
+});
+
+// Stock universe freshness + recent IPOs (from NSE listing dates).
+app.get('/api/universe', (req, res) => {
+  res.json({ success: true, data: getUniverseInfo() });
+});
+
+app.get('/api/new-listings', (req, res) => {
+  const days = Math.min(Math.max(parseInt(req.query.days) || 30, 1), 365);
+  res.json({ success: true, data: getNewListings(days) });
 });
 
 app.get('/api/chart/:ticker', async (req, res) => {

@@ -1,0 +1,85 @@
+name: Universe refresh
+
+# NSE lists new IPOs constantly; our search universe (EQUITY_L.csv) goes
+# stale. Refresh it weekly from NSE's official CSV (Monday 02:00 UTC).
+# Validation gates the commit: correct header, EQ count sanity, and the
+# newest listing date must never move backwards.
+on:
+  schedule:
+    - cron: '0 2 * * 1'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download + validate NSE equity list
+        run: |
+          python3 - <<'EOF'
+          import csv, io, sys, urllib.request
+          from datetime import datetime
+
+          URLS = [
+              'https://archives.nseindia.com/content/equities/EQUITY_L.csv',
+              'https://www.nseindia.com/content/equities/EQUITY_L.csv',
+          ]
+          text = None
+          for url in URLS:
+              try:
+                  req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+                  with urllib.request.urlopen(req, timeout=60) as r:
+                      text = r.read().decode('utf-8', errors='replace')
+                  print(f'downloaded from {url} ({len(text)//1024} KB)')
+                  break
+              except Exception as e:
+                  print(f'{url} failed: {str(e)[:120]}')
+
+          if not text or 'SYMBOL' not in text.splitlines()[0]:
+              sys.exit('ABORT: download failed or bad header')
+
+          rows = list(csv.DictReader(io.StringIO(text)))
+          eq = [r for r in rows
+                if r.get(' SERIES', '').strip() == 'EQ' and r.get('SYMBOL', '').strip()]
+
+          if len(eq) < 1500:
+              sys.exit(f'ABORT: only {len(eq)} EQ rows, refusing')
+
+          def parse(d):
+              try:
+                  return datetime.strptime(d.strip(), '%d-%b-%Y').date()
+              except Exception:
+                  return None
+
+          dated = [(r['SYMBOL'].strip(), r['NAME OF COMPANY'].strip(), parse(r[' DATE OF LISTING']))
+                   for r in eq]
+          dated = [x for x in dated if x[2]]
+          newest = max(d[2] for d in dated)
+
+          # Never move backwards vs the committed file.
+          old = list(csv.DictReader(open('EQUITY_L.csv')))
+          old_dates = [parse(r[' DATE OF LISTING']) for r in old
+                       if r.get(' SERIES', '').strip() == 'EQ']
+          old_dates = [d for d in old_dates if d]
+          if old_dates and newest < max(old_dates):
+              sys.exit(f'ABORT: newest {newest} older than committed {max(old_dates)}')
+
+          open('EQUITY_L.csv', 'w').write(text)
+          fresh = sorted([x for x in dated if x[2] == newest])
+          print(f'OK: {len(eq)} EQ symbols, newest listing {newest} '
+                f'({", ".join(s for s, _, _ in fresh[:8])})')
+          EOF
+
+      - name: Commit refreshed universe
+        run: |
+          git config user.name "universe-bot"
+          git config user.email "universe-bot@users.noreply.github.com"
+          git add EQUITY_L.csv
+          git diff --cached --quiet || git commit -m "📋 NSE universe refresh $(date -u +%F)"
+          git pull --rebase origin main
+          git push

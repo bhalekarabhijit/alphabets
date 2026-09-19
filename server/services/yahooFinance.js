@@ -20,6 +20,65 @@ setInterval(() => {
 }, 10 * 60 * 1000).unref?.();
 
 let nseStocksCache = null;
+let nseUniverseMeta = { count: 0, newestDate: null, source: 'none' };
+let lastUniverseRefreshAttempt = 0;
+const UNIVERSE_REFRESH_MS = 24 * 60 * 60 * 1000;
+
+function parseListingDate(s) {
+  // '17-SEP-2026' -> '2026-09-17' (ISO) or null
+  const m = /^(\d{1,2})-([A-Za-z]{3})-(\d{4})$/.exec((s || '').trim());
+  if (!m) return null;
+  const months = { JAN: '01', FEB: '02', MAR: '03', APR: '04', MAY: '05', JUN: '06', JUL: '07', AUG: '08', SEP: '09', OCT: '10', NOV: '11', DEC: '12' };
+  const mon = months[m[2].toUpperCase()];
+  if (!mon) return null;
+  return `${m[3]}-${mon}-${m[1].padStart(2, '0')}`;
+}
+
+function parseEquityCsv(text) {
+  const lines = text.trim().split('\n');
+  const header = (lines[0] || '').toUpperCase();
+  if (!header.includes('SYMBOL')) throw new Error('Bad EQUITY_L header');
+
+  const stocks = [];
+  for (const line of lines.slice(1)) {
+    const parts = [];
+    let current = '';
+    let inQuotes = false;
+    for (const char of line) {
+      if (char === '"') {
+        inQuotes = !inQuotes;
+      } else if (char === ',' && !inQuotes) {
+        parts.push(current.trim());
+        current = '';
+      } else {
+        current += char;
+      }
+    }
+    parts.push(current.trim());
+
+    const symbol = parts[0];
+    const name = parts[1];
+    const series = parts[2];
+    if (!symbol || series !== 'EQ') continue;
+
+    stocks.push({
+      symbol: symbol + '.NS',
+      name,
+      exchange: 'NSE',
+      listingDate: parseListingDate(parts[3]),
+    });
+  }
+
+  const dated = stocks.filter(s => s.listingDate).sort((a, b) => a.listingDate.localeCompare(b.listingDate));
+  return {
+    stocks,
+    meta: {
+      count: stocks.length,
+      newestDate: dated.length ? dated[dated.length - 1].listingDate : null,
+      newest: dated.slice(-5).reverse().map(s => ({ symbol: s.symbol, name: s.name, listingDate: s.listingDate })),
+    },
+  };
+}
 
 function loadNSEStocks() {
   if (nseStocksCache) return nseStocksCache;
@@ -27,34 +86,11 @@ function loadNSEStocks() {
   try {
     const csvPath = join(__dirname, '../../EQUITY_L.csv');
     const csv = readFileSync(csvPath, 'utf-8');
-    const lines = csv.trim().split('\n');
+    const { stocks, meta } = parseEquityCsv(csv);
+    nseStocksCache = stocks;
+    nseUniverseMeta = { ...meta, source: 'local-file' };
 
-    nseStocksCache = lines.slice(1).map(line => {
-      const parts = [];
-      let current = '';
-      let inQuotes = false;
-      for (const char of line) {
-        if (char === '"') {
-          inQuotes = !inQuotes;
-        } else if (char === ',' && !inQuotes) {
-          parts.push(current.trim());
-          current = '';
-        } else {
-          current += char;
-        }
-      }
-      parts.push(current.trim());
-
-      const symbol = parts[0];
-      const name = parts[1];
-      const series = parts[2];
-
-      if (series !== 'EQ') return null;
-
-      return { symbol: symbol + '.NS', name, exchange: 'NSE' };
-    }).filter(Boolean);
-
-    console.log(`✅ Loaded ${nseStocksCache.length} NSE stocks from EQUITY_L.csv`);
+    console.log(`✅ Loaded ${nseStocksCache.length} NSE stocks from EQUITY_L.csv (newest listing ${meta.newestDate})`);
     return nseStocksCache;
   } catch (error) {
     console.error('Failed to load EQUITY_L.csv:', error.message);
@@ -62,9 +98,45 @@ function loadNSEStocks() {
   }
 }
 
+// Once a day, hot-swap the in-memory universe from GitHub raw so new IPOs
+// become searchable WITHOUT waiting for a redeploy (same pattern as
+// forecasts). Deploys still ship the file; this just closes the gap.
+async function maybeRefreshUniverse() {
+  const now = Date.now();
+  if (now - lastUniverseRefreshAttempt < UNIVERSE_REFRESH_MS) return;
+  lastUniverseRefreshAttempt = now;
+  try {
+    const res = await fetch(
+      'https://raw.githubusercontent.com/bhalekarabhijit/alphabets/main/EQUITY_L.csv',
+      { signal: AbortSignal.timeout(20000), headers: { 'User-Agent': 'Alphabets/1.0' } }
+    );
+    if (!res.ok) return;
+    const { stocks, meta } = parseEquityCsv(await res.text());
+    if (!stocks.length || meta.count === nseStocksCache?.length) return;
+    nseStocksCache = stocks;
+    nseUniverseMeta = { ...meta, source: 'github-raw' };
+    console.log(`📋 Universe hot-swapped: ${meta.count} stocks (newest ${meta.newestDate})`);
+  } catch { /* stay on local file */ }
+}
+
+export function getUniverseInfo() {
+  loadNSEStocks();
+  return { ...nseUniverseMeta };
+}
+
+export function getNewListings(days = 30) {
+  loadNSEStocks();
+  const cutoff = new Date(Date.now() - days * 86400000).toISOString().slice(0, 10);
+  return nseStocksCache
+    .filter(s => s.listingDate && s.listingDate >= cutoff)
+    .sort((a, b) => b.listingDate.localeCompare(a.listingDate) || a.symbol.localeCompare(b.symbol));
+}
+
 function searchLocalStocks(query) {
   if (!query || query.length < 1) return [];
   const stocks = loadNSEStocks();
+  // Best-effort daily refresh (async, never blocks search).
+  maybeRefreshUniverse().catch(() => {});
   const q = query.toUpperCase().trim();
   return stocks.filter(stock => {
     return stock.symbol.toUpperCase().includes(q) || stock.name.toUpperCase().includes(q);
