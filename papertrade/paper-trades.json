@@ -2,20 +2,6 @@
   "open": [
     {
       "status": "open",
-      "underlying": "TCS",
-      "strike": 2300,
-      "expiry": "2026-09-29",
-      "entryDate": "2026-09-07",
-      "entryCost": 111.9,
-      "entrySpot": 2304,
-      "entryEdge": 1.55,
-      "entryBreakevenPct": 4.86,
-      "lastValue": 111.9,
-      "lastSpot": 2304,
-      "lastChecked": "2026-09-07"
-    },
-    {
-      "status": "open",
       "underlying": "AXISBANK",
       "strike": 1280,
       "expiry": "2026-09-29",
@@ -24,9 +10,9 @@
       "entrySpot": 1273,
       "entryEdge": 1.55,
       "entryBreakevenPct": 3.32,
-      "lastValue": 42.25,
-      "lastSpot": 1273,
-      "lastChecked": "2026-09-07"
+      "lastValue": 39.65,
+      "lastSpot": 1257,
+      "lastChecked": "2026-09-19"
     },
     {
       "status": "open",
@@ -38,18 +24,79 @@
       "entrySpot": 712.1,
       "entryEdge": 1.51,
       "entryBreakevenPct": 3.62,
-      "lastValue": 25.8,
-      "lastSpot": 712.1,
-      "lastChecked": "2026-09-07"
+      "lastValue": 28.1,
+      "lastSpot": 731,
+      "lastChecked": "2026-09-19"
+    },
+    {
+      "status": "open",
+      "underlying": "TITAN",
+      "strike": 4800,
+      "expiry": "2026-09-29",
+      "entryDate": "2026-09-19",
+      "entryCost": 104.85,
+      "entrySpot": 4798.5,
+      "entryEdge": 1.65,
+      "entryBreakevenPct": 2.19,
+      "lastValue": 104.85,
+      "lastSpot": 4798.5,
+      "lastChecked": "2026-09-19"
+    },
+    {
+      "status": "open",
+      "underlying": "INFY",
+      "strike": 1060,
+      "expiry": "2026-09-29",
+      "entryDate": "2026-09-19",
+      "entryCost": 38.4,
+      "entrySpot": 1051.4,
+      "entryEdge": 1.6,
+      "entryBreakevenPct": 3.65,
+      "lastValue": 38.4,
+      "lastSpot": 1051.4,
+      "lastChecked": "2026-09-19"
+    },
+    {
+      "status": "open",
+      "underlying": "TCS",
+      "strike": 2100,
+      "expiry": "2026-09-29",
+      "entryDate": "2026-09-19",
+      "entryCost": 80.5,
+      "entrySpot": 2105,
+      "entryEdge": 1.6,
+      "entryBreakevenPct": 3.82,
+      "lastValue": 80.5,
+      "lastSpot": 2105,
+      "lastChecked": "2026-09-19"
     }
   ],
-  "closed": [],
+  "closed": [
+    {
+      "status": "closed",
+      "underlying": "TCS",
+      "strike": 2300,
+      "expiry": "2026-09-29",
+      "entryDate": "2026-09-07",
+      "entryCost": 111.9,
+      "entrySpot": 2304,
+      "entryEdge": 1.55,
+      "entryBreakevenPct": 4.86,
+      "lastValue": 210.8,
+      "lastSpot": 2105,
+      "lastChecked": "2026-09-19",
+      "exitDate": "2026-09-19",
+      "exitReason": "take-profit +50%",
+      "exitValue": 210.8,
+      "pnlPct": 88.38
+    }
+  ],
   "stats": {
-    "updated": "2026-09-07",
-    "openCount": 3,
-    "closedCount": 0,
-    "winRate": null,
-    "avgPnlPct": null,
-    "totalPnlPct": 0
+    "updated": "2026-09-19",
+    "openCount": 5,
+    "closedCount": 1,
+    "winRate": 100,
+    "avgPnlPct": 88.38,
+    "totalPnlPct": 88.38
   }
 }
