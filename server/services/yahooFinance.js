@@ -111,6 +111,18 @@ function handleYahooError(error, context) {
   }
 }
 
+// Source ledger: history/news return bare arrays, so each fetch records
+// WHERE its data came from. marketData.js reads this for honesty stamps.
+// Keys: `hist:<ticker>:<period>`, `news:<ticker>`.
+const sourceLedger = new Map();
+function recordSource(key, source) {
+  sourceLedger.set(key, source);
+  if (sourceLedger.size > 2000) sourceLedger.delete(sourceLedger.keys().next().value);
+}
+export function getLastSource(key) {
+  return sourceLedger.get(key) || 'unknown';
+}
+
 export async function getQuote(roughTicker) {
   const ticker = formatTicker(roughTicker);
   return cached(`quote:${ticker}`, TTL.QUOTE, () => fetchQuoteWithFallback(ticker));
@@ -400,6 +412,7 @@ async function fetchHistoryWithFallback(ticker, period) {
         throw new Error(`No historical data for ${ticker}`);
       }
 
+      recordSource(`hist:${ticker}:${period}`, 'yahoo');
       return history.quotes.map(bar => ({
         date: bar.date.toISOString ? bar.date.toISOString() : new Date(bar.date).toISOString(),
         open: bar.open,
@@ -418,9 +431,11 @@ async function fetchHistoryWithFallback(ticker, period) {
   const nseHist = await getNSEHistory(ticker);
   if (nseHist) {
     console.log(`  ↪ ${ticker} history via NSE direct fallback`);
+    recordSource(`hist:${ticker}:${period}`, 'nse');
     return nseHist;
   }
 
+  recordSource(`hist:${ticker}:${period}`, 'synthetic');
   return getSyntheticHistorical(ticker, period);
 }
 
@@ -515,9 +530,11 @@ async function fetchNewsWithFallback(ticker) {
       const results = await yf.search(ticker, { newsCount: 5 });
 
       if (!results || !results.news || results.news.length === 0) {
+        recordSource(`news:${ticker}`, 'yahoo-empty');
         return [];
       }
 
+      recordSource(`news:${ticker}`, 'yahoo');
       return results.news.map(item => ({
         headline: item.title || 'No headline',
         source: item.publisher || 'Unknown',
@@ -530,6 +547,7 @@ async function fetchNewsWithFallback(ticker) {
     }
   }
 
+  recordSource(`news:${ticker}`, 'synthetic');
   return [
     {
       headline: `${ticker.split('.')[0]} Announces Major Expansion in Emerging Markets`,

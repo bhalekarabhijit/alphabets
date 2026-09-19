@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { getQuote, getQuotesBatch, getFundamentals, getHistoricalData, searchTickers, getYahooNews } from './services/yahooFinance.js';
+import { getMarketSnapshot, getScreeningBundle } from './services/marketData.js';
 import { computeIndicators } from './services/technicalAnalysis.js';
 import { initOpenRouter, analyzeStock, deepDailyPickAnalysis } from './services/geminiAnalyzer.js';
 import { cached, TTL } from './services/cache.js';
@@ -98,17 +99,11 @@ app.get('/api/analyze/:ticker', async (req, res) => {
     const ticker = req.params.ticker;
     console.log(`\n🔍 Analyzing ${ticker} for Investment...`);
 
-    const [quote, fundamentals, dailyChart, news, timesfm] = await Promise.all([
-      getQuote(ticker),
-      getFundamentals(ticker),
-      getHistoricalData(ticker, '1d'),
-      getYahooNews(ticker),
-      getForecast(ticker).catch(() => null),
-    ]);
+    const snap = await getMarketSnapshot(ticker, '1d');
+    const { quote, fundamentals, history: dailyChart, news, timesfm, technicals: dailyTechnicals, sources } = snap;
 
-    console.log(`  ✅ Market & News Data fetched${timesfm ? ' (incl. TimesFM quant)' : ''}`);
+    console.log(`  ✅ Market & News Data fetched${timesfm ? ' (incl. TimesFM quant)' : ''} [${sources.quote}/${sources.fundamentals}/${sources.history}]`);
 
-    const dailyTechnicals = computeIndicators(dailyChart);
     console.log(`  ✅ Technical Indicators (Daily) complete`);
 
     const aiAnalysis = await analyzeStock(ticker, {
@@ -120,7 +115,7 @@ app.get('/api/analyze/:ticker', async (req, res) => {
     });
     console.log(`  ✅ AI Investment Analysis complete`);
 
-    const isSynthetic = !!(quote._synthetic || fundamentals._synthetic);
+    const isSynthetic = snap.synthetic;
     console.log(`  📊 Synthetic data: ${isSynthetic}`);
 
     res.json({
@@ -137,6 +132,8 @@ app.get('/api/analyze/:ticker', async (req, res) => {
         news,
         aiAnalysis,
         timesfm: timesfm || null,
+        sources,
+        asOf: snap.asOf,
       },
       synthetic: isSynthetic,
     });
@@ -154,16 +151,14 @@ app.post('/api/watchlist/scan', async (req, res) => {
     }
 
     const tickers = rawTickers.slice(0, 10).map(t => t.toUpperCase());
-    // One batched request for all prices instead of one per ticker.
-    const quotes = await getQuotesBatch(tickers);
-    const quoteBySymbol = new Map(quotes.map(q => [q.symbol.toUpperCase(), q]));
+    // One batched request warms the quote cache for the bundles below.
+    await getQuotesBatch(tickers);
 
     const results = [];
     for (const ticker of tickers) {
       try {
-        const quote = quoteBySymbol.get(ticker) || await getQuote(ticker);
-        const intradayChart = await getHistoricalData(ticker, 'intraday');
-        const technicals = computeIndicators(intradayChart);
+        const bundle = await getScreeningBundle(ticker, { period: 'intraday', news: false });
+        const { quote, technicals } = bundle;
 
         results.push({
           ticker: ticker.toUpperCase(),
@@ -231,15 +226,8 @@ async function computeDailyPick() {
   const candidates = [];
   for (const ticker of screened) {
     try {
-      const [quote, fundamentals, dailyChart, news, timesfm] = await Promise.all([
-        getQuote(ticker),
-        getFundamentals(ticker),
-        getHistoricalData(ticker, '1d'),
-        getYahooNews(ticker),
-        getForecast(ticker).catch(() => null),
-      ]);
-
-      const technicals = computeIndicators(dailyChart);
+      const bundle = await getScreeningBundle(ticker, { period: '1d', news: true, timesfm: true });
+      const { quote, fundamentals, technicals, news, timesfm } = bundle;
       const volumeRatio = quote.avgVolume > 0 ? (quote.volume / quote.avgVolume) * 100 : 100;
       let marketCapFormatted = 'N/A';
       if (quote.marketCap) {
