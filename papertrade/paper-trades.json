@@ -10,9 +10,9 @@
       "entrySpot": 1273,
       "entryEdge": 1.55,
       "entryBreakevenPct": 3.32,
-      "lastValue": 39.65,
-      "lastSpot": 1257,
-      "lastChecked": "2026-09-19"
+      "lastValue": 36.7,
+      "lastSpot": 1250,
+      "lastChecked": "2026-09-21"
     },
     {
       "status": "open",
@@ -24,9 +24,9 @@
       "entrySpot": 712.1,
       "entryEdge": 1.51,
       "entryBreakevenPct": 3.62,
-      "lastValue": 28.1,
-      "lastSpot": 731,
-      "lastChecked": "2026-09-19"
+      "lastValue": 33.35,
+      "lastSpot": 739.5,
+      "lastChecked": "2026-09-21"
     },
     {
       "status": "open",
@@ -38,9 +38,9 @@
       "entrySpot": 4798.5,
       "entryEdge": 1.65,
       "entryBreakevenPct": 2.19,
-      "lastValue": 104.85,
-      "lastSpot": 4798.5,
-      "lastChecked": "2026-09-19"
+      "lastValue": 110.44999999999999,
+      "lastSpot": 4875,
+      "lastChecked": "2026-09-21"
     },
     {
       "status": "open",
@@ -52,9 +52,9 @@
       "entrySpot": 1051.4,
       "entryEdge": 1.6,
       "entryBreakevenPct": 3.65,
-      "lastValue": 38.4,
-      "lastSpot": 1051.4,
-      "lastChecked": "2026-09-19"
+      "lastValue": 35.349999999999994,
+      "lastSpot": 1038.5,
+      "lastChecked": "2026-09-21"
     },
     {
       "status": "open",
@@ -66,9 +66,51 @@
       "entrySpot": 2105,
       "entryEdge": 1.6,
       "entryBreakevenPct": 3.82,
-      "lastValue": 80.5,
-      "lastSpot": 2105,
-      "lastChecked": "2026-09-19"
+      "lastValue": 71.5,
+      "lastSpot": 2128.7,
+      "lastChecked": "2026-09-21"
+    },
+    {
+      "status": "open",
+      "underlying": "RELIANCE",
+      "strike": 1250,
+      "expiry": "2026-09-29",
+      "entryDate": "2026-09-21",
+      "entryCost": 26,
+      "entrySpot": 1247.4,
+      "entryEdge": 1.51,
+      "entryBreakevenPct": 2.08,
+      "lastValue": 26,
+      "lastSpot": 1247.4,
+      "lastChecked": "2026-09-21"
+    },
+    {
+      "status": "open",
+      "underlying": "LT",
+      "strike": 3900,
+      "expiry": "2026-09-29",
+      "entryDate": "2026-09-21",
+      "entryCost": 79.25,
+      "entrySpot": 3904.8,
+      "entryEdge": 1.37,
+      "entryBreakevenPct": 2.03,
+      "lastValue": 79.25,
+      "lastSpot": 3904.8,
+      "lastChecked": "2026-09-21"
+    },
+    {
+      "status": "open",
+      "underlying": "KOTAKBANK",
+      "strike": 415,
+      "expiry": "2026-09-29",
+      "entryDate": "2026-09-21",
+      "entryCost": 8.8,
+      "entrySpot": 414.8,
+      "entryEdge": 1.36,
+      "entryBreakevenPct": 2.12,
+      "lastValue": 8.8,
+      "lastSpot": 414.8,
+      "lastChecked": "2026-09-21"
     }
   ],
   "closed": [
@@ -92,8 +134,8 @@
     }
   ],
   "stats": {
-    "updated": "2026-09-19",
-    "openCount": 5,
+    "updated": "2026-09-21",
+    "openCount": 8,
     "closedCount": 1,
     "winRate": 100,
     "avgPnlPct": 88.38,
