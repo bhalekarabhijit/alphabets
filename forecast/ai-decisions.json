@@ -1,0 +1,11 @@
+[
+  {
+    "date": "2026-09-21",
+    "ticker": "HDFCBANK.NS",
+    "action": "SWING",
+    "entry": 739.5,
+    "target": 950,
+    "stop": 710,
+    "confidence": 78
+  }
+]
