@@ -10,9 +10,9 @@
       "entrySpot": 1273,
       "entryEdge": 1.55,
       "entryBreakevenPct": 3.32,
-      "lastValue": 36.05,
-      "lastSpot": 1242.7,
-      "lastChecked": "2026-09-22"
+      "lastValue": 36.2,
+      "lastSpot": 1243.2,
+      "lastChecked": "2026-09-23"
     },
     {
       "status": "open",
@@ -24,9 +24,9 @@
       "entrySpot": 712.1,
       "entryEdge": 1.51,
       "entryBreakevenPct": 3.62,
-      "lastValue": 34,
-      "lastSpot": 738.6,
-      "lastChecked": "2026-09-22"
+      "lastValue": 29.75,
+      "lastSpot": 737.25,
+      "lastChecked": "2026-09-23"
     },
     {
       "status": "open",
@@ -38,9 +38,9 @@
       "entrySpot": 1051.4,
       "entryEdge": 1.6,
       "entryBreakevenPct": 3.65,
-      "lastValue": 39.15,
-      "lastSpot": 1029.4,
-      "lastChecked": "2026-09-22"
+      "lastValue": 43.8,
+      "lastSpot": 1020.5,
+      "lastChecked": "2026-09-23"
     },
     {
       "status": "open",
@@ -52,9 +52,9 @@
       "entrySpot": 2105,
       "entryEdge": 1.6,
       "entryBreakevenPct": 3.82,
-      "lastValue": 59.650000000000006,
-      "lastSpot": 2105,
-      "lastChecked": "2026-09-22"
+      "lastValue": 52.55,
+      "lastSpot": 2089.6,
+      "lastChecked": "2026-09-23"
     },
     {
       "status": "open",
@@ -66,9 +66,9 @@
       "entrySpot": 1247.4,
       "entryEdge": 1.51,
       "entryBreakevenPct": 2.08,
-      "lastValue": 24.4,
-      "lastSpot": 1240.4,
-      "lastChecked": "2026-09-22"
+      "lastValue": 19.65,
+      "lastSpot": 1248,
+      "lastChecked": "2026-09-23"
     },
     {
       "status": "open",
@@ -80,9 +80,9 @@
       "entrySpot": 3904.8,
       "entryEdge": 1.37,
       "entryBreakevenPct": 2.03,
-      "lastValue": 78.30000000000001,
-      "lastSpot": 3866.4,
-      "lastChecked": "2026-09-22"
+      "lastValue": 67.7,
+      "lastSpot": 3929.9,
+      "lastChecked": "2026-09-23"
     },
     {
       "status": "open",
@@ -94,9 +94,9 @@
       "entrySpot": 414.8,
       "entryEdge": 1.36,
       "entryBreakevenPct": 2.12,
-      "lastValue": 7.35,
-      "lastSpot": 412.65,
-      "lastChecked": "2026-09-22"
+      "lastValue": 6.35,
+      "lastSpot": 413.25,
+      "lastChecked": "2026-09-23"
     },
     {
       "status": "open",
@@ -108,9 +108,9 @@
       "entrySpot": 4928.5,
       "entryEdge": 1.45,
       "entryBreakevenPct": 1.74,
-      "lastValue": 85.75,
-      "lastSpot": 4928.5,
-      "lastChecked": "2026-09-22"
+      "lastValue": 88.3,
+      "lastSpot": 4880,
+      "lastChecked": "2026-09-23"
     },
     {
       "status": "open",
@@ -122,9 +122,23 @@
       "entrySpot": 987,
       "entryEdge": 1.37,
       "entryBreakevenPct": 1.88,
-      "lastValue": 18.6,
-      "lastSpot": 987,
-      "lastChecked": "2026-09-22"
+      "lastValue": 15.7,
+      "lastSpot": 994.1,
+      "lastChecked": "2026-09-23"
+    },
+    {
+      "status": "open",
+      "underlying": "SUNPHARMA",
+      "strike": 1860,
+      "expiry": "2026-09-29",
+      "entryDate": "2026-09-23",
+      "entryCost": 26.35,
+      "entrySpot": 1865,
+      "entryEdge": 1.83,
+      "entryBreakevenPct": 1.41,
+      "lastValue": 26.35,
+      "lastSpot": 1865,
+      "lastChecked": "2026-09-23"
     }
   ],
   "closed": [
@@ -166,8 +180,8 @@
     }
   ],
   "stats": {
-    "updated": "2026-09-22",
-    "openCount": 9,
+    "updated": "2026-09-23",
+    "openCount": 10,
     "closedCount": 2,
     "winRate": 100,
     "avgPnlPct": 69.6,
