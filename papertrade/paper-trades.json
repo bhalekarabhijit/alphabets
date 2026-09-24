@@ -2,20 +2,6 @@
   "open": [
     {
       "status": "open",
-      "underlying": "AXISBANK",
-      "strike": 1280,
-      "expiry": "2026-09-29",
-      "entryDate": "2026-09-07",
-      "entryCost": 42.25,
-      "entrySpot": 1273,
-      "entryEdge": 1.55,
-      "entryBreakevenPct": 3.32,
-      "lastValue": 36.2,
-      "lastSpot": 1243.2,
-      "lastChecked": "2026-09-23"
-    },
-    {
-      "status": "open",
       "underlying": "HDFCBANK",
       "strike": 710,
       "expiry": "2026-09-29",
@@ -24,9 +10,9 @@
       "entrySpot": 712.1,
       "entryEdge": 1.51,
       "entryBreakevenPct": 3.62,
-      "lastValue": 29.75,
-      "lastSpot": 737.25,
-      "lastChecked": "2026-09-23"
+      "lastValue": 21.849999999999998,
+      "lastSpot": 728.9,
+      "lastChecked": "2026-09-24"
     },
     {
       "status": "open",
@@ -38,9 +24,9 @@
       "entrySpot": 1051.4,
       "entryEdge": 1.6,
       "entryBreakevenPct": 3.65,
-      "lastValue": 43.8,
-      "lastSpot": 1020.5,
-      "lastChecked": "2026-09-23"
+      "lastValue": 48.949999999999996,
+      "lastSpot": 1014.5,
+      "lastChecked": "2026-09-24"
     },
     {
       "status": "open",
@@ -52,9 +38,9 @@
       "entrySpot": 2105,
       "entryEdge": 1.6,
       "entryBreakevenPct": 3.82,
-      "lastValue": 52.55,
-      "lastSpot": 2089.6,
-      "lastChecked": "2026-09-23"
+      "lastValue": 49.25,
+      "lastSpot": 2087,
+      "lastChecked": "2026-09-24"
     },
     {
       "status": "open",
@@ -66,9 +52,9 @@
       "entrySpot": 1247.4,
       "entryEdge": 1.51,
       "entryBreakevenPct": 2.08,
-      "lastValue": 19.65,
-      "lastSpot": 1248,
-      "lastChecked": "2026-09-23"
+      "lastValue": 32.85,
+      "lastSpot": 1219.2,
+      "lastChecked": "2026-09-24"
     },
     {
       "status": "open",
@@ -80,9 +66,9 @@
       "entrySpot": 3904.8,
       "entryEdge": 1.37,
       "entryBreakevenPct": 2.03,
-      "lastValue": 67.7,
-      "lastSpot": 3929.9,
-      "lastChecked": "2026-09-23"
+      "lastValue": 76.3,
+      "lastSpot": 3858.4,
+      "lastChecked": "2026-09-24"
     },
     {
       "status": "open",
@@ -94,9 +80,9 @@
       "entrySpot": 414.8,
       "entryEdge": 1.36,
       "entryBreakevenPct": 2.12,
-      "lastValue": 6.35,
-      "lastSpot": 413.25,
-      "lastChecked": "2026-09-23"
+      "lastValue": 10.95,
+      "lastSpot": 405,
+      "lastChecked": "2026-09-24"
     },
     {
       "status": "open",
@@ -108,9 +94,9 @@
       "entrySpot": 4928.5,
       "entryEdge": 1.45,
       "entryBreakevenPct": 1.74,
-      "lastValue": 88.3,
-      "lastSpot": 4880,
-      "lastChecked": "2026-09-23"
+      "lastValue": 118.35000000000001,
+      "lastSpot": 4832.5,
+      "lastChecked": "2026-09-24"
     },
     {
       "status": "open",
@@ -122,9 +108,9 @@
       "entrySpot": 987,
       "entryEdge": 1.37,
       "entryBreakevenPct": 1.88,
-      "lastValue": 15.7,
-      "lastSpot": 994.1,
-      "lastChecked": "2026-09-23"
+      "lastValue": 17.099999999999998,
+      "lastSpot": 978.5,
+      "lastChecked": "2026-09-24"
     },
     {
       "status": "open",
@@ -136,9 +122,9 @@
       "entrySpot": 1865,
       "entryEdge": 1.83,
       "entryBreakevenPct": 1.41,
-      "lastValue": 26.35,
-      "lastSpot": 1865,
-      "lastChecked": "2026-09-23"
+      "lastValue": 27.4,
+      "lastSpot": 1849.9,
+      "lastChecked": "2026-09-24"
     }
   ],
   "closed": [
@@ -177,14 +163,32 @@
       "exitReason": "take-profit +50%",
       "exitValue": 158.15,
       "pnlPct": 50.83
+    },
+    {
+      "status": "closed",
+      "underlying": "AXISBANK",
+      "strike": 1280,
+      "expiry": "2026-09-29",
+      "entryDate": "2026-09-07",
+      "entryCost": 42.25,
+      "entrySpot": 1273,
+      "entryEdge": 1.55,
+      "entryBreakevenPct": 3.32,
+      "lastValue": 92.95,
+      "lastSpot": 1186.5,
+      "lastChecked": "2026-09-24",
+      "exitDate": "2026-09-24",
+      "exitReason": "take-profit +50%",
+      "exitValue": 92.95,
+      "pnlPct": 120
     }
   ],
   "stats": {
-    "updated": "2026-09-23",
-    "openCount": 10,
-    "closedCount": 2,
+    "updated": "2026-09-24",
+    "openCount": 9,
+    "closedCount": 3,
     "winRate": 100,
-    "avgPnlPct": 69.6,
-    "totalPnlPct": 139.21
+    "avgPnlPct": 86.4,
+    "totalPnlPct": 259.21
   }
 }
