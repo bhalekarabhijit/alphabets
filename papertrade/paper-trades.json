@@ -1,5 +1,20 @@
 {
-  "open": [],
+  "open": [
+    {
+      "status": "open",
+      "underlying": "AXISBANK",
+      "strike": 1230,
+      "expiry": "2026-10-27",
+      "entryDate": "2026-09-30",
+      "entryCost": 61.15,
+      "entrySpot": 1226,
+      "entryEdge": 1.36,
+      "entryBreakevenPct": 4.99,
+      "lastValue": 61.15,
+      "lastSpot": 1226,
+      "lastChecked": "2026-09-30"
+    }
+  ],
   "closed": [
     {
       "status": "closed",
@@ -219,8 +234,8 @@
     }
   ],
   "stats": {
-    "updated": "2026-09-29",
-    "openCount": 0,
+    "updated": "2026-09-30",
+    "openCount": 1,
     "closedCount": 12,
     "winRate": 83.33,
     "avgPnlPct": 47.03,
