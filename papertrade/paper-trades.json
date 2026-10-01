@@ -10,9 +10,9 @@
       "entrySpot": 1226,
       "entryEdge": 1.36,
       "entryBreakevenPct": 4.99,
-      "lastValue": 61.15,
-      "lastSpot": 1226,
-      "lastChecked": "2026-09-30"
+      "lastValue": 62.7,
+      "lastSpot": 1217.1,
+      "lastChecked": "2026-10-01"
     }
   ],
   "closed": [
@@ -234,7 +234,7 @@
     }
   ],
   "stats": {
-    "updated": "2026-09-30",
+    "updated": "2026-10-01",
     "openCount": 1,
     "closedCount": 12,
     "winRate": 83.33,
