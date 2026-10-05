@@ -1,20 +1,5 @@
 {
-  "open": [
-    {
-      "status": "open",
-      "underlying": "AXISBANK",
-      "strike": 1230,
-      "expiry": "2026-10-27",
-      "entryDate": "2026-09-30",
-      "entryCost": 61.15,
-      "entrySpot": 1226,
-      "entryEdge": 1.36,
-      "entryBreakevenPct": 4.99,
-      "lastValue": 62.7,
-      "lastSpot": 1217.1,
-      "lastChecked": "2026-10-02"
-    }
-  ],
+  "open": [],
   "closed": [
     {
       "status": "closed",
@@ -231,14 +216,32 @@
       "exitReason": "time exit (1d to expiry)",
       "exitValue": 29.3,
       "pnlPct": 11.2
+    },
+    {
+      "status": "closed",
+      "underlying": "AXISBANK",
+      "strike": 1230,
+      "expiry": "2026-10-27",
+      "entryDate": "2026-09-30",
+      "entryCost": 61.15,
+      "entrySpot": 1226,
+      "entryEdge": 1.36,
+      "entryBreakevenPct": 4.99,
+      "lastValue": null,
+      "lastSpot": 1217.1,
+      "lastChecked": "2026-10-05",
+      "exitDate": "2026-10-05",
+      "exitReason": "expired — settled at intrinsic value",
+      "exitValue": 7.8,
+      "pnlPct": -87.24
     }
   ],
   "stats": {
-    "updated": "2026-10-02",
-    "openCount": 1,
-    "closedCount": 12,
-    "winRate": 83.33,
-    "avgPnlPct": 47.03,
-    "totalPnlPct": 564.3
+    "updated": "2026-10-05",
+    "openCount": 0,
+    "closedCount": 13,
+    "winRate": 76.92,
+    "avgPnlPct": 36.7,
+    "totalPnlPct": 477.06
   }
 }
