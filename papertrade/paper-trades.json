@@ -1,5 +1,20 @@
 {
-  "open": [],
+  "open": [
+    {
+      "status": "open",
+      "underlying": "TITAN",
+      "strike": 4400,
+      "expiry": "2026-10-27",
+      "entryDate": "2026-10-07",
+      "entryCost": 166.5,
+      "entrySpot": 4377,
+      "entryEdge": 1.33,
+      "entryBreakevenPct": 3.8,
+      "lastValue": 166.5,
+      "lastSpot": 4377,
+      "lastChecked": "2026-10-07"
+    }
+  ],
   "closed": [
     {
       "status": "closed",
@@ -237,8 +252,8 @@
     }
   ],
   "stats": {
-    "updated": "2026-10-06",
-    "openCount": 0,
+    "updated": "2026-10-07",
+    "openCount": 1,
     "closedCount": 13,
     "winRate": 76.92,
     "avgPnlPct": 36.7,
