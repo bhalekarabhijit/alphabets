@@ -1,20 +1,5 @@
 {
-  "open": [
-    {
-      "status": "open",
-      "underlying": "TITAN",
-      "strike": 4400,
-      "expiry": "2026-10-27",
-      "entryDate": "2026-10-07",
-      "entryCost": 166.5,
-      "entrySpot": 4377,
-      "entryEdge": 1.33,
-      "entryBreakevenPct": 3.8,
-      "lastValue": 161.25,
-      "lastSpot": 4359.5,
-      "lastChecked": "2026-10-08"
-    }
-  ],
+  "open": [],
   "closed": [
     {
       "status": "closed",
@@ -249,14 +234,32 @@
       "exitReason": "expired — settled at intrinsic value",
       "exitValue": 7.8,
       "pnlPct": -87.24
+    },
+    {
+      "status": "closed",
+      "underlying": "TITAN",
+      "strike": 4400,
+      "expiry": "2026-10-27",
+      "entryDate": "2026-10-07",
+      "entryCost": 166.5,
+      "entrySpot": 4377,
+      "entryEdge": 1.33,
+      "entryBreakevenPct": 3.8,
+      "lastValue": null,
+      "lastSpot": 4359.5,
+      "lastChecked": "2026-10-09",
+      "exitDate": "2026-10-09",
+      "exitReason": "expired — settled at intrinsic value",
+      "exitValue": 10,
+      "pnlPct": -93.99
     }
   ],
   "stats": {
-    "updated": "2026-10-08",
-    "openCount": 1,
-    "closedCount": 13,
-    "winRate": 76.92,
-    "avgPnlPct": 36.7,
-    "totalPnlPct": 477.06
+    "updated": "2026-10-09",
+    "openCount": 0,
+    "closedCount": 14,
+    "winRate": 71.43,
+    "avgPnlPct": 27.36,
+    "totalPnlPct": 383.07
   }
 }
