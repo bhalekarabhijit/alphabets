@@ -16,5 +16,14 @@
     "target": 327.15,
     "stop": 228.6,
     "confidence": 68
+  },
+  {
+    "date": "2026-10-12",
+    "ticker": "ADANIPORTS.NS",
+    "action": "SWING",
+    "entry": 1750,
+    "target": 1900,
+    "stop": 1650,
+    "confidence": 68
   }
 ]
