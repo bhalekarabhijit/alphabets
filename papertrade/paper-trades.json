@@ -1,5 +1,20 @@
 {
-  "open": [],
+  "open": [
+    {
+      "status": "open",
+      "underlying": "TCS",
+      "strike": 2120,
+      "expiry": "2026-10-27",
+      "entryDate": "2026-10-12",
+      "entryCost": 89,
+      "entrySpot": 2125,
+      "entryEdge": 1.43,
+      "entryBreakevenPct": 4.19,
+      "lastValue": 89,
+      "lastSpot": 2125,
+      "lastChecked": "2026-10-12"
+    }
+  ],
   "closed": [
     {
       "status": "closed",
@@ -255,8 +270,8 @@
     }
   ],
   "stats": {
-    "updated": "2026-10-09",
-    "openCount": 0,
+    "updated": "2026-10-12",
+    "openCount": 1,
     "closedCount": 14,
     "winRate": 71.43,
     "avgPnlPct": 27.36,
