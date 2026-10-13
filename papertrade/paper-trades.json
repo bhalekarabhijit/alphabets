@@ -2,17 +2,45 @@
   "open": [
     {
       "status": "open",
-      "underlying": "TCS",
-      "strike": 2120,
+      "underlying": "TITAN",
+      "strike": 4500,
       "expiry": "2026-10-27",
-      "entryDate": "2026-10-12",
-      "entryCost": 89,
-      "entrySpot": 2125,
-      "entryEdge": 1.43,
+      "entryDate": "2026-10-13",
+      "entryCost": 127.1,
+      "entrySpot": 4487,
+      "entryEdge": 1.65,
+      "entryBreakevenPct": 2.83,
+      "lastValue": 127.1,
+      "lastSpot": 4487,
+      "lastChecked": "2026-10-13"
+    },
+    {
+      "status": "open",
+      "underlying": "LT",
+      "strike": 3700,
+      "expiry": "2026-10-27",
+      "entryDate": "2026-10-13",
+      "entryCost": 121.4,
+      "entrySpot": 3675,
+      "entryEdge": 1.39,
+      "entryBreakevenPct": 3.3,
+      "lastValue": 121.4,
+      "lastSpot": 3675,
+      "lastChecked": "2026-10-13"
+    },
+    {
+      "status": "open",
+      "underlying": "TCS",
+      "strike": 2260,
+      "expiry": "2026-10-27",
+      "entryDate": "2026-10-13",
+      "entryCost": 95.1,
+      "entrySpot": 2269.3,
+      "entryEdge": 1.37,
       "entryBreakevenPct": 4.19,
-      "lastValue": 89,
-      "lastSpot": 2125,
-      "lastChecked": "2026-10-12"
+      "lastValue": 95.1,
+      "lastSpot": 2269.3,
+      "lastChecked": "2026-10-13"
     }
   ],
   "closed": [
@@ -267,14 +295,32 @@
       "exitReason": "expired — settled at intrinsic value",
       "exitValue": 10,
       "pnlPct": -93.99
+    },
+    {
+      "status": "closed",
+      "underlying": "TCS",
+      "strike": 2120,
+      "expiry": "2026-10-27",
+      "entryDate": "2026-10-12",
+      "entryCost": 89,
+      "entrySpot": 2125,
+      "entryEdge": 1.43,
+      "entryBreakevenPct": 4.19,
+      "lastValue": 168.8,
+      "lastSpot": 2269.3,
+      "lastChecked": "2026-10-13",
+      "exitDate": "2026-10-13",
+      "exitReason": "take-profit +50%",
+      "exitValue": 168.8,
+      "pnlPct": 89.66
     }
   ],
   "stats": {
-    "updated": "2026-10-12",
-    "openCount": 1,
-    "closedCount": 14,
-    "winRate": 71.43,
-    "avgPnlPct": 27.36,
-    "totalPnlPct": 383.07
+    "updated": "2026-10-13",
+    "openCount": 3,
+    "closedCount": 15,
+    "winRate": 73.33,
+    "avgPnlPct": 31.52,
+    "totalPnlPct": 472.73
   }
 }
