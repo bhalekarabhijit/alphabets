@@ -2,20 +2,6 @@
   "open": [
     {
       "status": "open",
-      "underlying": "TITAN",
-      "strike": 4500,
-      "expiry": "2026-10-27",
-      "entryDate": "2026-10-13",
-      "entryCost": 127.1,
-      "entrySpot": 4487,
-      "entryEdge": 1.65,
-      "entryBreakevenPct": 2.83,
-      "lastValue": 128.5,
-      "lastSpot": 4455.8,
-      "lastChecked": "2026-10-15"
-    },
-    {
-      "status": "open",
       "underlying": "LT",
       "strike": 3700,
       "expiry": "2026-10-27",
@@ -24,37 +10,9 @@
       "entrySpot": 3675,
       "entryEdge": 1.39,
       "entryBreakevenPct": 3.3,
-      "lastValue": 112.05,
-      "lastSpot": 3632,
-      "lastChecked": "2026-10-15"
-    },
-    {
-      "status": "open",
-      "underlying": "TCS",
-      "strike": 2260,
-      "expiry": "2026-10-27",
-      "entryDate": "2026-10-13",
-      "entryCost": 95.1,
-      "entrySpot": 2269.3,
-      "entryEdge": 1.37,
-      "entryBreakevenPct": 4.19,
-      "lastValue": 126.75,
-      "lastSpot": 2350,
-      "lastChecked": "2026-10-15"
-    },
-    {
-      "status": "open",
-      "underlying": "NIFTY",
-      "strike": 22600,
-      "expiry": "2026-10-19",
-      "entryDate": "2026-10-14",
-      "entryCost": 279.25,
-      "entrySpot": 22622.7,
-      "entryEdge": 1.36,
-      "entryBreakevenPct": 1.23,
-      "lastValue": 406.95,
-      "lastSpot": 22997.35,
-      "lastChecked": "2026-10-15"
+      "lastValue": 110.1,
+      "lastSpot": 3627.1,
+      "lastChecked": "2026-10-16"
     },
     {
       "status": "open",
@@ -66,9 +24,23 @@
       "entrySpot": 1746.4,
       "entryEdge": 1.31,
       "entryBreakevenPct": 2.61,
-      "lastValue": 46.9,
-      "lastSpot": 1764,
-      "lastChecked": "2026-10-15"
+      "lastValue": 41.35,
+      "lastSpot": 1758.8,
+      "lastChecked": "2026-10-16"
+    },
+    {
+      "status": "open",
+      "underlying": "TCS",
+      "strike": 2460,
+      "expiry": "2026-10-27",
+      "entryDate": "2026-10-16",
+      "entryCost": 90.25,
+      "entrySpot": 2465,
+      "entryEdge": 2.6,
+      "entryBreakevenPct": 3.66,
+      "lastValue": 90.25,
+      "lastSpot": 2465,
+      "lastChecked": "2026-10-16"
     }
   ],
   "closed": [
@@ -341,14 +313,68 @@
       "exitReason": "take-profit +50%",
       "exitValue": 168.8,
       "pnlPct": 89.66
+    },
+    {
+      "status": "closed",
+      "underlying": "TITAN",
+      "strike": 4500,
+      "expiry": "2026-10-27",
+      "entryDate": "2026-10-13",
+      "entryCost": 127.1,
+      "entrySpot": 4487,
+      "entryEdge": 1.65,
+      "entryBreakevenPct": 2.83,
+      "lastValue": null,
+      "lastSpot": 4455.8,
+      "lastChecked": "2026-10-16",
+      "exitDate": "2026-10-16",
+      "exitReason": "expired — settled at intrinsic value",
+      "exitValue": 55.2,
+      "pnlPct": -56.57
+    },
+    {
+      "status": "closed",
+      "underlying": "TCS",
+      "strike": 2260,
+      "expiry": "2026-10-27",
+      "entryDate": "2026-10-13",
+      "entryCost": 95.1,
+      "entrySpot": 2269.3,
+      "entryEdge": 1.37,
+      "entryBreakevenPct": 4.19,
+      "lastValue": 209.7,
+      "lastSpot": 2465,
+      "lastChecked": "2026-10-16",
+      "exitDate": "2026-10-16",
+      "exitReason": "take-profit +50%",
+      "exitValue": 209.7,
+      "pnlPct": 120.5
+    },
+    {
+      "status": "closed",
+      "underlying": "NIFTY",
+      "strike": 22600,
+      "expiry": "2026-10-19",
+      "entryDate": "2026-10-14",
+      "entryCost": 279.25,
+      "entrySpot": 22622.7,
+      "entryEdge": 1.36,
+      "entryBreakevenPct": 1.23,
+      "lastValue": 505.3,
+      "lastSpot": 23146.15,
+      "lastChecked": "2026-10-16",
+      "exitDate": "2026-10-16",
+      "exitReason": "take-profit +50%",
+      "exitValue": 505.3,
+      "pnlPct": 80.95
     }
   ],
   "stats": {
-    "updated": "2026-10-15",
-    "openCount": 5,
-    "closedCount": 15,
-    "winRate": 73.33,
-    "avgPnlPct": 31.52,
-    "totalPnlPct": 472.73
+    "updated": "2026-10-16",
+    "openCount": 3,
+    "closedCount": 18,
+    "winRate": 72.22,
+    "avgPnlPct": 34.31,
+    "totalPnlPct": 617.61
   }
 }
