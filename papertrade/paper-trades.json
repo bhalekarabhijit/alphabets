@@ -10,9 +10,9 @@
       "entrySpot": 3675,
       "entryEdge": 1.39,
       "entryBreakevenPct": 3.3,
-      "lastValue": 110.1,
-      "lastSpot": 3627.1,
-      "lastChecked": "2026-10-16"
+      "lastValue": 85.44999999999999,
+      "lastSpot": 3661.9,
+      "lastChecked": "2026-10-19"
     },
     {
       "status": "open",
@@ -24,9 +24,9 @@
       "entrySpot": 1746.4,
       "entryEdge": 1.31,
       "entryBreakevenPct": 2.61,
-      "lastValue": 41.35,
-      "lastSpot": 1758.8,
-      "lastChecked": "2026-10-16"
+      "lastValue": 34.5,
+      "lastSpot": 1743,
+      "lastChecked": "2026-10-19"
     },
     {
       "status": "open",
@@ -38,9 +38,51 @@
       "entrySpot": 2465,
       "entryEdge": 2.6,
       "entryBreakevenPct": 3.66,
-      "lastValue": 90.25,
-      "lastSpot": 2465,
-      "lastChecked": "2026-10-16"
+      "lastValue": 77.65,
+      "lastSpot": 2460.9,
+      "lastChecked": "2026-10-19"
+    },
+    {
+      "status": "open",
+      "underlying": "HDFCBANK",
+      "strike": 710,
+      "expiry": "2026-10-27",
+      "entryDate": "2026-10-19",
+      "entryCost": 15.05,
+      "entrySpot": 712,
+      "entryEdge": 1.61,
+      "entryBreakevenPct": 2.11,
+      "lastValue": 15.05,
+      "lastSpot": 712,
+      "lastChecked": "2026-10-19"
+    },
+    {
+      "status": "open",
+      "underlying": "ICICIBANK",
+      "strike": 1380,
+      "expiry": "2026-10-27",
+      "entryDate": "2026-10-19",
+      "entryCost": 26.75,
+      "entrySpot": 1381,
+      "entryEdge": 1.58,
+      "entryBreakevenPct": 1.94,
+      "lastValue": 26.75,
+      "lastSpot": 1381,
+      "lastChecked": "2026-10-19"
+    },
+    {
+      "status": "open",
+      "underlying": "AXISBANK",
+      "strike": 1240,
+      "expiry": "2026-10-27",
+      "entryDate": "2026-10-19",
+      "entryCost": 27.5,
+      "entrySpot": 1236,
+      "entryEdge": 1.55,
+      "entryBreakevenPct": 2.22,
+      "lastValue": 27.5,
+      "lastSpot": 1236,
+      "lastChecked": "2026-10-19"
     }
   ],
   "closed": [
@@ -370,8 +412,8 @@
     }
   ],
   "stats": {
-    "updated": "2026-10-16",
-    "openCount": 3,
+    "updated": "2026-10-19",
+    "openCount": 6,
     "closedCount": 18,
     "winRate": 72.22,
     "avgPnlPct": 34.31,
