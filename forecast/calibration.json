@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-10-12T16:38:01.599857+00:00",
+  "generated_at": "2026-10-19T14:31:05.393160+00:00",
   "horizon_days": 20,
   "snapshots_evaluated": 0,
-  "snapshots_pending": 20,
+  "snapshots_pending": 25,
   "results": {}
 }
