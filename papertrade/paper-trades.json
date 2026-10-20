@@ -12,7 +12,7 @@
       "entryBreakevenPct": 3.3,
       "lastValue": 85.44999999999999,
       "lastSpot": 3661.9,
-      "lastChecked": "2026-10-19"
+      "lastChecked": "2026-10-20"
     },
     {
       "status": "open",
@@ -26,7 +26,7 @@
       "entryBreakevenPct": 2.61,
       "lastValue": 34.5,
       "lastSpot": 1743,
-      "lastChecked": "2026-10-19"
+      "lastChecked": "2026-10-20"
     },
     {
       "status": "open",
@@ -40,7 +40,7 @@
       "entryBreakevenPct": 3.66,
       "lastValue": 77.65,
       "lastSpot": 2460.9,
-      "lastChecked": "2026-10-19"
+      "lastChecked": "2026-10-20"
     },
     {
       "status": "open",
@@ -54,7 +54,7 @@
       "entryBreakevenPct": 2.11,
       "lastValue": 15.05,
       "lastSpot": 712,
-      "lastChecked": "2026-10-19"
+      "lastChecked": "2026-10-20"
     },
     {
       "status": "open",
@@ -68,7 +68,7 @@
       "entryBreakevenPct": 1.94,
       "lastValue": 26.75,
       "lastSpot": 1381,
-      "lastChecked": "2026-10-19"
+      "lastChecked": "2026-10-20"
     },
     {
       "status": "open",
@@ -82,7 +82,21 @@
       "entryBreakevenPct": 2.22,
       "lastValue": 27.5,
       "lastSpot": 1236,
-      "lastChecked": "2026-10-19"
+      "lastChecked": "2026-10-20"
+    },
+    {
+      "status": "open",
+      "underlying": "NIFTY",
+      "strike": 22900,
+      "expiry": "2026-10-27",
+      "entryDate": "2026-10-20",
+      "entryCost": 342.4,
+      "entrySpot": 22888.95,
+      "entryEdge": 1.44,
+      "entryBreakevenPct": 1.5,
+      "lastValue": 342.4,
+      "lastSpot": 22888.95,
+      "lastChecked": "2026-10-20"
     }
   ],
   "closed": [
@@ -412,8 +426,8 @@
     }
   ],
   "stats": {
-    "updated": "2026-10-19",
-    "openCount": 6,
+    "updated": "2026-10-20",
+    "openCount": 7,
     "closedCount": 18,
     "winRate": 72.22,
     "avgPnlPct": 34.31,
