@@ -2,20 +2,6 @@
   "open": [
     {
       "status": "open",
-      "underlying": "LT",
-      "strike": 3700,
-      "expiry": "2026-10-27",
-      "entryDate": "2026-10-13",
-      "entryCost": 121.4,
-      "entrySpot": 3675,
-      "entryEdge": 1.39,
-      "entryBreakevenPct": 3.3,
-      "lastValue": 85.44999999999999,
-      "lastSpot": 3661.9,
-      "lastChecked": "2026-10-20"
-    },
-    {
-      "status": "open",
       "underlying": "SUNPHARMA",
       "strike": 1740,
       "expiry": "2026-10-27",
@@ -24,9 +10,9 @@
       "entrySpot": 1746.4,
       "entryEdge": 1.31,
       "entryBreakevenPct": 2.61,
-      "lastValue": 34.5,
-      "lastSpot": 1743,
-      "lastChecked": "2026-10-20"
+      "lastValue": 30,
+      "lastSpot": 1745.1,
+      "lastChecked": "2026-10-21"
     },
     {
       "status": "open",
@@ -38,9 +24,9 @@
       "entrySpot": 2465,
       "entryEdge": 2.6,
       "entryBreakevenPct": 3.66,
-      "lastValue": 77.65,
-      "lastSpot": 2460.9,
-      "lastChecked": "2026-10-20"
+      "lastValue": 86.95,
+      "lastSpot": 2529,
+      "lastChecked": "2026-10-21"
     },
     {
       "status": "open",
@@ -52,9 +38,9 @@
       "entrySpot": 712,
       "entryEdge": 1.61,
       "entryBreakevenPct": 2.11,
-      "lastValue": 15.05,
-      "lastSpot": 712,
-      "lastChecked": "2026-10-20"
+      "lastValue": 14.149999999999999,
+      "lastSpot": 706.95,
+      "lastChecked": "2026-10-21"
     },
     {
       "status": "open",
@@ -66,9 +52,9 @@
       "entrySpot": 1381,
       "entryEdge": 1.58,
       "entryBreakevenPct": 1.94,
-      "lastValue": 26.75,
-      "lastSpot": 1381,
-      "lastChecked": "2026-10-20"
+      "lastValue": 23.4,
+      "lastSpot": 1385,
+      "lastChecked": "2026-10-21"
     },
     {
       "status": "open",
@@ -80,9 +66,9 @@
       "entrySpot": 1236,
       "entryEdge": 1.55,
       "entryBreakevenPct": 2.22,
-      "lastValue": 27.5,
-      "lastSpot": 1236,
-      "lastChecked": "2026-10-20"
+      "lastValue": 34.6,
+      "lastSpot": 1210,
+      "lastChecked": "2026-10-21"
     },
     {
       "status": "open",
@@ -94,9 +80,23 @@
       "entrySpot": 22888.95,
       "entryEdge": 1.44,
       "entryBreakevenPct": 1.5,
-      "lastValue": 342.4,
-      "lastSpot": 22888.95,
-      "lastChecked": "2026-10-20"
+      "lastValue": 359.29999999999995,
+      "lastSpot": 22811.35,
+      "lastChecked": "2026-10-21"
+    },
+    {
+      "status": "open",
+      "underlying": "BAJFINANCE",
+      "strike": 930,
+      "expiry": "2026-10-27",
+      "entryDate": "2026-10-21",
+      "entryCost": 24.65,
+      "entrySpot": 926,
+      "entryEdge": 1.62,
+      "entryBreakevenPct": 2.66,
+      "lastValue": 24.65,
+      "lastSpot": 926,
+      "lastChecked": "2026-10-21"
     }
   ],
   "closed": [
@@ -423,14 +423,32 @@
       "exitReason": "take-profit +50%",
       "exitValue": 505.3,
       "pnlPct": 80.95
+    },
+    {
+      "status": "closed",
+      "underlying": "LT",
+      "strike": 3700,
+      "expiry": "2026-10-27",
+      "entryDate": "2026-10-13",
+      "entryCost": 121.4,
+      "entrySpot": 3675,
+      "entryEdge": 1.39,
+      "entryBreakevenPct": 3.3,
+      "lastValue": null,
+      "lastSpot": 3661.9,
+      "lastChecked": "2026-10-21",
+      "exitDate": "2026-10-21",
+      "exitReason": "expired — settled at intrinsic value",
+      "exitValue": 64,
+      "pnlPct": -47.28
     }
   ],
   "stats": {
-    "updated": "2026-10-20",
+    "updated": "2026-10-21",
     "openCount": 7,
-    "closedCount": 18,
-    "winRate": 72.22,
-    "avgPnlPct": 34.31,
-    "totalPnlPct": 617.61
+    "closedCount": 19,
+    "winRate": 68.42,
+    "avgPnlPct": 30.02,
+    "totalPnlPct": 570.33
   }
 }
