@@ -10,9 +10,9 @@
       "entrySpot": 1746.4,
       "entryEdge": 1.31,
       "entryBreakevenPct": 2.61,
-      "lastValue": 30,
-      "lastSpot": 1745.1,
-      "lastChecked": "2026-10-21"
+      "lastValue": 29.700000000000003,
+      "lastSpot": 1758,
+      "lastChecked": "2026-10-22"
     },
     {
       "status": "open",
@@ -24,9 +24,9 @@
       "entrySpot": 2465,
       "entryEdge": 2.6,
       "entryBreakevenPct": 3.66,
-      "lastValue": 86.95,
-      "lastSpot": 2529,
-      "lastChecked": "2026-10-21"
+      "lastValue": 69.85,
+      "lastSpot": 2506.9,
+      "lastChecked": "2026-10-22"
     },
     {
       "status": "open",
@@ -38,9 +38,9 @@
       "entrySpot": 712,
       "entryEdge": 1.61,
       "entryBreakevenPct": 2.11,
-      "lastValue": 14.149999999999999,
-      "lastSpot": 706.95,
-      "lastChecked": "2026-10-21"
+      "lastValue": 17.8,
+      "lastSpot": 694.05,
+      "lastChecked": "2026-10-22"
     },
     {
       "status": "open",
@@ -52,9 +52,9 @@
       "entrySpot": 1381,
       "entryEdge": 1.58,
       "entryBreakevenPct": 1.94,
-      "lastValue": 23.4,
-      "lastSpot": 1385,
-      "lastChecked": "2026-10-21"
+      "lastValue": 23.6,
+      "lastSpot": 1398.5,
+      "lastChecked": "2026-10-22"
     },
     {
       "status": "open",
@@ -66,9 +66,9 @@
       "entrySpot": 1236,
       "entryEdge": 1.55,
       "entryBreakevenPct": 2.22,
-      "lastValue": 34.6,
-      "lastSpot": 1210,
-      "lastChecked": "2026-10-21"
+      "lastValue": 32.85,
+      "lastSpot": 1212,
+      "lastChecked": "2026-10-22"
     },
     {
       "status": "open",
@@ -80,9 +80,9 @@
       "entrySpot": 22888.95,
       "entryEdge": 1.44,
       "entryBreakevenPct": 1.5,
-      "lastValue": 359.29999999999995,
-      "lastSpot": 22811.35,
-      "lastChecked": "2026-10-21"
+      "lastValue": 335.6,
+      "lastSpot": 22687.65,
+      "lastChecked": "2026-10-22"
     },
     {
       "status": "open",
@@ -94,9 +94,51 @@
       "entrySpot": 926,
       "entryEdge": 1.62,
       "entryBreakevenPct": 2.66,
-      "lastValue": 24.65,
-      "lastSpot": 926,
-      "lastChecked": "2026-10-21"
+      "lastValue": 23.5,
+      "lastSpot": 942.1,
+      "lastChecked": "2026-10-22"
+    },
+    {
+      "status": "open",
+      "underlying": "TITAN",
+      "strike": 4350,
+      "expiry": "2026-10-27",
+      "entryDate": "2026-10-22",
+      "entryCost": 70.35,
+      "entrySpot": 4350,
+      "entryEdge": 1.71,
+      "entryBreakevenPct": 1.62,
+      "lastValue": 70.35,
+      "lastSpot": 4350,
+      "lastChecked": "2026-10-22"
+    },
+    {
+      "status": "open",
+      "underlying": "RELIANCE",
+      "strike": 1180,
+      "expiry": "2026-10-27",
+      "entryDate": "2026-10-22",
+      "entryCost": 25.1,
+      "entrySpot": 1184.5,
+      "entryEdge": 1.34,
+      "entryBreakevenPct": 2.12,
+      "lastValue": 25.1,
+      "lastSpot": 1184.5,
+      "lastChecked": "2026-10-22"
+    },
+    {
+      "status": "open",
+      "underlying": "LT",
+      "strike": 3650,
+      "expiry": "2026-10-27",
+      "entryDate": "2026-10-22",
+      "entryCost": 70.75,
+      "entrySpot": 3638.3,
+      "entryEdge": 1.3,
+      "entryBreakevenPct": 1.94,
+      "lastValue": 70.75,
+      "lastSpot": 3638.3,
+      "lastChecked": "2026-10-22"
     }
   ],
   "closed": [
@@ -444,8 +486,8 @@
     }
   ],
   "stats": {
-    "updated": "2026-10-21",
-    "openCount": 7,
+    "updated": "2026-10-22",
+    "openCount": 10,
     "closedCount": 19,
     "winRate": 68.42,
     "avgPnlPct": 30.02,
