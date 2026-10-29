@@ -10,9 +10,9 @@
       "entrySpot": 2460,
       "entryEdge": 1.56,
       "entryBreakevenPct": 6.26,
-      "lastValue": 153.9,
-      "lastSpot": 2460,
-      "lastChecked": "2026-10-28"
+      "lastValue": 147.5,
+      "lastSpot": 2478,
+      "lastChecked": "2026-10-29"
     },
     {
       "status": "open",
@@ -24,9 +24,9 @@
       "entrySpot": 1377.6,
       "entryEdge": 1.47,
       "entryBreakevenPct": 3.87,
-      "lastValue": 53.3,
-      "lastSpot": 1377.6,
-      "lastChecked": "2026-10-28"
+      "lastValue": 51.85,
+      "lastSpot": 1386.6,
+      "lastChecked": "2026-10-29"
     },
     {
       "status": "open",
@@ -38,9 +38,51 @@
       "entrySpot": 1220,
       "entryEdge": 1.44,
       "entryBreakevenPct": 4.35,
-      "lastValue": 53.05,
-      "lastSpot": 1220,
-      "lastChecked": "2026-10-28"
+      "lastValue": 49.5,
+      "lastSpot": 1225,
+      "lastChecked": "2026-10-29"
+    },
+    {
+      "status": "open",
+      "underlying": "LT",
+      "strike": 3850,
+      "expiry": "2026-11-23",
+      "entryDate": "2026-10-29",
+      "entryCost": 149.25,
+      "entrySpot": 3837.1,
+      "entryEdge": 1.61,
+      "entryBreakevenPct": 3.89,
+      "lastValue": 149.25,
+      "lastSpot": 3837.1,
+      "lastChecked": "2026-10-29"
+    },
+    {
+      "status": "open",
+      "underlying": "INFY",
+      "strike": 1140,
+      "expiry": "2026-11-23",
+      "entryDate": "2026-10-29",
+      "entryCost": 70.95,
+      "entrySpot": 1146.5,
+      "entryEdge": 1.51,
+      "entryBreakevenPct": 6.19,
+      "lastValue": 70.95,
+      "lastSpot": 1146.5,
+      "lastChecked": "2026-10-29"
+    },
+    {
+      "status": "open",
+      "underlying": "KOTAKBANK",
+      "strike": 460,
+      "expiry": "2026-11-23",
+      "entryDate": "2026-10-29",
+      "entryCost": 17.85,
+      "entrySpot": 459,
+      "entryEdge": 1.51,
+      "entryBreakevenPct": 3.89,
+      "lastValue": 17.85,
+      "lastSpot": 459,
+      "lastChecked": "2026-10-29"
     }
   ],
   "closed": [
@@ -568,8 +610,8 @@
     }
   ],
   "stats": {
-    "updated": "2026-10-28",
-    "openCount": 3,
+    "updated": "2026-10-29",
+    "openCount": 6,
     "closedCount": 29,
     "winRate": 48.28,
     "avgPnlPct": 13.02,
