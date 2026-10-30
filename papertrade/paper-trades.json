@@ -10,9 +10,9 @@
       "entrySpot": 2460,
       "entryEdge": 1.56,
       "entryBreakevenPct": 6.26,
-      "lastValue": 147.5,
-      "lastSpot": 2478,
-      "lastChecked": "2026-10-29"
+      "lastValue": 149.85,
+      "lastSpot": 2502.6,
+      "lastChecked": "2026-10-30"
     },
     {
       "status": "open",
@@ -24,9 +24,9 @@
       "entrySpot": 1377.6,
       "entryEdge": 1.47,
       "entryBreakevenPct": 3.87,
-      "lastValue": 51.85,
-      "lastSpot": 1386.6,
-      "lastChecked": "2026-10-29"
+      "lastValue": 52.45,
+      "lastSpot": 1398,
+      "lastChecked": "2026-10-30"
     },
     {
       "status": "open",
@@ -38,9 +38,9 @@
       "entrySpot": 1220,
       "entryEdge": 1.44,
       "entryBreakevenPct": 4.35,
-      "lastValue": 49.5,
-      "lastSpot": 1225,
-      "lastChecked": "2026-10-29"
+      "lastValue": 48.8,
+      "lastSpot": 1217,
+      "lastChecked": "2026-10-30"
     },
     {
       "status": "open",
@@ -52,9 +52,9 @@
       "entrySpot": 3837.1,
       "entryEdge": 1.61,
       "entryBreakevenPct": 3.89,
-      "lastValue": 149.25,
-      "lastSpot": 3837.1,
-      "lastChecked": "2026-10-29"
+      "lastValue": 147.15,
+      "lastSpot": 3871.7,
+      "lastChecked": "2026-10-30"
     },
     {
       "status": "open",
@@ -66,9 +66,9 @@
       "entrySpot": 1146.5,
       "entryEdge": 1.51,
       "entryBreakevenPct": 6.19,
-      "lastValue": 70.95,
-      "lastSpot": 1146.5,
-      "lastChecked": "2026-10-29"
+      "lastValue": 81.75,
+      "lastSpot": 1185,
+      "lastChecked": "2026-10-30"
     },
     {
       "status": "open",
@@ -80,9 +80,23 @@
       "entrySpot": 459,
       "entryEdge": 1.51,
       "entryBreakevenPct": 3.89,
-      "lastValue": 17.85,
-      "lastSpot": 459,
-      "lastChecked": "2026-10-29"
+      "lastValue": 17.450000000000003,
+      "lastSpot": 461.6,
+      "lastChecked": "2026-10-30"
+    },
+    {
+      "status": "open",
+      "underlying": "HDFCBANK",
+      "strike": 690,
+      "expiry": "2026-11-23",
+      "entryDate": "2026-10-30",
+      "entryCost": 28,
+      "entrySpot": 692.8,
+      "entryEdge": 1.39,
+      "entryBreakevenPct": 4.04,
+      "lastValue": 28,
+      "lastSpot": 692.8,
+      "lastChecked": "2026-10-30"
     }
   ],
   "closed": [
@@ -610,8 +624,8 @@
     }
   ],
   "stats": {
-    "updated": "2026-10-29",
-    "openCount": 6,
+    "updated": "2026-10-30",
+    "openCount": 7,
     "closedCount": 29,
     "winRate": 48.28,
     "avgPnlPct": 13.02,
