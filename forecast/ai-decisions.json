@@ -25,5 +25,14 @@
     "target": 1900,
     "stop": 1650,
     "confidence": 68
+  },
+  {
+    "date": "2026-11-02",
+    "ticker": "BPCL.NS",
+    "action": "SWING",
+    "entry": 2477.48,
+    "target": 3263.47,
+    "stop": 2400,
+    "confidence": 80
   }
 ]
