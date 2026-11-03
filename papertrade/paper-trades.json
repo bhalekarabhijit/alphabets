@@ -10,9 +10,9 @@
       "entrySpot": 1220,
       "entryEdge": 1.44,
       "entryBreakevenPct": 4.35,
-      "lastValue": 47.5,
-      "lastSpot": 1209,
-      "lastChecked": "2026-11-02"
+      "lastValue": 47.2,
+      "lastSpot": 1232.7,
+      "lastChecked": "2026-11-03"
     },
     {
       "status": "open",
@@ -24,23 +24,9 @@
       "entrySpot": 3837.1,
       "entryEdge": 1.61,
       "entryBreakevenPct": 3.89,
-      "lastValue": 158.15,
-      "lastSpot": 3939.9,
-      "lastChecked": "2026-11-02"
-    },
-    {
-      "status": "open",
-      "underlying": "INFY",
-      "strike": 1140,
-      "expiry": "2026-11-23",
-      "entryDate": "2026-10-29",
-      "entryCost": 70.95,
-      "entrySpot": 1146.5,
-      "entryEdge": 1.51,
-      "entryBreakevenPct": 6.19,
-      "lastValue": 72.55,
-      "lastSpot": 1161,
-      "lastChecked": "2026-11-02"
+      "lastValue": 166.7,
+      "lastSpot": 3948.2,
+      "lastChecked": "2026-11-03"
     },
     {
       "status": "open",
@@ -52,9 +38,9 @@
       "entrySpot": 459,
       "entryEdge": 1.51,
       "entryBreakevenPct": 3.89,
-      "lastValue": 16.55,
-      "lastSpot": 458.35,
-      "lastChecked": "2026-11-02"
+      "lastValue": 16.25,
+      "lastSpot": 464.65,
+      "lastChecked": "2026-11-03"
     },
     {
       "status": "open",
@@ -66,9 +52,9 @@
       "entrySpot": 692.8,
       "entryEdge": 1.39,
       "entryBreakevenPct": 4.04,
-      "lastValue": 29.400000000000002,
-      "lastSpot": 700,
-      "lastChecked": "2026-11-02"
+      "lastValue": 41.75,
+      "lastSpot": 725.5,
+      "lastChecked": "2026-11-03"
     },
     {
       "status": "open",
@@ -80,9 +66,51 @@
       "entrySpot": 1300,
       "entryEdge": 1.41,
       "entryBreakevenPct": 4.13,
-      "lastValue": 53.65,
-      "lastSpot": 1300,
-      "lastChecked": "2026-11-02"
+      "lastValue": 49.3,
+      "lastSpot": 1307.9,
+      "lastChecked": "2026-11-03"
+    },
+    {
+      "status": "open",
+      "underlying": "INFY",
+      "strike": 1154,
+      "expiry": "2026-11-23",
+      "entryDate": "2026-11-03",
+      "entryCost": 65.85,
+      "entrySpot": 1148.1,
+      "entryEdge": 1.51,
+      "entryBreakevenPct": 5.74,
+      "lastValue": 65.85,
+      "lastSpot": 1148.1,
+      "lastChecked": "2026-11-03"
+    },
+    {
+      "status": "open",
+      "underlying": "TCS",
+      "strike": 2500,
+      "expiry": "2026-11-23",
+      "entryDate": "2026-11-03",
+      "entryCost": 133.5,
+      "entrySpot": 2499.1,
+      "entryEdge": 1.47,
+      "entryBreakevenPct": 5.34,
+      "lastValue": 133.5,
+      "lastSpot": 2499.1,
+      "lastChecked": "2026-11-03"
+    },
+    {
+      "status": "open",
+      "underlying": "ICICIBANK",
+      "strike": 1420,
+      "expiry": "2026-11-23",
+      "entryDate": "2026-11-03",
+      "entryCost": 45.5,
+      "entrySpot": 1424.5,
+      "entryEdge": 1.4,
+      "entryBreakevenPct": 3.19,
+      "lastValue": 45.5,
+      "lastSpot": 1424.5,
+      "lastChecked": "2026-11-03"
     }
   ],
   "closed": [
@@ -643,14 +671,32 @@
       "exitReason": "expired — settled at intrinsic value",
       "exitValue": 7.4,
       "pnlPct": -86.12
+    },
+    {
+      "status": "closed",
+      "underlying": "INFY",
+      "strike": 1140,
+      "expiry": "2026-11-23",
+      "entryDate": "2026-10-29",
+      "entryCost": 70.95,
+      "entrySpot": 1146.5,
+      "entryEdge": 1.51,
+      "entryBreakevenPct": 6.19,
+      "lastValue": null,
+      "lastSpot": 1148.1,
+      "lastChecked": "2026-11-03",
+      "exitDate": "2026-11-03",
+      "exitReason": "expired — settled at intrinsic value",
+      "exitValue": 8.1,
+      "pnlPct": -88.58
     }
   ],
   "stats": {
-    "updated": "2026-11-02",
-    "openCount": 6,
-    "closedCount": 31,
-    "winRate": 45.16,
-    "avgPnlPct": 7.05,
-    "totalPnlPct": 218.56
+    "updated": "2026-11-03",
+    "openCount": 8,
+    "closedCount": 32,
+    "winRate": 43.75,
+    "avgPnlPct": 4.06,
+    "totalPnlPct": 129.98
   }
 }
