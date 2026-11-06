@@ -2,20 +2,6 @@
   "open": [
     {
       "status": "open",
-      "underlying": "AXISBANK",
-      "strike": 1220,
-      "expiry": "2026-11-23",
-      "entryDate": "2026-10-28",
-      "entryCost": 53.05,
-      "entrySpot": 1220,
-      "entryEdge": 1.44,
-      "entryBreakevenPct": 4.35,
-      "lastValue": 75.15,
-      "lastSpot": 1280,
-      "lastChecked": "2026-11-05"
-    },
-    {
-      "status": "open",
       "underlying": "KOTAKBANK",
       "strike": 460,
       "expiry": "2026-11-23",
@@ -24,9 +10,9 @@
       "entrySpot": 459,
       "entryEdge": 1.51,
       "entryBreakevenPct": 3.89,
-      "lastValue": 17,
-      "lastSpot": 467,
-      "lastChecked": "2026-11-05"
+      "lastValue": 23.25,
+      "lastSpot": 480,
+      "lastChecked": "2026-11-06"
     },
     {
       "status": "open",
@@ -38,9 +24,9 @@
       "entrySpot": 1300,
       "entryEdge": 1.41,
       "entryBreakevenPct": 4.13,
-      "lastValue": 48.05,
-      "lastSpot": 1313.4,
-      "lastChecked": "2026-11-05"
+      "lastValue": 50.349999999999994,
+      "lastSpot": 1320,
+      "lastChecked": "2026-11-06"
     },
     {
       "status": "open",
@@ -52,9 +38,9 @@
       "entrySpot": 1148.1,
       "entryEdge": 1.51,
       "entryBreakevenPct": 5.74,
-      "lastValue": 64.15,
-      "lastSpot": 1167.4,
-      "lastChecked": "2026-11-05"
+      "lastValue": 66.25,
+      "lastSpot": 1181.4,
+      "lastChecked": "2026-11-06"
     },
     {
       "status": "open",
@@ -66,23 +52,9 @@
       "entrySpot": 2499.1,
       "entryEdge": 1.47,
       "entryBreakevenPct": 5.34,
-      "lastValue": 125.55,
-      "lastSpot": 2495.7,
-      "lastChecked": "2026-11-05"
-    },
-    {
-      "status": "open",
-      "underlying": "HDFCBANK",
-      "strike": 740,
-      "expiry": "2026-11-23",
-      "entryDate": "2026-11-04",
-      "entryCost": 25.75,
-      "entrySpot": 736.7,
-      "entryEdge": 1.57,
-      "entryBreakevenPct": 3.5,
-      "lastValue": 32.05,
-      "lastSpot": 760,
-      "lastChecked": "2026-11-05"
+      "lastValue": 126,
+      "lastSpot": 2498.5,
+      "lastChecked": "2026-11-06"
     },
     {
       "status": "open",
@@ -94,23 +66,51 @@
       "entrySpot": 4050,
       "entryEdge": 1.34,
       "entryBreakevenPct": 3.52,
-      "lastValue": 142.6,
-      "lastSpot": 4050,
-      "lastChecked": "2026-11-05"
+      "lastValue": 155.15,
+      "lastSpot": 4117.7,
+      "lastChecked": "2026-11-06"
     },
     {
       "status": "open",
       "underlying": "ICICIBANK",
-      "strike": 1500,
+      "strike": 1570,
       "expiry": "2026-11-23",
-      "entryDate": "2026-11-05",
-      "entryCost": 49.9,
-      "entrySpot": 1500,
-      "entryEdge": 1.33,
-      "entryBreakevenPct": 3.33,
-      "lastValue": 49.9,
-      "lastSpot": 1500,
-      "lastChecked": "2026-11-05"
+      "entryDate": "2026-11-06",
+      "entryCost": 59.3,
+      "entrySpot": 1571.2,
+      "entryEdge": 1.47,
+      "entryBreakevenPct": 3.77,
+      "lastValue": 59.3,
+      "lastSpot": 1571.2,
+      "lastChecked": "2026-11-06"
+    },
+    {
+      "status": "open",
+      "underlying": "TITAN",
+      "strike": 5000,
+      "expiry": "2026-11-23",
+      "entryDate": "2026-11-06",
+      "entryCost": 193.25,
+      "entrySpot": 5000,
+      "entryEdge": 1.4,
+      "entryBreakevenPct": 3.87,
+      "lastValue": 193.25,
+      "lastSpot": 5000,
+      "lastChecked": "2026-11-06"
+    },
+    {
+      "status": "open",
+      "underlying": "AXISBANK",
+      "strike": 1320,
+      "expiry": "2026-11-23",
+      "entryDate": "2026-11-06",
+      "entryCost": 50.65,
+      "entrySpot": 1322.9,
+      "entryEdge": 1.38,
+      "entryBreakevenPct": 3.83,
+      "lastValue": 50.65,
+      "lastSpot": 1322.9,
+      "lastChecked": "2026-11-06"
     }
   ],
   "closed": [
@@ -743,14 +743,68 @@
       "exitReason": "take-profit +50%",
       "exitValue": 86.35,
       "pnlPct": 89.78
+    },
+    {
+      "status": "closed",
+      "underlying": "AXISBANK",
+      "strike": 1220,
+      "expiry": "2026-11-23",
+      "entryDate": "2026-10-28",
+      "entryCost": 53.05,
+      "entrySpot": 1220,
+      "entryEdge": 1.44,
+      "entryBreakevenPct": 4.35,
+      "lastValue": 105.14999999999999,
+      "lastSpot": 1322.9,
+      "lastChecked": "2026-11-06",
+      "exitDate": "2026-11-06",
+      "exitReason": "take-profit +50%",
+      "exitValue": 105.15,
+      "pnlPct": 98.21
+    },
+    {
+      "status": "closed",
+      "underlying": "HDFCBANK",
+      "strike": 740,
+      "expiry": "2026-11-23",
+      "entryDate": "2026-11-04",
+      "entryCost": 25.75,
+      "entrySpot": 736.7,
+      "entryEdge": 1.57,
+      "entryBreakevenPct": 3.5,
+      "lastValue": 55.15,
+      "lastSpot": 788.25,
+      "lastChecked": "2026-11-06",
+      "exitDate": "2026-11-06",
+      "exitReason": "take-profit +50%",
+      "exitValue": 55.15,
+      "pnlPct": 114.17
+    },
+    {
+      "status": "closed",
+      "underlying": "ICICIBANK",
+      "strike": 1500,
+      "expiry": "2026-11-23",
+      "entryDate": "2026-11-05",
+      "entryCost": 49.9,
+      "entrySpot": 1500,
+      "entryEdge": 1.33,
+      "entryBreakevenPct": 3.33,
+      "lastValue": 83.10000000000001,
+      "lastSpot": 1571.2,
+      "lastChecked": "2026-11-06",
+      "exitDate": "2026-11-06",
+      "exitReason": "take-profit +50%",
+      "exitValue": 83.1,
+      "pnlPct": 66.53
     }
   ],
   "stats": {
-    "updated": "2026-11-05",
+    "updated": "2026-11-06",
     "openCount": 8,
-    "closedCount": 35,
-    "winRate": 48.57,
-    "avgPnlPct": 10.5,
-    "totalPnlPct": 367.65
+    "closedCount": 38,
+    "winRate": 52.63,
+    "avgPnlPct": 17.01,
+    "totalPnlPct": 646.56
   }
 }
