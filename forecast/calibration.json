@@ -1,26 +1,26 @@
 {
-  "generated_at": "2026-11-02T16:56:45.643563+00:00",
+  "generated_at": "2026-11-09T17:19:47.856847+00:00",
   "horizon_days": 20,
   "snapshots_evaluated": 2,
-  "snapshots_pending": 33,
+  "snapshots_pending": 38,
   "results": {
     "2026-09-05-next50": {
       "universe": "next50",
       "snapshot_date": "2026-09-05",
-      "evaluated_at": "2026-11-02T16:56:39.455260+00:00",
+      "evaluated_at": "2026-11-09T17:19:44.429363+00:00",
       "n": 50,
       "coverage_pct": 74.0,
       "sign_accuracy_pct": 54.0,
-      "mae_pct": 6.95
+      "mae_pct": 6.96
     },
     "2026-09-05-smallcap50": {
       "universe": "smallcap50",
       "snapshot_date": "2026-09-05",
-      "evaluated_at": "2026-11-02T16:56:39.455260+00:00",
+      "evaluated_at": "2026-11-09T17:19:44.429363+00:00",
       "n": 50,
       "coverage_pct": 76.0,
       "sign_accuracy_pct": 48.0,
-      "mae_pct": 7.94
+      "mae_pct": 7.95
     }
   }
 }
