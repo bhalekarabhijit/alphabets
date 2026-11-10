@@ -2,20 +2,6 @@
   "open": [
     {
       "status": "open",
-      "underlying": "KOTAKBANK",
-      "strike": 460,
-      "expiry": "2026-11-23",
-      "entryDate": "2026-10-29",
-      "entryCost": 17.85,
-      "entrySpot": 459,
-      "entryEdge": 1.51,
-      "entryBreakevenPct": 3.89,
-      "lastValue": 22.400000000000002,
-      "lastSpot": 479.5,
-      "lastChecked": "2026-11-09"
-    },
-    {
-      "status": "open",
       "underlying": "RELIANCE",
       "strike": 1300,
       "expiry": "2026-11-23",
@@ -26,7 +12,7 @@
       "entryBreakevenPct": 4.13,
       "lastValue": 49,
       "lastSpot": 1324.4,
-      "lastChecked": "2026-11-09"
+      "lastChecked": "2026-11-10"
     },
     {
       "status": "open",
@@ -40,7 +26,7 @@
       "entryBreakevenPct": 5.74,
       "lastValue": 59.150000000000006,
       "lastSpot": 1154.1,
-      "lastChecked": "2026-11-09"
+      "lastChecked": "2026-11-10"
     },
     {
       "status": "open",
@@ -54,7 +40,7 @@
       "entryBreakevenPct": 5.34,
       "lastValue": 117.25,
       "lastSpot": 2475.4,
-      "lastChecked": "2026-11-09"
+      "lastChecked": "2026-11-10"
     },
     {
       "status": "open",
@@ -68,7 +54,7 @@
       "entryBreakevenPct": 3.52,
       "lastValue": 196.05,
       "lastSpot": 4185,
-      "lastChecked": "2026-11-09"
+      "lastChecked": "2026-11-10"
     },
     {
       "status": "open",
@@ -82,7 +68,7 @@
       "entryBreakevenPct": 3.77,
       "lastValue": 55.9,
       "lastSpot": 1589,
-      "lastChecked": "2026-11-09"
+      "lastChecked": "2026-11-10"
     },
     {
       "status": "open",
@@ -96,7 +82,7 @@
       "entryBreakevenPct": 3.87,
       "lastValue": 172.5,
       "lastSpot": 5005,
-      "lastChecked": "2026-11-09"
+      "lastChecked": "2026-11-10"
     },
     {
       "status": "open",
@@ -110,7 +96,7 @@
       "entryBreakevenPct": 3.83,
       "lastValue": 47.45,
       "lastSpot": 1310.7,
-      "lastChecked": "2026-11-09"
+      "lastChecked": "2026-11-10"
     },
     {
       "status": "open",
@@ -124,7 +110,21 @@
       "entryBreakevenPct": 3.83,
       "lastValue": 30.55,
       "lastSpot": 798.15,
-      "lastChecked": "2026-11-09"
+      "lastChecked": "2026-11-10"
+    },
+    {
+      "status": "open",
+      "underlying": "SUNPHARMA",
+      "strike": 1900,
+      "expiry": "2026-11-23",
+      "entryDate": "2026-11-10",
+      "entryCost": 66.4,
+      "entrySpot": 1904.5,
+      "entryEdge": 1.32,
+      "entryBreakevenPct": 3.49,
+      "lastValue": 66.4,
+      "lastSpot": 1904.5,
+      "lastChecked": "2026-11-10"
     }
   ],
   "closed": [
@@ -811,14 +811,32 @@
       "exitReason": "take-profit +50%",
       "exitValue": 83.1,
       "pnlPct": 66.53
+    },
+    {
+      "status": "closed",
+      "underlying": "KOTAKBANK",
+      "strike": 460,
+      "expiry": "2026-11-23",
+      "entryDate": "2026-10-29",
+      "entryCost": 17.85,
+      "entrySpot": 459,
+      "entryEdge": 1.51,
+      "entryBreakevenPct": 3.89,
+      "lastValue": null,
+      "lastSpot": 479.5,
+      "lastChecked": "2026-11-10",
+      "exitDate": "2026-11-10",
+      "exitReason": "expired — settled at intrinsic value",
+      "exitValue": 19.5,
+      "pnlPct": 9.24
     }
   ],
   "stats": {
-    "updated": "2026-11-09",
+    "updated": "2026-11-10",
     "openCount": 9,
-    "closedCount": 38,
-    "winRate": 52.63,
-    "avgPnlPct": 17.01,
-    "totalPnlPct": 646.56
+    "closedCount": 39,
+    "winRate": 53.85,
+    "avgPnlPct": 16.82,
+    "totalPnlPct": 655.8
   }
 }
