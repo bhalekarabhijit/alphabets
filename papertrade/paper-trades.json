@@ -2,48 +2,6 @@
   "open": [
     {
       "status": "open",
-      "underlying": "RELIANCE",
-      "strike": 1300,
-      "expiry": "2026-11-23",
-      "entryDate": "2026-11-02",
-      "entryCost": 53.65,
-      "entrySpot": 1300,
-      "entryEdge": 1.41,
-      "entryBreakevenPct": 4.13,
-      "lastValue": 51.05,
-      "lastSpot": 1335.4,
-      "lastChecked": "2026-11-11"
-    },
-    {
-      "status": "open",
-      "underlying": "INFY",
-      "strike": 1154,
-      "expiry": "2026-11-23",
-      "entryDate": "2026-11-03",
-      "entryCost": 65.85,
-      "entrySpot": 1148.1,
-      "entryEdge": 1.51,
-      "entryBreakevenPct": 5.74,
-      "lastValue": 56.05,
-      "lastSpot": 1155,
-      "lastChecked": "2026-11-11"
-    },
-    {
-      "status": "open",
-      "underlying": "TCS",
-      "strike": 2500,
-      "expiry": "2026-11-23",
-      "entryDate": "2026-11-03",
-      "entryCost": 133.5,
-      "entrySpot": 2499.1,
-      "entryEdge": 1.47,
-      "entryBreakevenPct": 5.34,
-      "lastValue": 114,
-      "lastSpot": 2472.1,
-      "lastChecked": "2026-11-11"
-    },
-    {
-      "status": "open",
       "underlying": "LT",
       "strike": 4050,
       "expiry": "2026-11-23",
@@ -52,9 +10,9 @@
       "entrySpot": 4050,
       "entryEdge": 1.34,
       "entryBreakevenPct": 3.52,
-      "lastValue": 195.60000000000002,
-      "lastSpot": 4212,
-      "lastChecked": "2026-11-11"
+      "lastValue": 162.6,
+      "lastSpot": 4159.2,
+      "lastChecked": "2026-11-12"
     },
     {
       "status": "open",
@@ -66,9 +24,9 @@
       "entrySpot": 1571.2,
       "entryEdge": 1.47,
       "entryBreakevenPct": 3.77,
-      "lastValue": 51.95,
-      "lastSpot": 1571.6,
-      "lastChecked": "2026-11-11"
+      "lastValue": 49.150000000000006,
+      "lastSpot": 1590,
+      "lastChecked": "2026-11-12"
     },
     {
       "status": "open",
@@ -80,9 +38,9 @@
       "entrySpot": 5000,
       "entryEdge": 1.4,
       "entryBreakevenPct": 3.87,
-      "lastValue": 172.35000000000002,
-      "lastSpot": 4970,
-      "lastChecked": "2026-11-11"
+      "lastValue": 178.6,
+      "lastSpot": 4921.9,
+      "lastChecked": "2026-11-12"
     },
     {
       "status": "open",
@@ -94,9 +52,9 @@
       "entrySpot": 1322.9,
       "entryEdge": 1.38,
       "entryBreakevenPct": 3.83,
-      "lastValue": 47.349999999999994,
-      "lastSpot": 1336.4,
-      "lastChecked": "2026-11-11"
+      "lastValue": 43.8,
+      "lastSpot": 1342.9,
+      "lastChecked": "2026-11-12"
     },
     {
       "status": "open",
@@ -108,9 +66,9 @@
       "entrySpot": 798.15,
       "entryEdge": 1.62,
       "entryBreakevenPct": 3.83,
-      "lastValue": 29.75,
-      "lastSpot": 806.6,
-      "lastChecked": "2026-11-11"
+      "lastValue": 28,
+      "lastSpot": 812.3,
+      "lastChecked": "2026-11-12"
     },
     {
       "status": "open",
@@ -122,9 +80,51 @@
       "entrySpot": 1904.5,
       "entryEdge": 1.32,
       "entryBreakevenPct": 3.49,
-      "lastValue": 59.6,
-      "lastSpot": 1902.3,
-      "lastChecked": "2026-11-11"
+      "lastValue": 54.55,
+      "lastSpot": 1885,
+      "lastChecked": "2026-11-12"
+    },
+    {
+      "status": "open",
+      "underlying": "BAJFINANCE",
+      "strike": 1120,
+      "expiry": "2026-11-23",
+      "entryDate": "2026-11-12",
+      "entryCost": 44.85,
+      "entrySpot": 1115,
+      "entryEdge": 1.59,
+      "entryBreakevenPct": 4.02,
+      "lastValue": 44.85,
+      "lastSpot": 1115,
+      "lastChecked": "2026-11-12"
+    },
+    {
+      "status": "open",
+      "underlying": "SBIN",
+      "strike": 1090,
+      "expiry": "2026-11-23",
+      "entryDate": "2026-11-12",
+      "entryCost": 37.4,
+      "entrySpot": 1086.5,
+      "entryEdge": 1.33,
+      "entryBreakevenPct": 3.44,
+      "lastValue": 37.4,
+      "lastSpot": 1086.5,
+      "lastChecked": "2026-11-12"
+    },
+    {
+      "status": "open",
+      "underlying": "KOTAKBANK",
+      "strike": 490,
+      "expiry": "2026-11-23",
+      "entryDate": "2026-11-12",
+      "entryCost": 15.35,
+      "entrySpot": 490.4,
+      "entryEdge": 1.3,
+      "entryBreakevenPct": 3.13,
+      "lastValue": 15.35,
+      "lastSpot": 490.4,
+      "lastChecked": "2026-11-12"
     }
   ],
   "closed": [
@@ -829,14 +829,68 @@
       "exitReason": "expired — settled at intrinsic value",
       "exitValue": 19.5,
       "pnlPct": 9.24
+    },
+    {
+      "status": "closed",
+      "underlying": "RELIANCE",
+      "strike": 1300,
+      "expiry": "2026-11-23",
+      "entryDate": "2026-11-02",
+      "entryCost": 53.65,
+      "entrySpot": 1300,
+      "entryEdge": 1.41,
+      "entryBreakevenPct": 4.13,
+      "lastValue": null,
+      "lastSpot": 1335.4,
+      "lastChecked": "2026-11-12",
+      "exitDate": "2026-11-12",
+      "exitReason": "expired — settled at intrinsic value",
+      "exitValue": 39.7,
+      "pnlPct": -26
+    },
+    {
+      "status": "closed",
+      "underlying": "INFY",
+      "strike": 1154,
+      "expiry": "2026-11-23",
+      "entryDate": "2026-11-03",
+      "entryCost": 65.85,
+      "entrySpot": 1148.1,
+      "entryEdge": 1.51,
+      "entryBreakevenPct": 5.74,
+      "lastValue": null,
+      "lastSpot": 1155,
+      "lastChecked": "2026-11-12",
+      "exitDate": "2026-11-12",
+      "exitReason": "expired — settled at intrinsic value",
+      "exitValue": 2.8,
+      "pnlPct": -95.75
+    },
+    {
+      "status": "closed",
+      "underlying": "TCS",
+      "strike": 2500,
+      "expiry": "2026-11-23",
+      "entryDate": "2026-11-03",
+      "entryCost": 133.5,
+      "entrySpot": 2499.1,
+      "entryEdge": 1.47,
+      "entryBreakevenPct": 5.34,
+      "lastValue": null,
+      "lastSpot": 2472.1,
+      "lastChecked": "2026-11-12",
+      "exitDate": "2026-11-12",
+      "exitReason": "expired — settled at intrinsic value",
+      "exitValue": 57.6,
+      "pnlPct": -56.85
     }
   ],
   "stats": {
-    "updated": "2026-11-11",
+    "updated": "2026-11-12",
     "openCount": 9,
-    "closedCount": 39,
-    "winRate": 53.85,
-    "avgPnlPct": 16.82,
-    "totalPnlPct": 655.8
+    "closedCount": 42,
+    "winRate": 50,
+    "avgPnlPct": 11.36,
+    "totalPnlPct": 477.2
   }
 }
