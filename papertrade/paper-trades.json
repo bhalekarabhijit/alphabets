@@ -10,9 +10,9 @@
       "entrySpot": 4050,
       "entryEdge": 1.34,
       "entryBreakevenPct": 3.52,
-      "lastValue": 162.6,
-      "lastSpot": 4159.2,
-      "lastChecked": "2026-11-12"
+      "lastValue": 142.7,
+      "lastSpot": 4143.8,
+      "lastChecked": "2026-11-13"
     },
     {
       "status": "open",
@@ -24,9 +24,9 @@
       "entrySpot": 1571.2,
       "entryEdge": 1.47,
       "entryBreakevenPct": 3.77,
-      "lastValue": 49.150000000000006,
-      "lastSpot": 1590,
-      "lastChecked": "2026-11-12"
+      "lastValue": 41.2,
+      "lastSpot": 1583.6,
+      "lastChecked": "2026-11-13"
     },
     {
       "status": "open",
@@ -38,9 +38,9 @@
       "entrySpot": 5000,
       "entryEdge": 1.4,
       "entryBreakevenPct": 3.87,
-      "lastValue": 178.6,
-      "lastSpot": 4921.9,
-      "lastChecked": "2026-11-12"
+      "lastValue": 184.3,
+      "lastSpot": 4844.9,
+      "lastChecked": "2026-11-13"
     },
     {
       "status": "open",
@@ -52,9 +52,9 @@
       "entrySpot": 1322.9,
       "entryEdge": 1.38,
       "entryBreakevenPct": 3.83,
-      "lastValue": 43.8,
-      "lastSpot": 1342.9,
-      "lastChecked": "2026-11-12"
+      "lastValue": 38,
+      "lastSpot": 1331,
+      "lastChecked": "2026-11-13"
     },
     {
       "status": "open",
@@ -66,9 +66,9 @@
       "entrySpot": 798.15,
       "entryEdge": 1.62,
       "entryBreakevenPct": 3.83,
-      "lastValue": 28,
-      "lastSpot": 812.3,
-      "lastChecked": "2026-11-12"
+      "lastValue": 22.5,
+      "lastSpot": 804,
+      "lastChecked": "2026-11-13"
     },
     {
       "status": "open",
@@ -80,9 +80,9 @@
       "entrySpot": 1904.5,
       "entryEdge": 1.32,
       "entryBreakevenPct": 3.49,
-      "lastValue": 54.55,
-      "lastSpot": 1885,
-      "lastChecked": "2026-11-12"
+      "lastValue": 53.85,
+      "lastSpot": 1880,
+      "lastChecked": "2026-11-13"
     },
     {
       "status": "open",
@@ -94,9 +94,9 @@
       "entrySpot": 1115,
       "entryEdge": 1.59,
       "entryBreakevenPct": 4.02,
-      "lastValue": 44.85,
-      "lastSpot": 1115,
-      "lastChecked": "2026-11-12"
+      "lastValue": 39.95,
+      "lastSpot": 1117,
+      "lastChecked": "2026-11-13"
     },
     {
       "status": "open",
@@ -108,9 +108,9 @@
       "entrySpot": 1086.5,
       "entryEdge": 1.33,
       "entryBreakevenPct": 3.44,
-      "lastValue": 37.4,
-      "lastSpot": 1086.5,
-      "lastChecked": "2026-11-12"
+      "lastValue": 32.45,
+      "lastSpot": 1080,
+      "lastChecked": "2026-11-13"
     },
     {
       "status": "open",
@@ -122,9 +122,37 @@
       "entrySpot": 490.4,
       "entryEdge": 1.3,
       "entryBreakevenPct": 3.13,
-      "lastValue": 15.35,
-      "lastSpot": 490.4,
-      "lastChecked": "2026-11-12"
+      "lastValue": 13.5,
+      "lastSpot": 488.55,
+      "lastChecked": "2026-11-13"
+    },
+    {
+      "status": "open",
+      "underlying": "RELIANCE",
+      "strike": 1340,
+      "expiry": "2026-11-23",
+      "entryDate": "2026-11-13",
+      "entryCost": 36.55,
+      "entrySpot": 1339.7,
+      "entryEdge": 2.47,
+      "entryBreakevenPct": 2.73,
+      "lastValue": 36.55,
+      "lastSpot": 1339.7,
+      "lastChecked": "2026-11-13"
+    },
+    {
+      "status": "open",
+      "underlying": "TCS",
+      "strike": 2400,
+      "expiry": "2026-11-23",
+      "entryDate": "2026-11-13",
+      "entryCost": 89.45,
+      "entrySpot": 2407.5,
+      "entryEdge": 1.47,
+      "entryBreakevenPct": 3.72,
+      "lastValue": 89.45,
+      "lastSpot": 2407.5,
+      "lastChecked": "2026-11-13"
     }
   ],
   "closed": [
@@ -886,8 +914,8 @@
     }
   ],
   "stats": {
-    "updated": "2026-11-12",
-    "openCount": 9,
+    "updated": "2026-11-13",
+    "openCount": 11,
     "closedCount": 42,
     "winRate": 50,
     "avgPnlPct": 11.36,
