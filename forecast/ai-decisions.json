@@ -34,5 +34,14 @@
     "target": 3263.47,
     "stop": 2400,
     "confidence": 80
+  },
+  {
+    "date": "2026-11-16",
+    "ticker": "MARUTI.NS",
+    "action": "SWING",
+    "entry": 2530,
+    "target": 3226,
+    "stop": 2450,
+    "confidence": 78
   }
 ]
