@@ -10,23 +10,9 @@
       "entrySpot": 1322.9,
       "entryEdge": 1.38,
       "entryBreakevenPct": 3.83,
-      "lastValue": 40.05,
-      "lastSpot": 1360,
-      "lastChecked": "2026-11-18"
-    },
-    {
-      "status": "open",
-      "underlying": "SUNPHARMA",
-      "strike": 1900,
-      "expiry": "2026-11-23",
-      "entryDate": "2026-11-10",
-      "entryCost": 66.4,
-      "entrySpot": 1904.5,
-      "entryEdge": 1.32,
-      "entryBreakevenPct": 3.49,
-      "lastValue": 41.650000000000006,
-      "lastSpot": 1871.5,
-      "lastChecked": "2026-11-18"
+      "lastValue": 58.4,
+      "lastSpot": 1380.8,
+      "lastChecked": "2026-11-19"
     },
     {
       "status": "open",
@@ -38,23 +24,9 @@
       "entrySpot": 1115,
       "entryEdge": 1.59,
       "entryBreakevenPct": 4.02,
-      "lastValue": 32.25,
-      "lastSpot": 1093.85,
-      "lastChecked": "2026-11-18"
-    },
-    {
-      "status": "open",
-      "underlying": "SBIN",
-      "strike": 1090,
-      "expiry": "2026-11-23",
-      "entryDate": "2026-11-12",
-      "entryCost": 37.4,
-      "entrySpot": 1086.5,
-      "entryEdge": 1.33,
-      "entryBreakevenPct": 3.44,
-      "lastValue": 46.550000000000004,
-      "lastSpot": 1135,
-      "lastChecked": "2026-11-18"
+      "lastValue": 29.95,
+      "lastSpot": 1092.85,
+      "lastChecked": "2026-11-19"
     },
     {
       "status": "open",
@@ -66,9 +38,9 @@
       "entrySpot": 490.4,
       "entryEdge": 1.3,
       "entryBreakevenPct": 3.13,
-      "lastValue": 9.15,
-      "lastSpot": 494.85,
-      "lastChecked": "2026-11-18"
+      "lastValue": 13.850000000000001,
+      "lastSpot": 503,
+      "lastChecked": "2026-11-19"
     },
     {
       "status": "open",
@@ -80,9 +52,9 @@
       "entrySpot": 1339.7,
       "entryEdge": 2.47,
       "entryBreakevenPct": 2.73,
-      "lastValue": 31.3,
-      "lastSpot": 1363,
-      "lastChecked": "2026-11-18"
+      "lastValue": 32.95,
+      "lastSpot": 1375.6,
+      "lastChecked": "2026-11-19"
     },
     {
       "status": "open",
@@ -94,9 +66,9 @@
       "entrySpot": 2407.5,
       "entryEdge": 1.47,
       "entryBreakevenPct": 3.72,
-      "lastValue": 60.45,
-      "lastSpot": 2379.5,
-      "lastChecked": "2026-11-18"
+      "lastValue": 78.05000000000001,
+      "lastSpot": 2342.7,
+      "lastChecked": "2026-11-19"
     },
     {
       "status": "open",
@@ -108,9 +80,9 @@
       "entrySpot": 4155.5,
       "entryEdge": 1.32,
       "entryBreakevenPct": 2.08,
-      "lastValue": 74.85,
-      "lastSpot": 4159,
-      "lastChecked": "2026-11-18"
+      "lastValue": 71.75,
+      "lastSpot": 4211,
+      "lastChecked": "2026-11-19"
     },
     {
       "status": "open",
@@ -122,9 +94,9 @@
       "entrySpot": 1601.3,
       "entryEdge": 2.25,
       "entryBreakevenPct": 1.35,
-      "lastValue": 21.55,
-      "lastSpot": 1601.3,
-      "lastChecked": "2026-11-18"
+      "lastValue": 16.85,
+      "lastSpot": 1608.9,
+      "lastChecked": "2026-11-19"
     },
     {
       "status": "open",
@@ -137,8 +109,8 @@
       "entryEdge": 1.8,
       "entryBreakevenPct": 1.73,
       "lastValue": 13.95,
-      "lastSpot": 808.15,
-      "lastChecked": "2026-11-18"
+      "lastSpot": 821.8,
+      "lastChecked": "2026-11-19"
     },
     {
       "status": "open",
@@ -150,9 +122,9 @@
       "entrySpot": 1108.8,
       "entryEdge": 1.37,
       "entryBreakevenPct": 2.89,
-      "lastValue": 32.05,
-      "lastSpot": 1108.8,
-      "lastChecked": "2026-11-18"
+      "lastValue": 40.5,
+      "lastSpot": 1091.9,
+      "lastChecked": "2026-11-19"
     }
   ],
   "closed": [
@@ -983,14 +955,50 @@
       "exitReason": "stop-loss -50%",
       "exitValue": 14,
       "pnlPct": -54.17
+    },
+    {
+      "status": "closed",
+      "underlying": "SUNPHARMA",
+      "strike": 1900,
+      "expiry": "2026-11-23",
+      "entryDate": "2026-11-10",
+      "entryCost": 66.4,
+      "entrySpot": 1904.5,
+      "entryEdge": 1.32,
+      "entryBreakevenPct": 3.49,
+      "lastValue": 27.7,
+      "lastSpot": 1900,
+      "lastChecked": "2026-11-19",
+      "exitDate": "2026-11-19",
+      "exitReason": "stop-loss -50%",
+      "exitValue": 27.7,
+      "pnlPct": -58.28
+    },
+    {
+      "status": "closed",
+      "underlying": "SBIN",
+      "strike": 1090,
+      "expiry": "2026-11-23",
+      "entryDate": "2026-11-12",
+      "entryCost": 37.4,
+      "entrySpot": 1086.5,
+      "entryEdge": 1.33,
+      "entryBreakevenPct": 3.44,
+      "lastValue": 63.85,
+      "lastSpot": 1156,
+      "lastChecked": "2026-11-19",
+      "exitDate": "2026-11-19",
+      "exitReason": "take-profit +50%",
+      "exitValue": 63.85,
+      "pnlPct": 70.72
     }
   ],
   "stats": {
-    "updated": "2026-11-18",
-    "openCount": 11,
-    "closedCount": 46,
-    "winRate": 47.83,
-    "avgPnlPct": 9.08,
-    "totalPnlPct": 417.49
+    "updated": "2026-11-19",
+    "openCount": 9,
+    "closedCount": 48,
+    "winRate": 47.92,
+    "avgPnlPct": 8.96,
+    "totalPnlPct": 429.93
   }
 }
