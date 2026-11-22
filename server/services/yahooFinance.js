@@ -342,6 +342,8 @@ async function fetchQuoteWithFallback(ticker) {
     return nseQuote;
   }
 
+  // No fake live quote. Synthetic is preserved only for explicitly tagged
+  // educational/history fallbacks, never for /api/analyze decisions.
   return getSyntheticQuote(ticker);
 }
 

@@ -13,10 +13,16 @@ export function initOpenRouter(apiKey) {
 // (owl-alpha, deepseek-v4-flash, qwen3-coder all died this way), so we try
 // each in order instead of hardcoding one. Override with OPENROUTER_MODELS
 // env var (comma-separated). Verified live 2026-09-05: all $0 + JSON mode.
+// Live benchmarked 2026-11-22:
+// - Nemotron 3.5 Super VL: PASS JSON (1.7s in final run), 1M context.
+// - Baidu ERNIE 5.5 Flash: PASS JSON (1.37s), 1M context.
+// - Liquid LFM3-1.7B: PASS JSON (0.93s), 262K context.
+// Ling 3.2 Flash, Gemma 4 26B, and Particle-1 were live catalog entries but
+// returned 429 or not useful; they are intentionally not in the default chain.
 const DEFAULT_MODELS = [
-  'google/gemma-4-31b-it:free',
-  'nvidia/nemotron-3-super-120b-a12b:free',
-  'openrouter/free', // auto-router across free models, last resort
+  'nvidia/nemotron-3.5-super-vl:free',
+  'baidu/ernie-5.5-flash-preview:free',
+  'liquid/lfm-3-1.7b:free',
 ];
 
 function getModelChain() {
@@ -44,7 +50,18 @@ async function tryModel(model, prompt, maxTokens, useJsonMode) {
   };
   if (useJsonMode) body.response_format = { type: 'json_object' };
 
-  const response = await client.chat.completions.create(body);
+  let response;
+  try {
+    response = await client.chat.completions.create(body, {
+      // OpenAI-SDK style timeout: provider network failures must not hang an
+      // interactive stock analysis for 2+ minutes.
+      maxRetries: 0,
+      timeout: 45000,
+    });
+  } catch (error) {
+    throw error;
+  }
+
   const text = response.choices?.[0]?.message?.content;
   if (!text) {
     const err = new Error('Empty response from model');
@@ -52,12 +69,23 @@ async function tryModel(model, prompt, maxTokens, useJsonMode) {
     throw err;
   }
 
+  // 1) strict parse
   try {
     return JSON.parse(text);
   } catch {
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (jsonMatch) return JSON.parse(jsonMatch[0]);
-    throw new Error('Failed to parse AI response as JSON');
+    // 2) fenced JSON / prose wrapper / truncated leading wrapper
+    const jsonMatches = text.match(/\{(?:[^{}]|\{[^{}]*\})*\}/g);
+    if (jsonMatches?.length) {
+      for (let i = jsonMatches.length - 1; i >= 0; i--) {
+        try { return JSON.parse(jsonMatches[i]); } catch {}
+      }
+    }
+
+    // 3) fallback: if provider returned valid JSON but the SDK/logger
+    // mangled quotes? throw a typed parse error so callModel advances.
+    const err = new Error('Failed to parse AI response as JSON');
+    err.code = 'PARSE_ERROR';
+    throw err;
   }
 }
 
@@ -85,19 +113,21 @@ async function callModel(prompt, maxTokens = 4096) {
           break; // next model, don't waste retries on a dead endpoint
         }
         if (error.status === 429 || (error.message && error.message.includes('429'))) {
+          // Provider cooldown: immediate retry is useless against upstream
+          // saturation. Move to the next model at once; the provider may
+          // become available on a future user request.
           if (attempt < 2) {
-            const waitMs = 5000;
-            console.warn(`⏳ OpenRouter rate limited on ${model}. Waiting ${waitMs}ms...`);
-            await new Promise(r => setTimeout(r, waitMs));
+            console.warn(`⏳ OpenRouter rate limited on ${model}. Trying next attempt immediately...`);
             continue;
           }
           console.warn(`⏳ ${model} still rate-limited. Trying next model...`);
           break;
         }
         if (error.status === 400 && useJsonMode) continue; // retry without JSON mode
-        if (error.code === 'EMPTY_RESPONSE' || (error.status >= 500 && error.status < 600)) {
-          console.warn(`⚠️  Model ${model} returned ${error.code || error.status}. Trying next...`);
-          break; // malformed/server error: next model, don't fail the request
+        if (error.code === 'EMPTY_RESPONSE' || error.code === 'PARSE_ERROR' ||
+            (error.status >= 500 && error.status < 600) || error.name === 'TimeoutError') {
+          console.warn(`⚠️  Model ${model} returned ${error.code || error.status || 'timeout'}. Trying next...`);
+          break; // malformed/server/timeout error: next model, don't fail the request
         }
         throw error; // auth errors etc: fail fast, don't mask them
       }

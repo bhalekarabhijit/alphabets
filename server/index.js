@@ -126,6 +126,30 @@ app.get('/api/analyze/:ticker', async (req, res) => {
     const snap = await getMarketSnapshot(ticker, '1d');
     const { quote, fundamentals, history: dailyChart, news, timesfm, technicals: dailyTechnicals, sources } = snap;
 
+    // Never fabricate a BUY/HOLD/SELL when source stamps prove the quote,
+    // fundamentals, or history are synthetic. NYKAA.BO is valid when Yahoo
+    // stamps source="yahoo" and provides a real 30+ bar history — even though
+    // `.BO` is BSE, not NSE.
+    const synthetic = sources?.quote === 'synthetic'
+      || sources?.fundamentals === 'synthetic'
+      || sources?.history === 'synthetic'
+      || quote?._synthetic === true
+      || fundamentals?._synthetic === true;
+    if (synthetic || !dailyChart || dailyChart.length < 30) {
+      const reason = sources?.quote === 'synthetic' || quote?._synthetic
+        ? 'Live quote unavailable'
+        : sources?.fundamentals === 'synthetic' || fundamentals?._synthetic
+          ? 'Fundamental data unavailable'
+          : 'Not enough reliable history';
+      console.warn(`  ⛔ Refusing AI analysis for ${ticker}: ${reason}`);
+      return res.status(422).json({
+        success: false,
+        error: `${ticker} cannot be analyzed reliably right now: ${reason}. Try again once exchange data is available.`,
+        analysisAvailable: false,
+        sourceStatus: sources,
+      });
+    }
+
     console.log(`  ✅ Market & News Data fetched${timesfm ? ' (incl. TimesFM quant)' : ''} [${sources.quote}/${sources.fundamentals}/${sources.history}]`);
 
     console.log(`  ✅ Technical Indicators (Daily) complete`);
