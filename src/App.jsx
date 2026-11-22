@@ -15,7 +15,10 @@ import NewListings from './components/NewListings';
 import DailyPick from './components/DailyPick';
 import './index.css';
 
-const API_BASE = (import.meta.env.VITE_API_BASE || 'https://alphabets-ap.onrender.com/api').replace(/\/+$/, '');
+const API_BASE = (
+  import.meta.env.VITE_API_BASE ||
+  (import.meta.env.DEV ? 'http://localhost:3001/api' : 'https://alphabets-ap.onrender.com/api')
+).replace(/\/+$/, '');
 
 // NSE equity hours: 9:15–15:30 IST, Monday–Friday.
 function isNseOpen(now = new Date()) {

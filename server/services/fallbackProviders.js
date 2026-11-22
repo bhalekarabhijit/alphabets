@@ -11,14 +11,14 @@ function getNse() {
 }
 
 async function withTimeout(promise, ms, label) {
-  const ctrl = new AbortController();
-  const t = setTimeout(() => ctrl.abort(), ms);
+  let timer;
+  const timeoutPromise = new Promise((_, reject) => {
+    timer = setTimeout(() => reject(new Error(`Timeout after ${ms}ms (${label})`)), ms);
+  });
   try {
-    return await promise;
-  } catch (e) {
-    throw e;
+    return await Promise.race([promise, timeoutPromise]);
   } finally {
-    clearTimeout(t);
+    clearTimeout(timer);
   }
 }
 

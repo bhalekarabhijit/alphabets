@@ -207,7 +207,7 @@ function seededRandom(seedStr) {
 
 let yahooRateLimited = false;
 let yahooCooldownUntil = 0;
-const YAHOO_COOLDOWN_MS = 5 * 60 * 1000; // 5 minutes
+const YAHOO_COOLDOWN_MS = 30 * 1000; // 30 seconds (reduced from 5m to avoid locking all stocks out)
 
 function isYahooAvailable() {
   if (!yahooRateLimited) return true;
@@ -322,16 +322,22 @@ function mapYahooQuote(quote, ticker) {
 
 async function fetchQuoteWithFallback(ticker) {
   if (isYahooAvailable()) {
-    try {
-      const quote = await yf.quote(ticker);
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        const quote = await yf.quote(ticker);
 
-      if (!quote || !quote.regularMarketPrice) {
-        throw new Error(`No data found for ${ticker}`);
+        if (!quote || !quote.regularMarketPrice) {
+          throw new Error(`No data found for ${ticker}`);
+        }
+
+        return mapYahooQuote(quote, ticker);
+      } catch (error) {
+        if (attempt === 1 && !error.message.includes('429')) {
+          continue; // quick retry on transient socket / cookie error
+        }
+        handleYahooError(error, `quote ${ticker}`);
+        break;
       }
-
-      return mapYahooQuote(quote, ticker);
-    } catch (error) {
-      handleYahooError(error, `quote ${ticker}`);
     }
   }
 
@@ -342,9 +348,49 @@ async function fetchQuoteWithFallback(ticker) {
     return nseQuote;
   }
 
+  // Fallback 2: Yahoo Chart meta (does not require a crumb / cookies; works on cloud hosts like Render)
+  try {
+    const chart = await yf.chart(ticker, { period1: new Date(Date.now() - 7 * 86400000) });
+    const meta = chart?.meta;
+    if (meta && meta.regularMarketPrice) {
+      console.log(`  ↪ ${ticker} quote via Yahoo Chart meta fallback`);
+      return mapChartMetaQuote(meta, ticker);
+    }
+  } catch { /* proceed to synthetic */ }
+
   // No fake live quote. Synthetic is preserved only for explicitly tagged
   // educational/history fallbacks, never for /api/analyze decisions.
   return getSyntheticQuote(ticker);
+}
+
+function mapChartMetaQuote(meta, ticker) {
+  const price = Number(meta.regularMarketPrice);
+  const prevClose = Number(meta.chartPreviousClose || price);
+  const change = price - prevClose;
+  const changePercent = prevClose ? (change / prevClose) * 100 : 0;
+
+  return {
+    symbol: meta.symbol || ticker,
+    name: meta.longName || meta.shortName || ticker,
+    price,
+    change,
+    changePercent,
+    volume: meta.regularMarketVolume || 0,
+    avgVolume: 0,
+    marketCap: null,
+    high: meta.regularMarketDayHigh || price,
+    low: meta.regularMarketDayLow || price,
+    open: price,
+    prevClose,
+    fiftyTwoWeekHigh: meta.fiftyTwoWeekHigh || null,
+    fiftyTwoWeekLow: meta.fiftyTwoWeekLow || null,
+    exchange: meta.exchangeName || 'NSE',
+    currency: meta.currency || 'INR',
+    marketState: 'CLOSED',
+    bid: null,
+    ask: null,
+    source: 'yahoo',
+  };
 }
 
 function getSyntheticQuote(ticker) {
@@ -561,6 +607,8 @@ async function fetchHistoryWithFallback(ticker, period) {
 
 function getSyntheticHistorical(ticker, period = '1d') {
   const data = [];
+  data._synthetic = true;
+  data.source = 'synthetic';
   const basePrice = 1000 + seededRandom(ticker) * 2000;
   
   let currentPrice = basePrice * 0.9;

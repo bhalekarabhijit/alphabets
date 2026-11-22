@@ -34,7 +34,10 @@ export async function cached(key, ttlMs, fn) {
   const p = (async () => {
     try {
       const value = await fn();
-      cacheSet(key, value, ttlMs);
+      // Never poison the cache with synthetic fallback failures
+      if (!value?._synthetic && value?.source !== 'synthetic') {
+        cacheSet(key, value, ttlMs);
+      }
       return value;
     } finally {
       inflight.delete(key);
