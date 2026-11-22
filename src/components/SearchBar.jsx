@@ -20,17 +20,28 @@ export default function SearchBar({ onAnalyze, apiBase, loading }) {
   const searchTickers = async (q) => {
     if (q.length < 1) {
       setSuggestions([]);
+      setShowSuggestions(false);
       return;
     }
+
+    // Local NSE index endpoint is <1ms. Use AbortController to discard stale
+    // responses and never let a slower Yahoo fallback delay the UI.
     try {
-      const res = await fetch(`${apiBase}/search?q=${encodeURIComponent(q)}`);
+      // 2.5s is deliberately generous to the server; normal local search
+      // returns before this timeout and cancels any stale render.
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 2500);
+      const res = await fetch(`${apiBase}/search?q=${encodeURIComponent(q)}&fast=1`, {
+        signal: controller.signal,
+      });
+      clearTimeout(timeout);
       const data = await res.json();
       if (data.success) {
         setSuggestions(data.data);
         setShowSuggestions(true);
       }
     } catch {
-      // silent fail
+      // Local endpoint should never need a fallback UI to work.
     }
   };
 
@@ -38,7 +49,10 @@ export default function SearchBar({ onAnalyze, apiBase, loading }) {
     const val = e.target.value;
     setQuery(val);
     clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => searchTickers(val), 300);
+
+    // Name/symbol search is local, so 15ms is imperceptible and keeps
+    // results available on every keystroke without UI jitter.
+    debounceRef.current = setTimeout(() => searchTickers(val), 15);
   };
 
   const handleSubmit = (e) => {

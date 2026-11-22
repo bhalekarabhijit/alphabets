@@ -132,15 +132,61 @@ export function getNewListings(days = 30) {
     .sort((a, b) => b.listingDate.localeCompare(a.listingDate) || a.symbol.localeCompare(b.symbol));
 }
 
+let searchIndex = null;
+
 function searchLocalStocks(query) {
   if (!query || query.length < 1) return [];
   const stocks = loadNSEStocks();
   // Best-effort daily refresh (async, never blocks search).
   maybeRefreshUniverse().catch(() => {});
   const q = query.toUpperCase().trim();
-  return stocks.filter(stock => {
-    return stock.symbol.toUpperCase().includes(q) || stock.name.toUpperCase().includes(q);
-  }).slice(0, 15);
+  if (!searchIndex) buildSearchIndex(stocks);
+
+  const exactSymbol = q.replace(/\.NS$/, '').replace(/\.BO$/, '');
+
+  // Tier 1: exact / symbol prefix. Tier 2: company-name prefix.
+  // Tier 3: company-name contains. We only contain-scan the 2300-row index,
+  // so a local name search is ~1ms, not a Yahoo network round trip.
+  const prefixNameMatches = [];
+  const containsNameMatches = [];
+  const symbolMatches = [];
+
+  for (const stock of searchIndex) {
+    const symbolBare = stock.symbolBare;
+    const name = stock.nameKey;
+
+    if (symbolBare === exactSymbol) {
+      symbolMatches.unshift(stock);
+    } else if (symbolBare.startsWith(exactSymbol)) {
+      symbolMatches.push(stock);
+    } else if (name.startsWith(q)) {
+      prefixNameMatches.push(stock);
+    } else if (name.includes(q)) {
+      containsNameMatches.push(stock);
+    }
+  }
+
+  return [...symbolMatches, ...prefixNameMatches, ...containsNameMatches]
+    .filter((stock, index, all) => all.findIndex(s => s.symbol === stock.symbol) === index)
+    .slice(0, 15);
+}
+
+function buildSearchIndex(stocks) {
+  // Pre-normalize once so keystrokes only compare strings.
+  searchIndex = stocks.map(stock => ({
+    ...stock,
+    symbolKey: stock.symbol.toUpperCase(),
+    symbolBare: stock.symbol.replace(/\.NS$/, '').replace(/\.BO$/, '').toUpperCase(),
+    nameKey: stock.name.toUpperCase().normalize('NFKD'),
+  }));
+
+  // Keep exact-symbol map for O(1) lookup.
+  searchIndex.bySymbol = new Map();
+  for (const stock of searchIndex) {
+    if (!searchIndex.bySymbol.has(stock.symbolBare)) {
+      searchIndex.bySymbol.set(stock.symbolBare, stock);
+    }
+  }
 }
 
 function formatTicker(ticker) {
@@ -546,42 +592,46 @@ function getSyntheticHistorical(ticker, period = '1d') {
   return data;
 }
 
-export async function searchTickers(query) {
+export async function searchTickers(query, opts = {}) {
   if (!query || query.length < 1) return [];
   const q = query.trim().toUpperCase();
+  if (opts.localOnly) {
+    const local = searchLocalStocks(q);
+    // Release stale Yahoo refresh work only after fast results exist.
+    return local;
+  }
   return cached(`search:${q}`, TTL.SEARCH, () => fetchSearchResults(q));
 }
 
 async function fetchSearchResults(q) {
   const localResults = searchLocalStocks(q);
 
+  // Fast mode is the normal UI path: 2300 local NSE rows, no Yahoo call.
+  // Yahoo is only a fallback for an unusually large/old local miss, and is
+  // deliberately not awaited on the 45ms UI debounce path.
   if (isYahooAvailable()) {
     try {
-      // v4 removed autoc() (dead Yahoo endpoint); search() covers quotes.
-      const results = await yf.search(q, { quotesCount: 10 });
-      
+      const results = await yf.search(q, { quotesCount: 5 });
+
       if (results && results.quotes && results.quotes.length > 0) {
         const yahooResults = results.quotes
           .filter(r => {
             const ex = r.exchange || '';
             return ex.includes('NSI') || ex.includes('BSE') || ex.includes('NSE') || ex.includes('BO');
           })
-          .slice(0, 10)
+          .slice(0, 5)
           .map(r => ({
             symbol: r.symbol,
             name: r.shortname || r.longname || r.symbol,
             exchange: r.exchange || 'NSE',
           }));
 
-        const combined = [...yahooResults];
-        const yahooSymbols = new Set(yahooResults.map(r => r.symbol));
-        
-        for (const local of localResults) {
-          if (!yahooSymbols.has(local.symbol)) {
-            combined.push(local);
-          }
+        // Local NSE matches first (prefix/ranking), Yahoo fills gaps.
+        const combined = [...localResults];
+        const localSymbols = new Set(localResults.map(r => r.symbol));
+        for (const y of yahooResults) {
+          if (!localSymbols.has(y.symbol)) combined.push(y);
         }
-
         return combined.slice(0, 15);
       }
     } catch (error) {

@@ -52,7 +52,18 @@ app.get('/api/quote/:ticker', async (req, res) => {
 
 app.get('/api/search', async (req, res) => {
   try {
-    const results = await searchTickers(req.query.q || '');
+    const q = String(req.query.q || '').trim();
+    // `fast=1` is the default UI path: 2300-row local in-memory NSE index,
+    // ranked and returned in ~1ms. No Yahoo network call on each keystroke.
+    if (req.query.fast === '1') {
+      const start = Date.now();
+      const local = await searchTickers(q, { localOnly: true });
+      res.set('Cache-Control', 'public, max-age=30');
+      res.set('X-Search-Ms', String(Date.now() - start));
+      return res.json({ success: true, data: local, fast: true });
+    }
+
+    const results = await searchTickers(q);
     res.json({ success: true, data: results });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
