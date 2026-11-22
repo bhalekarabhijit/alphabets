@@ -126,21 +126,18 @@ app.get('/api/analyze/:ticker', async (req, res) => {
     const snap = await getMarketSnapshot(ticker, '1d');
     const { quote, fundamentals, history: dailyChart, news, timesfm, technicals: dailyTechnicals, sources } = snap;
 
-    // Never fabricate a BUY/HOLD/SELL when source stamps prove the quote,
-    // fundamentals, or history are synthetic. NYKAA.BO is valid when Yahoo
-    // stamps source="yahoo" and provides a real 30+ bar history — even though
-    // `.BO` is BSE, not NSE.
-    const synthetic = sources?.quote === 'synthetic'
-      || sources?.fundamentals === 'synthetic'
-      || sources?.history === 'synthetic'
+    // Guard against fake quotes or fake/insufficient price history.
+    // Real quote + at least 5 bars of real chart is required (allows new IPOs / listings).
+    const fakePriceOrHistory = sources?.quote === 'synthetic'
       || quote?._synthetic === true
-      || fundamentals?._synthetic === true;
-    if (synthetic || !dailyChart || dailyChart.length < 30) {
+      || sources?.history === 'synthetic'
+      || !dailyChart
+      || dailyChart.length < 5;
+
+    if (fakePriceOrHistory) {
       const reason = sources?.quote === 'synthetic' || quote?._synthetic
         ? 'Live quote unavailable'
-        : sources?.fundamentals === 'synthetic' || fundamentals?._synthetic
-          ? 'Fundamental data unavailable'
-          : 'Not enough reliable history';
+        : 'Not enough reliable history';
       console.warn(`  ⛔ Refusing AI analysis for ${ticker}: ${reason}`);
       return res.status(422).json({
         success: false,
@@ -150,13 +147,19 @@ app.get('/api/analyze/:ticker', async (req, res) => {
       });
     }
 
+    // If fundamentals are synthetic, treat as null so AI evaluates technicals/price/news
+    // without hallucinating fake financial metrics.
+    const cleanFundamentals = (sources?.fundamentals === 'synthetic' || fundamentals?._synthetic)
+      ? null
+      : fundamentals;
+
     console.log(`  ✅ Market & News Data fetched${timesfm ? ' (incl. TimesFM quant)' : ''} [${sources.quote}/${sources.fundamentals}/${sources.history}]`);
 
     console.log(`  ✅ Technical Indicators (Daily) complete`);
 
     const aiAnalysis = await analyzeStock(ticker, {
       quote,
-      fundamentals,
+      fundamentals: cleanFundamentals,
       dailyTechnicals,
       news,
       timesfm,
