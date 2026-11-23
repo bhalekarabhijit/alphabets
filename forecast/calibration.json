@@ -1,22 +1,22 @@
 {
-  "generated_at": "2026-11-16T16:53:35.309955+00:00",
+  "generated_at": "2026-11-23T19:07:35.531815+00:00",
   "horizon_days": 20,
-  "snapshots_evaluated": 6,
-  "snapshots_pending": 38,
+  "snapshots_evaluated": 12,
+  "snapshots_pending": 37,
   "results": {
     "2026-09-05-next50": {
       "universe": "next50",
       "snapshot_date": "2026-09-05",
-      "evaluated_at": "2026-11-16T16:53:20.801853+00:00",
-      "n": 49,
-      "coverage_pct": 73.5,
-      "sign_accuracy_pct": 53.1,
-      "mae_pct": 7.09
+      "evaluated_at": "2026-11-23T19:07:20.057464+00:00",
+      "n": 50,
+      "coverage_pct": 74.0,
+      "sign_accuracy_pct": 54.0,
+      "mae_pct": 6.99
     },
     "2026-09-05-nifty50": {
       "universe": "nifty50",
       "snapshot_date": "2026-09-05",
-      "evaluated_at": "2026-11-16T16:53:20.801853+00:00",
+      "evaluated_at": "2026-11-23T19:07:20.057464+00:00",
       "n": 50,
       "coverage_pct": 82.0,
       "sign_accuracy_pct": 46.0,
@@ -25,16 +25,16 @@
     "2026-09-05-smallcap50": {
       "universe": "smallcap50",
       "snapshot_date": "2026-09-05",
-      "evaluated_at": "2026-11-16T16:53:20.801853+00:00",
+      "evaluated_at": "2026-11-23T19:07:20.057464+00:00",
       "n": 50,
       "coverage_pct": 74.0,
       "sign_accuracy_pct": 48.0,
-      "mae_pct": 7.96
+      "mae_pct": 7.98
     },
     "2026-09-17-nifty50": {
       "universe": "nifty50",
       "snapshot_date": "2026-09-17",
-      "evaluated_at": "2026-11-16T16:53:20.801853+00:00",
+      "evaluated_at": "2026-11-23T19:07:20.057464+00:00",
       "n": 50,
       "coverage_pct": 82.0,
       "sign_accuracy_pct": 40.0,
@@ -43,7 +43,7 @@
     "2026-09-18-nifty50": {
       "universe": "nifty50",
       "snapshot_date": "2026-09-18",
-      "evaluated_at": "2026-11-16T16:53:20.801853+00:00",
+      "evaluated_at": "2026-11-23T19:07:20.057464+00:00",
       "n": 50,
       "coverage_pct": 82.0,
       "sign_accuracy_pct": 46.0,
@@ -52,11 +52,65 @@
     "2026-09-21-nifty50": {
       "universe": "nifty50",
       "snapshot_date": "2026-09-21",
-      "evaluated_at": "2026-11-16T16:53:20.801853+00:00",
+      "evaluated_at": "2026-11-23T19:07:20.057464+00:00",
       "n": 50,
       "coverage_pct": 62.0,
       "sign_accuracy_pct": 34.0,
       "mae_pct": 6.96
+    },
+    "2026-09-22-nifty50": {
+      "universe": "nifty50",
+      "snapshot_date": "2026-09-22",
+      "evaluated_at": "2026-11-23T19:07:20.057464+00:00",
+      "n": 50,
+      "coverage_pct": 62.0,
+      "sign_accuracy_pct": 44.0,
+      "mae_pct": 7.23
+    },
+    "2026-09-23-nifty50": {
+      "universe": "nifty50",
+      "snapshot_date": "2026-09-23",
+      "evaluated_at": "2026-11-23T19:07:20.057464+00:00",
+      "n": 50,
+      "coverage_pct": 48.0,
+      "sign_accuracy_pct": 48.0,
+      "mae_pct": 8.82
+    },
+    "2026-09-24-nifty50": {
+      "universe": "nifty50",
+      "snapshot_date": "2026-09-24",
+      "evaluated_at": "2026-11-23T19:07:20.057464+00:00",
+      "n": 50,
+      "coverage_pct": 54.0,
+      "sign_accuracy_pct": 44.0,
+      "mae_pct": 8.29
+    },
+    "2026-09-25-nifty50": {
+      "universe": "nifty50",
+      "snapshot_date": "2026-09-25",
+      "evaluated_at": "2026-11-23T19:07:20.057464+00:00",
+      "n": 50,
+      "coverage_pct": 48.0,
+      "sign_accuracy_pct": 38.0,
+      "mae_pct": 9.05
+    },
+    "2026-09-28-nifty50": {
+      "universe": "nifty50",
+      "snapshot_date": "2026-09-28",
+      "evaluated_at": "2026-11-23T19:07:20.057464+00:00",
+      "n": 50,
+      "coverage_pct": 48.0,
+      "sign_accuracy_pct": 36.0,
+      "mae_pct": 9.05
+    },
+    "2026-09-29-nifty50": {
+      "universe": "nifty50",
+      "snapshot_date": "2026-09-29",
+      "evaluated_at": "2026-11-23T19:07:20.057464+00:00",
+      "n": 50,
+      "coverage_pct": 66.0,
+      "sign_accuracy_pct": 34.0,
+      "mae_pct": 7.69
     }
   }
 }

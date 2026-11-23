@@ -43,5 +43,14 @@
     "target": 3226,
     "stop": 2450,
     "confidence": 78
+  },
+  {
+    "date": "2026-11-23",
+    "ticker": "DABUR.NS",
+    "action": "SWING",
+    "entry": 399,
+    "target": 450,
+    "stop": 375,
+    "confidence": 72
   }
 ]
