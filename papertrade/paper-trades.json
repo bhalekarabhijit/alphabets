@@ -41,6 +41,48 @@
       "lastValue": 267.25,
       "lastSpot": 4680,
       "lastChecked": "2026-11-24"
+    },
+    {
+      "status": "open",
+      "underlying": "ICICIBANK",
+      "strike": 1590,
+      "expiry": "2026-12-29",
+      "entryDate": "2026-11-24",
+      "entryCost": 80.45,
+      "entrySpot": 1585.5,
+      "entryEdge": 1.77,
+      "entryBreakevenPct": 5.07,
+      "lastValue": 80.45,
+      "lastSpot": 1585.5,
+      "lastChecked": "2026-11-24"
+    },
+    {
+      "status": "open",
+      "underlying": "AXISBANK",
+      "strike": 1390,
+      "expiry": "2026-12-29",
+      "entryDate": "2026-11-24",
+      "entryCost": 85.65,
+      "entrySpot": 1388.6,
+      "entryEdge": 1.49,
+      "entryBreakevenPct": 6.17,
+      "lastValue": 85.65,
+      "lastSpot": 1388.6,
+      "lastChecked": "2026-11-24"
+    },
+    {
+      "status": "open",
+      "underlying": "TCS",
+      "strike": 2460,
+      "expiry": "2026-12-29",
+      "entryDate": "2026-11-24",
+      "entryCost": 181.75,
+      "entrySpot": 2460,
+      "entryEdge": 1.43,
+      "entryBreakevenPct": 7.39,
+      "lastValue": 181.75,
+      "lastSpot": 2460,
+      "lastChecked": "2026-11-24"
     }
   ],
   "closed": [
@@ -1073,7 +1115,7 @@
   ],
   "stats": {
     "updated": "2026-11-24",
-    "openCount": 3,
+    "openCount": 6,
     "closedCount": 57,
     "winRate": 47.37,
     "avgPnlPct": 10.17,
