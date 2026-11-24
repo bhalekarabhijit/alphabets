@@ -1,5 +1,48 @@
 {
-  "open": [],
+  "open": [
+    {
+      "status": "open",
+      "underlying": "SBIN",
+      "strike": 1130,
+      "expiry": "2026-12-29",
+      "entryDate": "2026-11-24",
+      "entryCost": 66.4,
+      "entrySpot": 1132.65,
+      "entryEdge": 2.03,
+      "entryBreakevenPct": 5.86,
+      "lastValue": 66.4,
+      "lastSpot": 1132.65,
+      "lastChecked": "2026-11-24"
+    },
+    {
+      "status": "open",
+      "underlying": "RELIANCE",
+      "strike": 1350,
+      "expiry": "2026-12-29",
+      "entryDate": "2026-11-24",
+      "entryCost": 90.75,
+      "entrySpot": 1351,
+      "entryEdge": 1.83,
+      "entryBreakevenPct": 6.72,
+      "lastValue": 90.75,
+      "lastSpot": 1351,
+      "lastChecked": "2026-11-24"
+    },
+    {
+      "status": "open",
+      "underlying": "TITAN",
+      "strike": 4700,
+      "expiry": "2026-12-29",
+      "entryDate": "2026-11-24",
+      "entryCost": 267.25,
+      "entrySpot": 4680,
+      "entryEdge": 1.68,
+      "entryBreakevenPct": 5.71,
+      "lastValue": 267.25,
+      "lastSpot": 4680,
+      "lastChecked": "2026-11-24"
+    }
+  ],
   "closed": [
     {
       "status": "closed",
@@ -1029,8 +1072,8 @@
     }
   ],
   "stats": {
-    "updated": "2026-11-20",
-    "openCount": 0,
+    "updated": "2026-11-24",
+    "openCount": 3,
     "closedCount": 57,
     "winRate": 47.37,
     "avgPnlPct": 10.17,
