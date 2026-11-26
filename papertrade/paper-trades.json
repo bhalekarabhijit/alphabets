@@ -10,9 +10,9 @@
       "entrySpot": 1132.65,
       "entryEdge": 2.03,
       "entryBreakevenPct": 5.86,
-      "lastValue": 65.6,
-      "lastSpot": 1138.15,
-      "lastChecked": "2026-11-25"
+      "lastValue": 64.2,
+      "lastSpot": 1136.65,
+      "lastChecked": "2026-11-26"
     },
     {
       "status": "open",
@@ -24,9 +24,9 @@
       "entrySpot": 1351,
       "entryEdge": 1.83,
       "entryBreakevenPct": 6.72,
-      "lastValue": 88.25,
-      "lastSpot": 1373.9,
-      "lastChecked": "2026-11-25"
+      "lastValue": 95.75,
+      "lastSpot": 1396.2,
+      "lastChecked": "2026-11-26"
     },
     {
       "status": "open",
@@ -38,9 +38,9 @@
       "entrySpot": 4680,
       "entryEdge": 1.68,
       "entryBreakevenPct": 5.71,
-      "lastValue": 248.3,
-      "lastSpot": 4686.6,
-      "lastChecked": "2026-11-25"
+      "lastValue": 245.2,
+      "lastSpot": 4631.1,
+      "lastChecked": "2026-11-26"
     },
     {
       "status": "open",
@@ -52,9 +52,9 @@
       "entrySpot": 1585.5,
       "entryEdge": 1.77,
       "entryBreakevenPct": 5.07,
-      "lastValue": 94.45,
-      "lastSpot": 1640,
-      "lastChecked": "2026-11-25"
+      "lastValue": 81,
+      "lastSpot": 1611,
+      "lastChecked": "2026-11-26"
     },
     {
       "status": "open",
@@ -66,9 +66,9 @@
       "entrySpot": 1388.6,
       "entryEdge": 1.49,
       "entryBreakevenPct": 6.17,
-      "lastValue": 87.94999999999999,
-      "lastSpot": 1418.1,
-      "lastChecked": "2026-11-25"
+      "lastValue": 82.35,
+      "lastSpot": 1408,
+      "lastChecked": "2026-11-26"
     },
     {
       "status": "open",
@@ -80,9 +80,9 @@
       "entrySpot": 2460,
       "entryEdge": 1.43,
       "entryBreakevenPct": 7.39,
-      "lastValue": 186.5,
-      "lastSpot": 2517.3,
-      "lastChecked": "2026-11-25"
+      "lastValue": 263.45,
+      "lastSpot": 2640.3,
+      "lastChecked": "2026-11-26"
     },
     {
       "status": "open",
@@ -94,9 +94,9 @@
       "entrySpot": 509,
       "entryEdge": 1.42,
       "entryBreakevenPct": 5.27,
-      "lastValue": 26.8,
-      "lastSpot": 509,
-      "lastChecked": "2026-11-25"
+      "lastValue": 25.6,
+      "lastSpot": 509.95,
+      "lastChecked": "2026-11-26"
     },
     {
       "status": "open",
@@ -108,9 +108,23 @@
       "entrySpot": 1130,
       "entryEdge": 1.3,
       "entryBreakevenPct": 7.69,
-      "lastValue": 86.9,
-      "lastSpot": 1130,
-      "lastChecked": "2026-11-25"
+      "lastValue": 100.4,
+      "lastSpot": 1183,
+      "lastChecked": "2026-11-26"
+    },
+    {
+      "status": "open",
+      "underlying": "HDFCBANK",
+      "strike": 860,
+      "expiry": "2026-12-29",
+      "entryDate": "2026-11-26",
+      "entryCost": 52.3,
+      "entrySpot": 862,
+      "entryEdge": 1.38,
+      "entryBreakevenPct": 6.07,
+      "lastValue": 52.3,
+      "lastSpot": 862,
+      "lastChecked": "2026-11-26"
     }
   ],
   "closed": [
@@ -1142,8 +1156,8 @@
     }
   ],
   "stats": {
-    "updated": "2026-11-25",
-    "openCount": 8,
+    "updated": "2026-11-26",
+    "openCount": 9,
     "closedCount": 57,
     "winRate": 47.37,
     "avgPnlPct": 10.17,
